@@ -154,7 +154,7 @@
                   <template #icon> <img src="../assets/tx.jpg" /></template>
                 </a-avatar>
 
-                Admin
+             {{UserTitle}}
                 <DownOutlined />
               </a>
               <template #overlay>
@@ -236,6 +236,7 @@ import {
 } from "@ant-design/icons-vue";
 import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { useStore } from "vuex";
 import screenfull from "screenfull";
 export default defineComponent({
   components: {
@@ -255,6 +256,8 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
+        const store = useStore();
+         let UserTitle = ref("");
     let collapsed = ref<boolean>(false);
     let titleTxt = ref("");
     let titleTxt1 = ref("");
@@ -268,6 +271,9 @@ export default defineComponent({
     };
 
     onMounted(() => {
+       
+   
+      UserTitle.value=store.state.USERNAME;
       if (routeDescMeta.value && routeDescMeta.value.rName) {
         console.log(1);
 
@@ -341,7 +347,7 @@ openKeys.value=["sub1"]
       titleTxt1,
       routeDescArr,
       openKeys,
-      toggleFullscreen,
+      toggleFullscreen,UserTitle
     };
   },
 });

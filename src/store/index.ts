@@ -3,11 +3,15 @@ import { createStore } from 'vuex'
 import {login,register,getCode} from '../Request/login'
 export default createStore({
   state: {
-    TOKEN: ""
+    TOKEN: "",
+    USERNAME:"***"
   },
   mutations: {
     SetToken(state, payLoad) {
       state.TOKEN = payLoad;
+    },
+    SetUserName(state, payLoad) {
+      state.USERNAME = payLoad;
     }
   },
   actions: {
@@ -21,6 +25,8 @@ export default createStore({
                 resolve(false);
               } else {
                 commit("SetToken",res.token);
+                commit("SetUserName",user);
+                
                 localStorage.setItem("starToken",JSON.stringify(res.token));
                 resolve(true);
                }
@@ -39,7 +45,8 @@ export default createStore({
                if (!res.result) {
                  resolve(false);
                } else {
-                
+                commit("SetToken","");
+                commit("SetUserName","***");
                  resolve(true);
                 }
              }).catch((err:any)=>{
