@@ -10,7 +10,7 @@ module.exports = {
         hotOnly: false,
         proxy: { // 配置跨域
             '/api': {
-                target: 'http://192.168.8.11:8086/Api', //接口域名
+                target: 'http://localhost:3165/Api', //接口域名
                 ws: true, //是否代理websockets
                 changOrigin: true, //是否跨域
                 pathRewrite: { //重置路径

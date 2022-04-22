@@ -30,6 +30,7 @@
             font-size: 20px;
             font-weight: 800;
           "
+           title="编辑"
           ><EditFilled mark="edit"
         /></a>
         <!-- <edit-two-tone
@@ -77,6 +78,33 @@
             "
           />
         </a-popconfirm> -->
+
+
+
+
+  <a
+          style="
+            color: rgba(18, 96, 214, 0.733);
+            font-size: 20px;
+            font-weight: 800; margin-left: 9px;
+          "
+           title="复制"
+          ><CopyFilled mark="copy"
+        /></a>
+
+ <a
+          style="
+            color: rgba(18, 96, 214, 0.733);
+            font-size: 20px;
+            font-weight: 800; margin-left: 9px;
+          "
+          title="设置"
+          
+          ><SettingFilled mark="set"
+        /></a>
+
+
+
       </template>
 
       <template #useStatus="{ text: useStatus }">
@@ -137,7 +165,7 @@ import {
   GetUserColumn,
   GetUserDatas,
   DeleteUserById,
-  BatchDeleteUser,UpdateUserDatas,AddUserDatas
+  BatchDeleteUser,UpdateUserDatas,AddUserDatas,CopyUserDataById
 } from "../../Request/userRequest";
 import { message, Modal } from "ant-design-vue";
 import UserListQueryHeader from "../../components/UserListQueryHeader.vue";
@@ -149,7 +177,7 @@ import {
   FormOutlined,
   CopyFilled,
   EditFilled,
-  HighlightFilled,
+  HighlightFilled,CopyOutlined,SettingOutlined,SettingFilled
 } from "@ant-design/icons-vue";
 // import FileSaver from "file-saver";
 /*eslint-disabled*/
@@ -167,7 +195,7 @@ export default defineComponent({
     FormOutlined,
     CopyFilled,
     EditFilled,
-    HighlightFilled,
+    HighlightFilled,CopyOutlined,SettingOutlined,SettingFilled
   },
   setup() {
     const UserDataEntityState = reactive(new UserDataEntity());
@@ -453,7 +481,7 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
     /***排序****************/
     /***勾选****************/
     const onSelectChange = (selectedRowKeys: [], selectedRows: []) => {
-      //console.log("selectedRows changed: ", selectedRows);
+      console.log("selectedRows changed: ", selectedRows);
       UserDataEntityState.selectedRowKeys = selectedRowKeys;
       UserDataEntityState.selectedRows = selectedRows;
     };
@@ -468,6 +496,33 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
           );
           console.log(event.target.parentNode.getAttribute("data-icon"));
           console.log("id", record);
+          
+            if (
+            event.target.parentNode.getAttribute("data-icon") == "copy" ||
+            event.target.parentNode.parentNode.getAttribute("aria-label") ==
+              "copy"
+          ) {
+                  const Id = record.sysUserId;
+                  
+
+
+
+ CopyUserDataById({ Id: Id }).then((res: any) => {
+   console.log(res)
+            if (res.isSuccessful) {          
+              refreshMark.value=new Date().getTime().toString();
+              UserDataEntityState.selectedRowKeys = [];
+              UserDataEntityState.selectedRows = [];
+              message.success("复制成功.");
+            }
+          });
+
+
+          }
+          
+          
+          
+          
           if (
             event.target.parentNode.getAttribute("data-icon") == "edit" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
