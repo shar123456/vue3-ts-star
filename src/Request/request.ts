@@ -12,8 +12,7 @@ const instance = axios.create({
     //baseURL:'/mock/',
     //baseURL:'http://localhost:3165/api/',
     //baseURL:'http://192.168.8.11:8086/Api/',
-    
-   
+     
     timeout: 5000
 })
 
@@ -33,17 +32,29 @@ instance.interceptors.request.use(
 //响应拦截
 instance.interceptors.response.use(
     res => {
-      const result=  res.data ? res.data : res;
-      const code:number=result.code;
-        if(code!=200)
+        console.log("2222",res)
+        if(res.headers["content-type"]=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                  {
+                    return res;
+                  }
+                  
         {
-            ///alert(messageEnum[code]);
-            //return Promise.reject(result);
-            return res.data;
-        }else
-        {
-            return res.data;
+            const result=  res.data ? res.data : res;
+            const code:number=result.code;
+              if(code!=200)
+              {
+                  ///alert(messageEnum[code]);
+                  //return Promise.reject(result);
+                  return res.data;
+              }else
+              {
+                 
+                  {
+                    return res.data;
+                  }
+              }
         }
+    
 
         
     }, err => {

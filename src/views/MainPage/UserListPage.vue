@@ -5,6 +5,8 @@
     :UserData="UserDataEntityState"
     @batchDelete="batchDelete"
     @refreshBtn="refreshBtn"
+    @exportExcel="exportExcel"
+    @importExcel="importExcel"
   ></UserListQueryHeader>
 
   <div id="userList">
@@ -30,7 +32,7 @@
             font-size: 20px;
             font-weight: 800;
           "
-           title="编辑"
+          title="编辑"
           ><EditFilled mark="edit"
         /></a>
         <!-- <edit-two-tone
@@ -79,32 +81,27 @@
           />
         </a-popconfirm> -->
 
-
-
-
-  <a
+        <a
           style="
             color: rgba(18, 96, 214, 0.733);
             font-size: 20px;
-            font-weight: 800; margin-left: 9px;
+            font-weight: 800;
+            margin-left: 9px;
           "
-           title="复制"
+          title="复制"
           ><CopyFilled mark="copy"
         /></a>
 
- <a
+        <a
           style="
             color: rgba(18, 96, 214, 0.733);
             font-size: 20px;
-            font-weight: 800; margin-left: 9px;
+            font-weight: 800;
+            margin-left: 9px;
           "
           title="设置"
-          
           ><SettingFilled mark="set"
         /></a>
-
-
-
       </template>
 
       <template #useStatus="{ text: useStatus }">
@@ -133,10 +130,9 @@
         @showSizeChange="onShowSizeChange"
         :page-size-options="pageSizeOptions"
       >
-      <template #buildOptionText="props">
-      <span >{{ props.value }}条/页</span>
-    
-    </template>
+        <template #buildOptionText="props">
+          <span>{{ props.value }}条/页</span>
+        </template>
       </a-pagination>
     </div>
   </div>
@@ -149,6 +145,25 @@
     @UpdateInfoBtn="UpdateInfoBtn"
     @CreateInfoBtn="CreateInfoBtn"
   />
+    <ExportExcelModal
+    :visibleExportExcel="visibleExportExcel"
+    :modalExportExcelTitles="modalExportExcelTitle"
+    :UserData="UserDataEntityState"
+    @closeExportExcelMoadl="closeExportExcelMoadl"
+    @UpdateInfoBtn="UpdateInfoBtn"
+    @CreateInfoBtn="CreateInfoBtn"
+  />
+
+
+
+
+
+
+
+
+
+
+
 </template>
 
 <script lang="ts">
@@ -165,11 +180,19 @@ import {
   GetUserColumn,
   GetUserDatas,
   DeleteUserById,
-  BatchDeleteUser,UpdateUserDatas,AddUserDatas,CopyUserDataById
+  BatchDeleteUser,
+  UpdateUserDatas,
+  AddUserDatas,
+  CopyUserDataById,BatchExportUser
 } from "../../Request/userRequest";
 import { message, Modal } from "ant-design-vue";
 import UserListQueryHeader from "../../components/UserListQueryHeader.vue";
 import UserListModal from "../../components/UserListModal.vue";
+
+import ExportExcelModal from "../../components/ExportExcelModal.vue";
+
+
+
 import {
   EditTwoTone,
   DeleteTwoTone,
@@ -177,7 +200,10 @@ import {
   FormOutlined,
   CopyFilled,
   EditFilled,
-  HighlightFilled,CopyOutlined,SettingOutlined,SettingFilled
+  HighlightFilled,
+  CopyOutlined,
+  SettingOutlined,
+  SettingFilled,
 } from "@ant-design/icons-vue";
 // import FileSaver from "file-saver";
 /*eslint-disabled*/
@@ -195,17 +221,26 @@ export default defineComponent({
     FormOutlined,
     CopyFilled,
     EditFilled,
-    HighlightFilled,CopyOutlined,SettingOutlined,SettingFilled
+    HighlightFilled,
+    CopyOutlined,
+    SettingOutlined,
+    SettingFilled,ExportExcelModal
   },
   setup() {
     const UserDataEntityState = reactive(new UserDataEntity());
 
     let visible = ref<boolean>(false);
+    let visibleExportExcel = ref<boolean>(false)
+    
     let loading = ref<boolean>(false);
-const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
+    const pageSizeOptions = ref<string[]>(["5", "10", "20", "30", "40", "50"]);
     let modalTitle = ref<string>("");
+let modalExportExcelTitle = ref<string>("");
+
+
+
     const deleteMark = ref<string>("");
-      let refreshMark = ref<string>("");
+    let refreshMark = ref<string>("");
     /***功能按钮****************/
     const SearchBtn = async (payload: any) => {
       //console.log(payload);
@@ -246,81 +281,165 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
     const closeMoadl = () => {
       visible.value = false;
     };
- const refreshBtn = () => {
+    const refreshBtn = () => {
       loading.value = true;
-       UserDataEntityState.QueryConditionInfo={
-      sysUserId: "",
-      name: "",
-      gender: "未选择",
-      useStatus:"未选择",
-      address: "",
-      phone: "",
-      email: "",
-      level: "",
-   
-    }
+      UserDataEntityState.QueryConditionInfo = {
+        sysUserId: "",
+        name: "",
+        gender: "未选择",
+        useStatus: "未选择",
+        address: "",
+        phone: "",
+        email: "",
+        level: "",
+      };
       GetUserDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...UserDataEntityState.QueryConditionInfo,
-      }).then((res: any) => {      
+      }).then((res: any) => {
         loading.value = false;
         if (res.isSuccess) {
-          console.log(res.datas)
+          console.log(res.datas);
           UserDataEntityState.UserDataList = res.datas;
-             totalCount.value =  res.totalCount;
+          totalCount.value = res.totalCount;
         }
       });
     };
 
- const UpdateInfoBtn = (payload: any) => {
-       console.log(payload)
+    const UpdateInfoBtn = (payload: any) => {
+      console.log(payload);
 
-
-       UpdateUserDatas(payload).then((res:any)=>{
-         console.log(res)
-            if(res.isSuccessful)
-            {
-            visible.value = false;
-            refreshMark.value=new Date().getTime().toString();
-              message.success(res.message);
-            }
-            else
-{
-   message.error("更新失败.");
- 
-}
-
-       })
-      
+      UpdateUserDatas(payload).then((res: any) => {
+        console.log(res);
+        if (res.isSuccessful) {
+          visible.value = false;
+          refreshMark.value = new Date().getTime().toString();
+          message.success(res.message);
+        } else {
+          message.error("更新失败.");
+        }
+      });
     };
 
- const CreateInfoBtn = (payload: any) => {
-       console.log(payload)
+    const CreateInfoBtn = (payload: any) => {
+      console.log(payload);
 
+      AddUserDatas(payload).then((res: any) => {
+        console.log(res);
+        if (res.isSuccessful) {
+          visible.value = false;
+          refreshMark.value = new Date().getTime().toString();
+          message.success(res.message);
+        } else {
+          message.error("添加失败.");
+        }
+      });
+    };
 
-       AddUserDatas(payload).then((res:any)=>{
-         console.log(res)
-            if(res.isSuccessful)
-            {
-            visible.value = false;
-            refreshMark.value=new Date().getTime().toString();
-              message.success(res.message);
-            }
-            else
-{
-   message.error("添加失败.");
- 
-}
+ const importExcel=()=>{
+   console.log("visibleExportExcel");
+   visibleExportExcel.value = true;
+    modalExportExcelTitle.value = "文件导入";
+ }
 
-       })
-      
+ const closeExportExcelMoadl = () => {
+      visibleExportExcel.value = false;
     };
 
 
 
 
+const exportExcel=()=>{
+  let keys: string[] = [];
+      for (let i in UserDataEntityState.selectedRowKeys) {
+        keys[i] = UserDataEntityState.selectedRowKeys[i];
+      }
+      let isDesibleOkBtn = false;
+      if (keys.length == 0) {
+        isDesibleOkBtn = true;
+      }
 
+      Modal.confirm({
+        title: "您确定要执行批量导出操作吗?",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: `共计：${keys.length} 条记录`,
+        okText: "Yes",
+        okType: "danger",
+        cancelText: "No",
+        okButtonProps: {
+          disabled: isDesibleOkBtn,
+        },
+        onOk() {
+          
+
+          //console.log(ids);
+          BatchExportUser({ keys: keys }).then((res: any) => {
+            // if (res.isSuccess) {
+            //   refreshMark.value = new Date().getTime().toString();
+            //   UserDataEntityState.selectedRowKeys = [];
+            //   UserDataEntityState.selectedRows = [];
+            //   message.success("导出成功.");
+            console.log(res)
+console.log(typeof res)
+
+  var ress = [  //示例数组
+    {
+      'name': 'bob',
+      'age': '13',
+      'career': 'student'
+    },
+    {
+      'name': 'clare',
+      'age': '20',
+      'career': 'engineer'
+    }
+  ];
+  var dataType = "\uFEFF"; //解决乱码问题
+  dataType += (["" + "姓名", "年龄", "职业"].join(','));  //添加表格的头
+  dataType += '\n';
+ 
+  ress.forEach(function (item) { //遍历数组，用字符串拼接
+    dataType += (['' + item.name, item.age, item.career].join(','));
+    dataType += '\n';
+  });
+
+
+// let blob1 = new Blob([res], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+//    let url = window.URL.createObjectURL(blob1);
+//    window.location.href = url;
+
+
+//注释：有没有引入mock生成的数据文件,文件里引用了mockjs,mock会对返回的数据做处理,导致文件下载 乱码 文件损坏 打开undefind等
+console.log("headers",res.headers)
+ const blob = new Blob([res.data] , {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+ const f = '统计.xlsx';
+  const contentDisposition =
+    res.headers['content-disposition'] ||
+    res.headers['Content-Disposition']
+  const fileName =
+    (contentDisposition && contentDisposition.split(';')[1]).split('=')[1] || f || '';
+
+
+    //const fileName = '统计.xlsx';
+    const elink = document.createElement('a');
+    elink.download = fileName;
+    elink.style.display = 'none';
+    elink.href = URL.createObjectURL(blob);
+    document.body.appendChild(elink);
+    elink.click();
+    URL.revokeObjectURL(elink.href); // 释放URL 对象
+    document.body.removeChild(elink);
+
+           // }
+          });
+        },
+        onCancel() {
+          message.error("已取消.");
+        },
+      });
+
+}
 
 
     const batchDelete = () => {
@@ -351,8 +470,8 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
 
           console.log(ids);
           BatchDeleteUser({ Ids: ids }).then((res: any) => {
-            if (res.isSuccess) {          
-              refreshMark.value=new Date().getTime().toString();
+            if (res.isSuccess) {
+              refreshMark.value = new Date().getTime().toString();
               UserDataEntityState.selectedRowKeys = [];
               UserDataEntityState.selectedRows = [];
               message.success("删除成功.");
@@ -363,6 +482,8 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
           message.error("已取消.");
         },
       });
+
+
     };
 
     /***功能按钮****************/
@@ -422,23 +543,22 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
         }
       });
     });
-  watch(refreshMark, () => {
-     loading.value = true;
+    watch(refreshMark, () => {
+      loading.value = true;
       GetUserDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...UserDataEntityState.QueryConditionInfo,
-      }).then((res: any) => {      
+      }).then((res: any) => {
         loading.value = false;
         if (res.isSuccess) {
-          console.log(res.datas)
+          console.log(res.datas);
           UserDataEntityState.UserDataList = res.datas;
-             totalCount.value =  res.totalCount;
+          totalCount.value = res.totalCount;
         }
       });
     });
 
-    
     /***分页****************/
 
     /***数据初始化****************/
@@ -482,6 +602,7 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
     /***勾选****************/
     const onSelectChange = (selectedRowKeys: [], selectedRows: []) => {
       console.log("selectedRows changed: ", selectedRows);
+       console.log("selectedRowKeys changed: ", selectedRowKeys);
       UserDataEntityState.selectedRowKeys = selectedRowKeys;
       UserDataEntityState.selectedRows = selectedRows;
     };
@@ -496,33 +617,25 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
           );
           console.log(event.target.parentNode.getAttribute("data-icon"));
           console.log("id", record);
-          
-            if (
+
+          if (
             event.target.parentNode.getAttribute("data-icon") == "copy" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "copy"
           ) {
-                  const Id = record.sysUserId;
-                  
+            const Id = record.sysUserId;
 
-
-
- CopyUserDataById({ Id: Id }).then((res: any) => {
-   console.log(res)
-            if (res.isSuccessful) {          
-              refreshMark.value=new Date().getTime().toString();
-              UserDataEntityState.selectedRowKeys = [];
-              UserDataEntityState.selectedRows = [];
-              message.success("复制成功.");
-            }
-          });
-
-
+            CopyUserDataById({ Id: Id }).then((res: any) => {
+              console.log(res);
+              if (res.isSuccessful) {
+                refreshMark.value = new Date().getTime().toString();
+                UserDataEntityState.selectedRowKeys = [];
+                UserDataEntityState.selectedRows = [];
+                message.success("复制成功.");
+              }
+            });
           }
-          
-          
-          
-          
+
           if (
             event.target.parentNode.getAttribute("data-icon") == "edit" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
@@ -568,7 +681,7 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
                 loading.value = true;
                 DeleteUserById({ UserId: Id }).then((res: any) => {
                   if (res.isSuccess) {
-                     refreshMark.value=new Date().getTime().toString();
+                    refreshMark.value = new Date().getTime().toString();
                     message.success("删除成功.");
                   }
                 });
@@ -603,8 +716,12 @@ const pageSizeOptions = ref<string[]>(['5', '10', '20', '30', '40', '50']);
       batchDelete,
       ...toRefs(UserDataEntityState),
       UserDataEntityState,
-      loading,refreshBtn,
-      pageSizeOptions,UpdateInfoBtn,CreateInfoBtn
+      loading,
+      refreshBtn,
+      pageSizeOptions,
+      UpdateInfoBtn,
+      CreateInfoBtn,
+      exportExcel,importExcel,visibleExportExcel,modalExportExcelTitle,closeExportExcelMoadl
     };
   },
 });
