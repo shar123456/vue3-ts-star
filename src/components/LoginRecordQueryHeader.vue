@@ -53,7 +53,7 @@
 import { reactive, toRefs, defineComponent } from "vue";
 import { LoginRecordDataEntity } from "../TypeInterface/ILoginRecordInterface";
 import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined} from "@ant-design/icons-vue";
-
+import {dateFormat} from '../utility/commonFunc'
 export default defineComponent({
   components: {
     SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined
@@ -62,6 +62,8 @@ export default defineComponent({
   setup(props, context) {
     const state = reactive(new LoginRecordDataEntity());
     const SearchBtn = () => {
+    state.QueryConditionInfo.loginStartTime=dateFormat("YYYY-mm-dd HH:MM:SS",new Date(state.QueryConditionInfo.loginStartTime),0);
+    state.QueryConditionInfo.loginEndTime=dateFormat("YYYY-mm-dd HH:MM:SS",new Date(state.QueryConditionInfo.loginEndTime),0);
       context.emit("SearchBtn", { ...state.QueryConditionInfo });
     };
     const showCreateModal = () => {

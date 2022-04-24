@@ -444,19 +444,20 @@ console.log("headers",res.headers)
 
     const batchDelete = () => {
       console.log(UserDataEntityState.selectedRows);
-      let ids: string[] = [];
-      for (let i in UserDataEntityState.selectedRows) {
-        ids[i] = UserDataEntityState.selectedRows[i].sysUserId;
+     let keys: string[] = [];
+      for (let i in UserDataEntityState.selectedRowKeys) {
+        keys[i] = UserDataEntityState.selectedRowKeys[i];
       }
       let isDesibleOkBtn = false;
-      if (ids.length == 0) {
+      if (keys.length == 0) {
         isDesibleOkBtn = true;
       }
+
 
       Modal.confirm({
         title: "您确定要执行批量删除操作吗?",
         icon: createVNode(ExclamationCircleOutlined),
-        content: `共计：${ids.length} 条记录`,
+        content: `共计：${keys.length} 条记录`,
         okText: "Yes",
         okType: "danger",
         cancelText: "No",
@@ -468,8 +469,8 @@ console.log("headers",res.headers)
           //     (i: IUserInfo) => i.sysUserId == Id);
           //     UserDataEntityState.UserDataList.splice(index, 1);
 
-          console.log(ids);
-          BatchDeleteUser({ Ids: ids }).then((res: any) => {
+          console.log(keys);
+          BatchDeleteUser({ keys: keys }).then((res: any) => {
             if (res.isSuccess) {
               refreshMark.value = new Date().getTime().toString();
               UserDataEntityState.selectedRowKeys = [];

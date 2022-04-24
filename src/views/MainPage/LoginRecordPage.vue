@@ -114,7 +114,7 @@ import LoginRecordQueryHeader from "../../components/LoginRecordQueryHeader.vue"
 import {
   GetLoginRecordColumn,
   GetLoginRecordDatas,
-  DeleteLoginRecordById,
+  DeleteLoginRecordById,BatchDeleteLoginRecord
  
 } from "../../Request/userRequest";
 export default defineComponent({
@@ -326,6 +326,7 @@ export default defineComponent({
 
  const SearchBtn = async (payload: any) => {
  loading.value = true;
+ console.log("payload",payload)
       let UserDatasList1 = await GetLoginRecordDatas({
         current: 1,
         pageSize: pageSize.value,
@@ -353,7 +354,40 @@ console.log("exportExcel");
  }
 
  const batchDelete =  (payload: any) => {
-console.log("batchDelete");
+
+      let keys: string[] = [];
+      for (let i in DataEntityState.selectedRowKeys) {
+        keys[i] = DataEntityState.selectedRowKeys[i];
+      }
+      let isDesibleOkBtn = false;
+      if (keys.length == 0) {
+        isDesibleOkBtn = true;
+      }
+
+      Modal.confirm({
+        title: "您确定要执行批量删除操作吗?",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: `共计：${keys.length} 条记录`,
+        okText: "Yes",
+        okType: "danger",
+        cancelText: "No",
+        okButtonProps: {
+          disabled: isDesibleOkBtn,
+        },
+        onOk() {
+          BatchDeleteLoginRecord({ keys: keys }).then((res: any) => {
+            if (res.isSuccess) {
+              refreshMark.value = new Date().getTime().toString();
+              DataEntityState.selectedRowKeys = [];
+              DataEntityState.selectedRows = [];
+              message.success("删除成功.");
+            }
+          });
+        },
+        onCancel() {
+          message.error("已取消.");
+        },
+      });
  }
 
  const refreshBtn =  (payload: any) => {
