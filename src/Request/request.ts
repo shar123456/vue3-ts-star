@@ -33,6 +33,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     res => {
         console.log("2222",res)
+      
         if(res.headers["content-type"]=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                   {
                     return res;

@@ -564,7 +564,8 @@ console.log("headers",res.headers)
     /***数据初始化****************/
     onMounted(async () => {
       //获取表格列及处理表格列
-      let columnList = await GetUserColumn();
+      let columnList = await GetUserColumn({"pageName":"SysUser"});
+       console.log("amount",columnList)
       for (var i in columnList) {
         console.log(columnList[i]["slots"]);
         if (columnList[i]["slots"] == null) {
@@ -580,6 +581,8 @@ console.log("headers",res.headers)
         pageSize: pageSize.value,
       });
       loading.value = false;
+
+      console.log("amount",UserDatasList)
       if (UserDatasList.isSuccess) {
         UserDataEntityState.UserDataList = UserDatasList.datas;
         totalCount.value = UserDatasList.totalCount;

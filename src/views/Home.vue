@@ -33,6 +33,16 @@
               ></span
             >
           </a-menu-item>
+          <a-menu-item key="/Home/LoginRecordPage">
+           <SnippetsOutlined />
+            <span
+              ><router-link
+                to="/Home/LoginRecordPage"
+                style="color: rgba(255, 255, 255, 0.65)"
+                >登录记录</router-link
+              ></span
+            >
+          </a-menu-item>
           <a-menu-item key="/Home/RolePage">
             <TrademarkCircleOutlined />
             <span
@@ -232,7 +242,7 @@ import {
   SearchOutlined,
   AppstoreOutlined,
   SettingOutlined,
-  TrademarkCircleOutlined,
+  TrademarkCircleOutlined,SnippetsOutlined
 } from "@ant-design/icons-vue";
 import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
@@ -251,7 +261,7 @@ export default defineComponent({
     SearchOutlined,
     AppstoreOutlined,
     SettingOutlined,
-    TrademarkCircleOutlined,
+    TrademarkCircleOutlined,SnippetsOutlined
   },
   setup() {
     const router = useRouter();

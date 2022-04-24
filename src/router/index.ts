@@ -68,6 +68,13 @@ const routes: Array<any> = [
         meta:{rName:"/系统设置/角色列表",Sub:"sub1"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/RolePage.vue')
       }
+      ,
+      {
+        path: 'LoginRecordPage',
+        name: 'LoginRecordPage',
+        meta:{rName:"/系统设置/登录记录",Sub:"sub1"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/LoginRecordPage.vue')
+      }
     ]
   },
   {

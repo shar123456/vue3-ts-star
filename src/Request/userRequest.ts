@@ -1,10 +1,10 @@
 import instance from './request'
 
-export function GetUserColumn():any {
+export function GetUserColumn(param:any):any {
     return instance({
         url: '/SysAccount/GetColumnsConfig',
         method: 'get',
-        params:{}
+        params:param
     })
 }
 //http://172.16.170.33:8055/api/SysAccount/api/SysAccount/GetUsers
@@ -66,17 +66,6 @@ export function AddUserDatas(param:any):any {
           }],
     })
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 export function DeleteUserById(param:any):any {
@@ -181,4 +170,44 @@ export function GetUserDemo():any {
         method: 'get',
      
     })
+}
+
+
+
+export function GetLoginRecordDatas(param:any):any {
+    
+  return instance({
+      url: '/LoginRecord/SearchLoginRecordByQuery',
+      method: 'post',
+      data:param,
+      transformRequest: [function (data) {//加这个post发送数据到后台才能接收到数据，否则接收不到
+          let ret = ''
+          for (const it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
+  })
+}
+export function DeleteLoginRecordById(param:any):any {
+    
+  return instance({
+      url: '/LoginRecord/DeleteLoginRecord',
+      method: 'post',
+      data:param,
+      transformRequest: [function (data) {//加这个post发送数据到后台才能接收到数据，否则接收不到
+          let ret = ''
+          for (const it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
+  })
+}
+export function GetLoginRecordColumn(param:any):any {
+  return instance({
+      url: '/LoginRecord/GetColumnsConfig',
+      method: 'get',
+      params:param
+  })
 }
