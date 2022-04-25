@@ -23,7 +23,7 @@ class LoginRecordDataEntity{
     QueryConditionInfo:ILoginRecordQueryInfo={
     
       name: "",
-      loginStartTime:dateFormat("YYYY-mm-dd HH:MM:SS",new Date(),-1),
+      loginStartTime:dateFormat("YYYY-mm-dd HH:MM:SS",new Date(),-10),
       loginEndTime:dateFormat("YYYY-mm-dd HH:MM:SS",new Date(),0),
     }
     

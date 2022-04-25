@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="downPad">
-      
+       <a-button  type="primary" @click="configGridBtn">   <template #icon><ToolOutlined /></template>配置列表</a-button>&nbsp;
       <a-button danger type="primary" @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
       <a-button type="primary" @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
       <a-button
@@ -52,23 +52,25 @@
 <script lang="ts">
 import { reactive, toRefs, defineComponent } from "vue";
 import { LoginRecordDataEntity } from "../TypeInterface/ILoginRecordInterface";
-import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined} from "@ant-design/icons-vue";
+import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined} from "@ant-design/icons-vue";
 import {dateFormat} from '../utility/commonFunc'
 export default defineComponent({
   components: {
-    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined
+    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined
   },
   props: {  },
   setup(props, context) {
     const state = reactive(new LoginRecordDataEntity());
     const SearchBtn = () => {
-    state.QueryConditionInfo.loginStartTime=dateFormat("YYYY-mm-dd HH:MM:SS",new Date(state.QueryConditionInfo.loginStartTime),0);
+      if(state.QueryConditionInfo.loginStartTime!="")
+      {
+state.QueryConditionInfo.loginStartTime=dateFormat("YYYY-mm-dd HH:MM:SS",new Date(state.QueryConditionInfo.loginStartTime),0);
     state.QueryConditionInfo.loginEndTime=dateFormat("YYYY-mm-dd HH:MM:SS",new Date(state.QueryConditionInfo.loginEndTime),0);
+      }
+    
       context.emit("SearchBtn", { ...state.QueryConditionInfo });
     };
-    const showCreateModal = () => {
-      context.emit("showCreateModal");
-    };
+    
     const ClearQueryBtn = () => {
     
       state.QueryConditionInfo.name = "";
@@ -80,6 +82,16 @@ export default defineComponent({
 const batchDeleteBtn = () => {
       context.emit("batchDelete");
     };
+
+
+const configGridBtn = () => {
+      context.emit("showConfigGrid");
+    };
+
+
+
+
+
     const refreshBtn = () => {
       ClearQueryBtn();
       context.emit("refreshBtn");
@@ -104,9 +116,9 @@ const batchDeleteBtn = () => {
     return {
       ...toRefs(state),
       SearchBtn,
-      showCreateModal,
+    
       ClearQueryBtn,
-      exportExcel,batchDeleteBtn,refreshBtn,importExcel
+      exportExcel,batchDeleteBtn,refreshBtn,importExcel,configGridBtn
     };
   },
 });

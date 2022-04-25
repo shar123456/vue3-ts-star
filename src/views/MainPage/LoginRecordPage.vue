@@ -1,7 +1,7 @@
 <template>
    <LoginRecordQueryHeader
     @SearchBtn="SearchBtn"
-    @showCreateModal="showCreateModal"
+    @showConfigGrid="showConfigGrid"
     @batchDelete="batchDelete"
     @refreshBtn="refreshBtn"
     @exportExcel="exportExcel"
@@ -75,12 +75,13 @@
 
 
 
-
-
-
-
-
-
+  <configGridModal
+    :visibleModelConfigGrid="visibleModelConfigGrid"
+    :modalTitleConfigGrid="modalTitleConfigGrid"
+   
+    :ListColumns="DataEntityState.ListColumns"
+    @CloseConfigGridMoadl="CloseConfigGridMoadl"
+  />
 
 
 
@@ -117,6 +118,7 @@ import {
   DeleteLoginRecordById,BatchDeleteLoginRecord
  
 } from "../../Request/userRequest";
+import configGridModal from "../../components/configGridModal.vue";
 export default defineComponent({
     components: {
  LoginRecordQueryHeader,
@@ -129,7 +131,7 @@ export default defineComponent({
   HighlightFilled,
   CopyOutlined,
   SettingOutlined,
-  SettingFilled,
+  SettingFilled,configGridModal
   },
     setup () {
         const state = reactive({
@@ -142,7 +144,8 @@ export default defineComponent({
     const pageSizeOptions = ref<string[]>(["5", "10", "20", "30", "40", "50"]);
   let refreshMark = ref<string>("");
 
-
+  let visibleModelConfigGrid = ref<boolean>(false)
+  let modalTitleConfigGrid = ref<string>("");
 /***分页****************/
     const pageSize = ref(10);
     const current1 = ref(1);
@@ -218,6 +221,7 @@ export default defineComponent({
       let UserDatasList = await GetLoginRecordDatas({
         current: 1,
         pageSize: pageSize.value,
+        ...DataEntityState.QueryConditionInfo
       });
       loading.value = false;
 
@@ -318,7 +322,16 @@ export default defineComponent({
     /***rowActionClick****************/
 
 
+ const showConfigGrid = () => {
+   console.log("DataEntityState.ListColumns",DataEntityState.ListColumns)
+      visibleModelConfigGrid.value = true;
+      modalTitleConfigGrid.value = "配置【列表显示】";
+     
+    };
 
+    const CloseConfigGridMoadl = () => {
+      visibleModelConfigGrid.value = false;
+    };
 
 
 
@@ -326,7 +339,7 @@ export default defineComponent({
 
  const SearchBtn = async (payload: any) => {
  loading.value = true;
- console.log("payload",payload)
+
       let UserDatasList1 = await GetLoginRecordDatas({
         current: 1,
         pageSize: pageSize.value,
@@ -446,7 +459,12 @@ console.log("refreshBtn");
       exportExcel,
       batchDelete,
       refreshBtn,
-      importExcel
+      importExcel,
+
+
+      visibleModelConfigGrid,
+modalTitleConfigGrid,
+CloseConfigGridMoadl,showConfigGrid
         }
     }
 })
