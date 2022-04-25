@@ -37,7 +37,7 @@
 <script lang="ts">
 import {defineComponent, reactive, toRefs,ref,onMounted,watch } from 'vue'
 import { UserDataEntity,IUserInfo } from "../TypeInterface/IUserInterface";
-
+import { message} from "ant-design-vue";
 import {
 SetLoginRecordGrid
  
@@ -67,17 +67,16 @@ export default defineComponent({
         
 
 const handleOk = (e: MouseEvent) => {
-    //context.emit("CreateConfigGridMoadl");
-  
-     console.log("props.ListColumns",props.ListColumns)
-let sss=[{colsForeignKeyId:"1"}]
- SetLoginRecordGrid({Clist:LColumns}).then((res: any) => {
+
+
+ SetLoginRecordGrid(props.ListColumns).then((res: any) => {
             if (res.isSuccess) {
-            
-             // message.success("配置成功.");
+             context.emit("refreshBtn");
+              context.emit("CloseConfigGridMoadl");
+            message.success("配置成功.");
             }
-          });
-    };
+         });
+  };
 
  
  

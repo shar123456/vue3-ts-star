@@ -30,6 +30,7 @@ class LoginRecordDataEntity{
     DataList:Array<ILoginRecordInfo>=[];
     
     ListColumns:any=[];
+    ListGridColumns:any=[];
     selectedRowKeys:string[]= [];
     selectedRows:ILoginRecordInfo[]= [];
   }

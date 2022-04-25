@@ -16,7 +16,7 @@
       :rowClassName="(index:number) => (index % 2 == 1 ? 'table-striped' : null)"
       id="yy"
       :loading="loading"
-      :columns="ListColumns"
+      :columns="ListGridColumns"
       :data-source="DataList"
       :scroll="{ x: 1000, y: 'calc(100vh - 310px)' }"
       :customRow="rowActionClick"
@@ -81,6 +81,7 @@
    
     :ListColumns="DataEntityState.ListColumns"
     @CloseConfigGridMoadl="CloseConfigGridMoadl"
+    @refreshBtn="refreshBtn"
   />
 
 
@@ -119,6 +120,9 @@ import {
  
 } from "../../Request/userRequest";
 import configGridModal from "../../components/configGridModal.vue";
+import {deepClone} from '../../utility/commonFunc'
+
+
 export default defineComponent({
     components: {
  LoginRecordQueryHeader,
@@ -208,13 +212,46 @@ export default defineComponent({
       let columnList = await GetLoginRecordColumn({"pageName":"LoginRecord"});
       console.log("GetLoginRecordColumn",columnList)
        console.log("amount",columnList)
-      for (var i in columnList) {
-        console.log(columnList[i]["slots"]);
-        if (columnList[i]["slots"] == null) {
-          delete columnList[i]["slots"];
-        }
+       DataEntityState.ListColumns = deepClone(columnList);
+      // for (var i in columnList) {
+       
+      //   if (columnList[i]["slots"] == null) {
+      //     delete columnList[i]["slots"];
+      //   }   
+      //    if (columnList[i]["isUse"] == false) {
+      //     columnList.splice(i,1);
+      //   }   
+      // }
+
+var len = columnList.length-1;
+ //start from the top
+ for(var j=len;j>=0;j--){
+ console.log(j+"="+columnList[j]);
+ if(columnList[j]["isUse"]==false){
+  columnList.splice(j,1);
+ }
+ }
+
+DataEntityState.ListGridColumns=columnList;
+ console.log("ListGridColumns",DataEntityState.ListGridColumns);
+for (var i in  DataEntityState.ListGridColumns) {
+       
+        if ( DataEntityState.ListGridColumns[i]["slots"] == null) {
+          delete  DataEntityState.ListGridColumns[i]["slots"];
+        }   
+        
       }
-      DataEntityState.ListColumns = columnList;
+
+       for (var i in  DataEntityState.ListColumns) {
+       
+        if ( DataEntityState.ListColumns[i]["slots"] == null) {
+          delete  DataEntityState.ListColumns[i]["slots"];
+        }   
+        
+      }
+
+
+      
 
       //获用户数据
       loading.value = true;
@@ -331,6 +368,10 @@ export default defineComponent({
 
     const CloseConfigGridMoadl = () => {
       visibleModelConfigGrid.value = false;
+
+
+
+      
     };
 
 
