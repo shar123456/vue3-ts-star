@@ -59,7 +59,7 @@
       
       :pagination="false"
     >
-      <template #action>
+     <template #action>
         <a
           style="
             color: rgba(18, 96, 214, 0.733);
@@ -71,10 +71,20 @@
         /></a>
       </template>
 
-      <template #loginType="{ text: loginType }">
+
+
+
+ <template #name="{ text: menuLevel }">
         <span>
-          <a-tag :color="loginType === '微信小程序' ? 'blue' : 'red'">
-            {{ loginType }}
+          <a-tag :color="menuLevel === 1 ? 'blue' : 'red'">
+            {{ menuLevel }}
+          </a-tag>
+        </span>
+      </template>
+ <template #name2="{ text: hasSub }">
+        <span>
+          <a-tag :color="hasSub ==true ? 'blue' : 'red'">
+            {{ hasSub }}
           </a-tag>
         </span>
       </template>
@@ -157,7 +167,7 @@ import {
 
 
 const columns = [
-  { title: '菜单Id', dataIndex: 'menuId',width:300, key: 'name' },
+  // { title: '菜单Id', dataIndex: 'menuId',width:300, key: 'name' },
   { title: '名称', name:"menuTitle", dataIndex: 'menuTitle', key: 'platform', },
   { title: 'Url', dataIndex: 'menuUrl', key: 'version' },
   { title: '序号', dataIndex: 'menuorder', key: 'upgradeNum' },
@@ -295,8 +305,8 @@ export default defineComponent({
 /***数据初始化****************/
     onMounted(async () => {
       //获取表格列及处理表格列
-      let columnList = await GetMenuColumn({ pageName: "LoginRecord" });
-columnList=columns
+      let columnList = await GetMenuColumn({ pageName: "Menu" });
+
 
       DataEntityState.ListColumns = deepClone(columnList);
 

@@ -33,7 +33,7 @@ export function DeleteMenuById(param:any):any {
 }
 export function GetMenuColumn(param:any):any {
   return instance({
-      url: '/LoginRecord/GetColumnsConfig',
+      url: '/SysAccount/GetColumnsConfig',
       method: 'get',
       params:param
   })
