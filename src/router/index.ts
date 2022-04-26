@@ -75,6 +75,13 @@ const routes: Array<any> = [
         meta:{rName:"/系统设置/登录记录",Sub:"sub1"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/LoginRecordPage.vue')
       }
+      ,
+      {
+        path: 'MenuPage',
+        name: 'MenuPage',
+        meta:{rName:"/系统设置/菜单列表",Sub:"sub1"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/MenuPage.vue')
+      }
     ]
   },
   {

@@ -13,27 +13,12 @@
           </div>     
         </div>
 
- <div>
-          <label>最近登录开始时间：</label>
-          <div>
-             <a-date-picker v-model:value="QueryConditionInfo.loginStartTime" placeholder="最近登录开始时间" />
-          </div>     
-        </div>
-
-<div>
-          <label>最近登录结束时间：</label>
-          <div>
-             <a-date-picker v-model:value="QueryConditionInfo.loginEndTime" placeholder="最近登录结束时间" />
-          </div>     
-        </div>
-
-  
+ 
 
       </div>
     </div>
     <div class="downPad">
-       <a-button  type="primary" @click="configGridBtn">   <template #icon><ToolOutlined /></template>配置列表</a-button>&nbsp;
-      <a-button danger type="primary" @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
+    
       <a-button type="primary" @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
       <a-button
         type="primary"
@@ -62,11 +47,7 @@ export default defineComponent({
   setup(props, context) {
     const state = reactive(new LoginRecordDataEntity());
     const SearchBtn = () => {
-      if(state.QueryConditionInfo.loginStartTime!="")
-      {
-state.QueryConditionInfo.loginStartTime=dateFormat("YYYY-mm-dd HH:MM:SS",new Date(state.QueryConditionInfo.loginStartTime),0);
-    state.QueryConditionInfo.loginEndTime=dateFormat("YYYY-mm-dd HH:MM:SS",new Date(state.QueryConditionInfo.loginEndTime),0);
-      }
+      
     
       context.emit("SearchBtn", { ...state.QueryConditionInfo });
     };
@@ -75,8 +56,7 @@ state.QueryConditionInfo.loginStartTime=dateFormat("YYYY-mm-dd HH:MM:SS",new Dat
     
       state.QueryConditionInfo.name = "";
      
-      state.QueryConditionInfo.loginEndTime = "";
-      state.QueryConditionInfo.loginStartTime = "";
+     
     };
 
 const batchDeleteBtn = () => {

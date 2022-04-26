@@ -5,7 +5,12 @@
         <span :class="titleTxt1">{{ titleTxt }}</span>
       </div>
 
-      <a-menu theme="dark" mode="inline" v-model:selectedKeys="selectedKeys"   v-model:openKeys="openKeys">
+      <a-menu
+        theme="dark"
+        mode="inline"
+        v-model:selectedKeys="selectedKeys"
+        v-model:openKeys="openKeys"
+      >
         <a-menu-item key="/Home/HomePage">
           <AppstoreOutlined />
           <span
@@ -17,7 +22,145 @@
           >
         </a-menu-item>
 
-        <a-sub-menu key="sub1">
+
+           
+<text  v-for="item1 in menuList" :key="item1.key">
+
+  <a-menu-item  v-if="!item1.hasSub&&item1.menuLevel==1" >
+          <AppstoreOutlined />
+          <span
+            ><router-link
+              :to="item1.url"
+              style="color: rgba(255, 255, 255, 0.65)"
+              >{{item1.title}}</router-link
+            ></span
+          >
+    </a-menu-item>
+<a-sub-menu  v-if="item1.hasSub&&item1.menuLevel==1"  key="sub1">
+ <template #icon>
+            <SettingOutlined />
+          </template>
+          <template #title>{{item1.title}}</template>
+
+
+<text   v-for="item2 in item1.subMenu"    :key="item2.key">
+
+<a-menu-item  v-if="!item2.hasSub&&item2.menuLevel==2" :key="item2.key">
+          <AppstoreOutlined />
+          <span
+            ><router-link
+              :to="item2.url"
+              style="color: rgba(255, 255, 255, 0.65)"
+              >{{item2.title}}</router-link
+            ></span
+          >
+    </a-menu-item>
+<a-sub-menu  v-if="item2.hasSub&&item2.menuLevel==2"  :key="item2.key" >
+ <template #icon>
+            <SettingOutlined />
+          </template>
+          <template #title>{{item2.title}}</template>
+
+
+
+<text    v-for="item3 in item2.subMenu"    :key="item3.key">
+ <a-menu-item  v-if="!item3.hasSub&&item3.menuLevel==3" :key="item3.key">
+          <AppstoreOutlined />
+          <span
+            ><router-link
+              :to="item3.url"
+              style="color: rgba(255, 255, 255, 0.65)"
+              >{{item3.title}}</router-link
+            ></span
+          >
+    </a-menu-item>
+
+<a-sub-menu  v-if="item3.hasSub&&item3.menuLevel==3"    :key="item3.key">
+ <template #icon>
+            <SettingOutlined />
+          </template>
+          <template #title>{{item3.title}}</template>
+
+<text    v-for="item4 in item3.subMenu"    :key="item4.key">
+ <a-menu-item  v-if="!item4.hasSub&&item4.menuLevel==4" :key="item4.key">
+          <AppstoreOutlined />
+          <span
+            ><router-link
+              :to="item4.url"
+              style="color: rgba(255, 255, 255, 0.65)"
+              >{{item4.title}}</router-link
+            ></span
+          >
+    </a-menu-item>
+
+
+</text>
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+  </a-sub-menu>
+
+
+
+</text>
+
+
+
+ 
+
+
+
+
+
+
+
+
+  </a-sub-menu>
+
+    
+</text>
+  
+  </a-sub-menu>
+
+</text>
+
+
+
+
+  <!-- <a-sub-menu  v-for="item in menuList"    :key="item.key">
+ <template #icon>
+            <SettingOutlined />
+          </template>
+          <template #title>{{item.title}}</template>
+
+          <a-menu-item v-for="subItem in item.subMenu"  :key="subItem.key">
+         {{subItem.icon}}
+            <span
+              ><router-link
+                :to="subItem.url"
+                style="color: rgba(255, 255, 255, 0.65)"
+                >{{subItem.title}}</router-link
+              ></span
+            >
+          </a-menu-item>
+
+
+  </a-sub-menu> -->
+
+
+
+
+        <!-- <a-sub-menu key="sub1">
           <template #icon>
             <SettingOutlined />
           </template>
@@ -34,7 +177,7 @@
             >
           </a-menu-item>
           <a-menu-item key="/Home/LoginRecordPage">
-           <SnippetsOutlined />
+            <SnippetsOutlined />
             <span
               ><router-link
                 to="/Home/LoginRecordPage"
@@ -110,7 +253,7 @@
           </a-menu-item>
           <a-menu-item key="7">Option 7</a-menu-item>
           <a-menu-item key="8">Option 8</a-menu-item>
-        </a-sub-menu>
+        </a-sub-menu> -->
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -164,7 +307,7 @@
                   <template #icon> <img src="../assets/tx.jpg" /></template>
                 </a-avatar>
 
-             {{UserTitle}}
+                {{ UserTitle }}
                 <DownOutlined />
               </a>
               <template #overlay>
@@ -280,6 +423,66 @@ export default defineComponent({
       router.push({ path: "/login", query: { selected: "1" } });
     };
 
+
+let menuList:any=[
+{
+menuId:"1",
+title:"系统设置",
+key:"sub1",
+url:"",
+menuLevel:1,
+hasSub:true,
+menuParentId:0,
+menuIcon:"",
+order:1,
+subMenu:[
+{
+menuId:"11",
+title:"用户列表",
+menuParentId:1,
+url:"/Home/UserListPage",
+hasSub:false,
+menuLevel:2,
+key:"/Home/UserListPage",
+menuIcon:"",
+order:1,
+},
+{
+menuId:"12",
+title:"登录记录",
+menuParentId:1,
+url:"/Home/LoginRecordPage",
+key:"/Home/LoginRecordPage",
+hasSub:false,
+menuLevel:2,
+menuIcon:"",
+order:2,
+},
+{
+menuId:"13",
+title:"菜单列表",
+menuParentId:1,
+url:"/Home/MenuPage",
+key:"/Home/MenuPage",
+hasSub:false,
+menuLevel:2,
+menuIcon:"",
+order:3,
+},
+
+
+
+
+
+]
+}
+
+]
+
+
+
+
+
     onMounted(() => {
        
    
@@ -294,9 +497,10 @@ export default defineComponent({
         routeDescArr.value.splice(0, 1);
       }
  if(route.meta && route.meta.Sub&&route.meta.Sub=="sub1")
-        {
-openKeys.value=["sub1"]
+         {
+ openKeys.value=["sub1"]
         }
+
       if (collapsed.value) {
         titleTxt.value = "M";
         titleTxt1.value = "titleTxt11";
@@ -357,7 +561,8 @@ openKeys.value=["sub1"]
       titleTxt1,
       routeDescArr,
       openKeys,
-      toggleFullscreen,UserTitle
+      toggleFullscreen,UserTitle,
+      menuList
     };
   },
 });

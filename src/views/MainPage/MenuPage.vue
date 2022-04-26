@@ -1,13 +1,50 @@
 <template>
-  <Login-Record-Query-Header
-    @SearchBtn="SearchBtn"
-    @showConfigGrid="showConfigGrid"
-    @batchDelete="batchDelete"
+
+ <MenuHeader
+   @SearchBtn="SearchBtn"
+   
     @refreshBtn="refreshBtn"
-    @exportExcel="exportExcel"
-    @importExcel="importExcel"
+   
   >
-  </Login-Record-Query-Header>
+  </MenuHeader>
+
+<!-- 
+  <a-table :columns="columns" :data-source="data"   :customRow="rowActionClick" >
+<template #action>
+        <a
+          style="
+            color: rgba(18, 96, 214, 0.733);
+            font-size: 20px;
+            font-weight: 800;
+          "
+          title="删除"
+          ><delete-two-tone mark="delete"
+        /></a>
+      </template>
+
+
+
+
+ <template #name="{ text: menuLevel }">
+        <span>
+          <a-tag :color="menuLevel === 1 ? 'blue' : 'red'">
+            {{ menuLevel }}
+          </a-tag>
+        </span>
+      </template>
+ <template #name2="{ text: hasSub }">
+        <span>
+          <a-tag :color="hasSub ==true ? 'blue' : 'red'">
+            {{ hasSub }}
+          </a-tag>
+        </span>
+      </template>
+    </a-table> -->
+
+
+
+
+
 
   <div id="DataList">
     <a-table
@@ -19,10 +56,7 @@
       :data-source="DataList"
       :scroll="{ x: 1000, y: 'calc(100vh - 310px)' }"
       :customRow="rowActionClick"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-      }"
+      
       :pagination="false"
     >
       <template #action>
@@ -64,15 +98,26 @@
     </div>
   </div>
 
-  <configGridModal
-    :visibleModelConfigGrid="visibleModelConfigGrid"
-    :modalTitleConfigGrid="modalTitleConfigGrid"
-    :ListColumns="DataEntityState.ListColumns"
-    @CloseConfigGridMoadl="CloseConfigGridMoadl"
-    @refreshBtn="refreshBtn"
-  />
-</template>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</template>
 <script lang="ts">
 import {
   defineComponent,
@@ -83,7 +128,10 @@ import {
   watch,
   createVNode,
 } from "vue";
-import { message, Modal } from "ant-design-vue";
+
+import MenuHeader from "../../components/MenuHeader.vue";
+import { deepClone } from "../../utility/commonFunc";
+
 import {
   EditTwoTone,
   DeleteTwoTone,
@@ -97,36 +145,97 @@ import {
   SettingFilled,
 } from "@ant-design/icons-vue";
 import {
-  LoginRecordDataEntity,
-} from "../../TypeInterface/ILoginRecordInterface";
-import LoginRecordQueryHeader from "../../components/LoginRecordQueryHeader.vue";
-import configGridModal from "../../components/configGridModal.vue";
-import {
-  GetLoginRecordColumn,
-  GetLoginRecordDatas,
-  DeleteLoginRecordById,
-  BatchDeleteLoginRecord,
-} from "../../Request/userRequest";
+  MenuDataEntity,IMenuInfo
+} from "../../TypeInterface/IMenuInterface";
 
-import { deepClone } from "../../utility/commonFunc";
+import {
+  GetMenuColumn,
+  GetMenuDatas,
+  DeleteMenuById,
+
+} from "../../Request/menuRequest";
+
+
+const columns = [
+  { title: '菜单Id', dataIndex: 'menuId',width:300, key: 'name' },
+  { title: '名称', name:"menuTitle", dataIndex: 'menuTitle', key: 'platform', },
+  { title: 'Url', dataIndex: 'menuUrl', key: 'version' },
+  { title: '序号', dataIndex: 'menuorder', key: 'upgradeNum' },
+  { title: '等级', dataIndex: 'menuLevel', key: 'creator', slots: { customRender: 'name' } },
+  { title: 'Icon', dataIndex: 'menuIcon', key: 'createdAt' },
+    { title: '是否有子菜单', dataIndex: 'hasSub', key: 'createdAt1',slots: { customRender: 'name2' } },
+      { title: '菜单父级Id', dataIndex: 'menuParentId', key: 'createdAt2' },
+  { title: '操作', key: 'operation', slots: { customRender: 'action' } },
+];
+
+
+
+
+
+
+
+const data: IMenuInfo[] = [
+  {
+    key: 1,
+    menuId: '0001',
+    menuTitle: '系统设置',
+    menuUrl: '10.3.4.5654',
+    menuorder: 1,
+    menuLevel: 1,
+    hasSub: true,
+    menuIcon:"menuIcon",
+    menuParentId: '0',
+    children: [
+      {
+        key: 11,
+    menuId: '2',
+    menuTitle: '用户列表',
+    menuUrl: '10.3.4.5654',
+    menuorder: 1,
+    menuLevel: 2,
+    hasSub: false,
+    menuIcon:"menuIcon",
+    menuParentId: '0001',
+      },
+     {
+        key: 12,
+    menuId: '3',
+    menuTitle: '登录记录',
+    menuUrl: '10.3.4.5654',
+    menuorder: 2,
+    menuLevel: 2,
+    hasSub: false,
+    menuIcon:"menuIcon",
+    menuParentId: '0001',
+      },
+       {
+        key: 13,
+    menuId: '4',
+    menuTitle: '菜单列表',
+    menuUrl: '10.3.4.5654',
+    menuorder: 2,
+    menuLevel: 2,
+    hasSub: false,
+    menuIcon:"menuIcon",
+    menuParentId: '0001',
+      },
+    ],
+  },
+ 
+];
+
 
 export default defineComponent({
-  components: {
-    LoginRecordQueryHeader,
+    components: {
+    MenuHeader,
     DeleteTwoTone,
-    configGridModal,
+   
   },
   setup() {
-    const state = reactive({
-      count: 0,
-    });
+ const DataEntityState = reactive(new MenuDataEntity());
 
-    const DataEntityState = reactive(new LoginRecordDataEntity());
  
-
-  
-   
-   /***分页****************/
+/***分页****************/
     const pageSize = ref(10);
     const current1 = ref(1);
     const totalCount = ref(0);
@@ -135,7 +244,7 @@ export default defineComponent({
     let loading = ref<boolean>(false);
     const onShowSizeChange = (current: number, pageSize: number) => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetMenuDatas({
         current: current,
         pageSize: pageSize,
         ...DataEntityState.QueryConditionInfo,
@@ -152,7 +261,7 @@ export default defineComponent({
     });
     watch(current1, () => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetMenuDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -166,7 +275,7 @@ export default defineComponent({
     });
     watch(refreshMark, () => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetMenuDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -175,6 +284,7 @@ export default defineComponent({
         if (res.isSuccess) {
           console.log(res.datas);
           DataEntityState.DataList = res.datas;
+       
           totalCount.value = res.totalCount;
         }
       });
@@ -182,10 +292,12 @@ export default defineComponent({
 
     /***分页****************/
 
-    /***数据初始化****************/
+/***数据初始化****************/
     onMounted(async () => {
       //获取表格列及处理表格列
-      let columnList = await GetLoginRecordColumn({ pageName: "LoginRecord" });
+      let columnList = await GetMenuColumn({ pageName: "LoginRecord" });
+columnList=columns
+
       DataEntityState.ListColumns = deepClone(columnList);
 
       var len = columnList.length - 1;
@@ -213,7 +325,7 @@ export default defineComponent({
 
       //获用户数据
       loading.value = true;
-      let UserDatasList = await GetLoginRecordDatas({
+      let UserDatasList = await GetMenuDatas({
         current: 1,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -222,32 +334,17 @@ export default defineComponent({
 
       console.log("amount", UserDatasList);
       if (UserDatasList.isSuccess) {
-        DataEntityState.DataList = UserDatasList.datas;
+        //DataEntityState.DataList = UserDatasList.datas;
+           DataEntityState.DataList=data;
+        
         totalCount.value = UserDatasList.totalCount;
         current1.value = 1;
       }
     });
     /***数据初始化****************/
 
-    /***排序****************/
-    const handleTableChange = (pag: any, filters: any, sorter: any) => {
-      console.log({
-        results: pag!.pageSize!,
-        page: pag?.current,
-        sortField: sorter.field,
-        sortOrder: sorter.order,
-        ...filters,
-      });
-    };
-    /***排序****************/
-    /***勾选****************/
-    const onSelectChange = (selectedRowKeys: [], selectedRows: []) => { 
-      DataEntityState.selectedRowKeys = selectedRowKeys;
-      DataEntityState.selectedRows = selectedRows;
-    };
-    /***勾选****************/
 
-    /***rowActionClick****************/
+/***rowActionClick****************/
     const rowActionClick = (record: any) => {
       return {
         onClick: (event: any) => {
@@ -279,30 +376,7 @@ export default defineComponent({
           ) {
             const Id = record.loginRecordId;
 
-            Modal.confirm({
-              title: "您确定要删除这条记录吗?",
-              icon: createVNode(ExclamationCircleOutlined),
-              content: `用户名：${record.name}`,
-              okText: "Yes",
-              okType: "danger",
-              cancelText: "No",
-              onOk() {
-                // const index = UserDataEntityState.UserDataList.findIndex(
-                //     (i: IUserInfo) => i.sysUserId == Id);
-                //     UserDataEntityState.UserDataList.splice(index, 1);
-
-                loading.value = true;
-                DeleteLoginRecordById({ Id: Id }).then((res: any) => {
-                  if (res.isSuccess) {
-                    refreshMark.value = new Date().getTime().toString();
-                    message.success("删除成功.");
-                  }
-                });
-              },
-              onCancel() {
-                message.error("已取消.");
-              },
-            });
+          
           }
         },
       };
@@ -311,24 +385,28 @@ export default defineComponent({
 
 
 
+  const SearchBtn = async (payload: any) => {
+      loading.value = true;
 
-    let visibleModelConfigGrid = ref<boolean>(false);
-    let modalTitleConfigGrid = ref<string>("");
-  
-  const showConfigGrid = () => {
-      visibleModelConfigGrid.value = true;
-      modalTitleConfigGrid.value = "配置【列表显示】";
-    };
-
-    const CloseConfigGridMoadl = () => {
-      visibleModelConfigGrid.value = false;
+      let UserDatasList1 = await GetMenuDatas({
+        current: 1,
+        pageSize: pageSize.value,
+        ...payload,
+      });
+      //console.log("UserDatasList1",UserDatasList1)
+      loading.value = false;
+      if (UserDatasList1.isSuccess) {
+        DataEntityState.DataList = UserDatasList1.datas;
+        totalCount.value = UserDatasList1.totalCount;
+        current1.value = 1;
+      }
+      DataEntityState.QueryConditionInfo = payload;
     };
 
     const UpdateConfigGrid = async () => {
       //获取表格列及处理表格列
-      let columnList = await GetLoginRecordColumn({ pageName: "LoginRecord" });
-      console.log("GetLoginRecordColumn", columnList);
-      console.log("amount", columnList);
+      let columnList = await GetMenuColumn({ pageName: "Menu" });
+    
       DataEntityState.ListColumns = deepClone(columnList);
 
       var len = columnList.length - 1;
@@ -355,84 +433,15 @@ export default defineComponent({
       }
     };
 
-
-
-    const SearchBtn = async (payload: any) => {
-      loading.value = true;
-
-      let UserDatasList1 = await GetLoginRecordDatas({
-        current: 1,
-        pageSize: pageSize.value,
-        ...payload,
-      });
-      //console.log("UserDatasList1",UserDatasList1)
-      loading.value = false;
-      if (UserDatasList1.isSuccess) {
-        DataEntityState.DataList = UserDatasList1.datas;
-        totalCount.value = UserDatasList1.totalCount;
-        current1.value = 1;
-      }
-      DataEntityState.QueryConditionInfo = payload;
-    };
-
-    const showCreateModal = (payload: any) => {
-      console.log("showCreateModal");
-    };
-
-    const ClearQueryBtn = (payload: any) => {
-      console.log("ClearQueryBtn");
-    };
-
-    const exportExcel = (payload: any) => {
-      console.log("exportExcel");
-    };
-
-    const batchDelete = (payload: any) => {
-      let keys: string[] = [];
-      for (let i in DataEntityState.selectedRowKeys) {
-        keys[i] = DataEntityState.selectedRowKeys[i];
-      }
-      let isDesibleOkBtn = false;
-      if (keys.length == 0) {
-        isDesibleOkBtn = true;
-      }
-
-      Modal.confirm({
-        title: "您确定要执行批量删除操作吗?",
-        icon: createVNode(ExclamationCircleOutlined),
-        content: `共计：${keys.length} 条记录`,
-        okText: "Yes",
-        okType: "danger",
-        cancelText: "No",
-        okButtonProps: {
-          disabled: isDesibleOkBtn,
-        },
-        onOk() {
-          BatchDeleteLoginRecord({ keys: keys }).then((res: any) => {
-            if (res.isSuccess) {
-              refreshMark.value = new Date().getTime().toString();
-              DataEntityState.selectedRowKeys = [];
-              DataEntityState.selectedRows = [];
-              message.success("删除成功.");
-            }
-          });
-        },
-        onCancel() {
-          message.error("已取消.");
-        },
-      });
-    };
-
     const refreshBtn = async (payload: any) => {
      UpdateConfigGrid();
 
       loading.value = true;
       DataEntityState.QueryConditionInfo = {
-        name: "",
-        loginEndTime: "",
-        loginStartTime: "",
+        menuTitle: "",
+     
       };
-      GetLoginRecordDatas({
+      GetMenuDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -445,44 +454,35 @@ export default defineComponent({
         }
       });
     };
-    const importExcel = (payload: any) => {
-      console.log("refreshBtn");
-    };
+
+
 
     return {
-      ...toRefs(state),
-      ...toRefs(DataEntityState),
+        ...toRefs(DataEntityState),
       DataEntityState,
-
-      rowActionClick,
-      onSelectChange,
-
-      pageSize,
+ pageSize,
       current1,
       totalCount,
       onShowSizeChange,
-      handleTableChange,
-      
       loading,
       pageSizeOptions,
 
-      SearchBtn,
-      showCreateModal,
-      ClearQueryBtn,
-      exportExcel,
-      batchDelete,
+
+SearchBtn,
+     
+     
       refreshBtn,
-      importExcel,
 
-      visibleModelConfigGrid,
-      modalTitleConfigGrid,
-      CloseConfigGridMoadl,
-      showConfigGrid,
 
+
+      data,
+      columns,
+      rowActionClick,
     };
   },
 });
 </script>
+
 
 <style >
 #DataList {

@@ -71,8 +71,10 @@ const handleOk = (e: MouseEvent) => {
 
  SetLoginRecordGrid(props.ListColumns).then((res: any) => {
             if (res.isSuccess) {
-             context.emit("refreshBtn");
-              context.emit("CloseConfigGridMoadl");
+              
+            context.emit("refreshBtn");
+
+            context.emit("CloseConfigGridMoadl");
             message.success("配置成功.");
             }
          });

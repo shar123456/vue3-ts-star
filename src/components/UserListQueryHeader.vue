@@ -88,7 +88,7 @@
       >&nbsp;
       <a-button type="primary" @click="SearchBtn">
         <template #icon><SearchOutlined /></template>
-        Search </a-button
+        搜索 </a-button
       >&nbsp;&nbsp;
     </div>
   </div>
