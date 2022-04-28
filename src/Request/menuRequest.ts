@@ -4,7 +4,7 @@ import instance from './request'
 export function GetMenuDatas(param:any):any {
     
   return instance({
-      url: '/LoginRecord/SearchLoginRecordByQuery',
+      url: '/Menu/SearchMenuByQuery',
       method: 'post',
       data:param,
       transformRequest: [function (data) {//加这个post发送数据到后台才能接收到数据，否则接收不到
@@ -19,7 +19,7 @@ export function GetMenuDatas(param:any):any {
 export function DeleteMenuById(param:any):any {
     
   return instance({
-      url: '/LoginRecord/DeleteLoginRecord',
+      url: '/Menu/DeleteMenu',
       method: 'post',
       data:param,
       transformRequest: [function (data) {//加这个post发送数据到后台才能接收到数据，否则接收不到
@@ -39,6 +39,23 @@ export function GetMenuColumn(param:any):any {
   })
 }
 
+
+
+export function UpdateMenuDatas(param:any):any {
+    
+  return instance({
+      url: '/Menu/UpdateMenu',
+      method: 'post',
+      data:param,
+      transformRequest: [function (data) {//加这个post发送数据到后台才能接收到数据，否则接收不到
+          let ret = ''
+          for (const it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
+  })
+}
 
 
 

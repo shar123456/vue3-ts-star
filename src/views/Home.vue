@@ -11,7 +11,10 @@
         v-model:selectedKeys="selectedKeys"
         v-model:openKeys="openKeys"
       >
-        <a-menu-item key="/Home/HomePage">
+
+
+ 
+     <a-menu-item key="/Home/HomePage">
           <AppstoreOutlined />
           <span
             ><router-link
@@ -22,79 +25,90 @@
           >
         </a-menu-item>
 
+   
+    
+        
+       
+     
+       
+
 
            
-<text  v-for="item1 in menuList" :key="item1.key">
+<template  v-for="item1 in menuList" :key="item1.key">
 
-  <a-menu-item  v-if="!item1.hasSub&&item1.menuLevel==1" >
+  <a-menu-item  v-if="(item1.hasSub=='否'&&item1.menuLevel==1)" :key="item1.menuKey" >
           <AppstoreOutlined />
           <span
             ><router-link
-              :to="item1.url"
+              :to="item1.menuUrl"
               style="color: rgba(255, 255, 255, 0.65)"
-              >{{item1.title}}</router-link
+              >{{item1.menuTitle}}</router-link
             ></span
           >
     </a-menu-item>
-<a-sub-menu  v-if="item1.hasSub&&item1.menuLevel==1"  key="sub1">
+
+
+
+    
+<a-sub-menu  v-if="item1.hasSub!='否'&&item1.menuLevel==1"  :key="item1.menuKey">
  <template #icon>
             <SettingOutlined />
           </template>
-          <template #title>{{item1.title}}</template>
+          <template #title>{{item1.menuTitle}}</template>
 
 
-<text   v-for="item2 in item1.subMenu"    :key="item2.key">
+<template   v-for="item2 in item1.children"    :key="item2.key">
 
-<a-menu-item  v-if="!item2.hasSub&&item2.menuLevel==2" :key="item2.key">
+<a-menu-item  v-if="item2.hasSub=='否'&&item2.menuLevel==2" :key="item2.menuKey">
           <AppstoreOutlined />
           <span
             ><router-link
-              :to="item2.url"
+              :to="item2.menuUrl"
               style="color: rgba(255, 255, 255, 0.65)"
-              >{{item2.title}}</router-link
+              >{{item2.menuTitle}}</router-link
             ></span
           >
     </a-menu-item>
-<a-sub-menu  v-if="item2.hasSub&&item2.menuLevel==2"  :key="item2.key" >
+<a-sub-menu  v-if="item2.hasSub=='是'&&item2.menuLevel==2"  :key="item2.menuKey" >
  <template #icon>
             <SettingOutlined />
           </template>
-          <template #title>{{item2.title}}</template>
+          <template #title>{{item2.menuTitle}}</template>
 
 
 
-<text    v-for="item3 in item2.subMenu"    :key="item3.key">
- <a-menu-item  v-if="!item3.hasSub&&item3.menuLevel==3" :key="item3.key">
+<template    v-for="item3 in item2.children"    :key="item3.key">
+ <a-menu-item  v-if="!item3.hasSub&&item3.menuLevel==3" :key="item3.menuKey">
           <AppstoreOutlined />
           <span
             ><router-link
-              :to="item3.url"
+              :to="item3.menuUrl"
               style="color: rgba(255, 255, 255, 0.65)"
-              >{{item3.title}}</router-link
+              >{{item3.menuTitle}}</router-link
             ></span
           >
     </a-menu-item>
 
-<a-sub-menu  v-if="item3.hasSub&&item3.menuLevel==3"    :key="item3.key">
+<a-sub-menu  v-if="item3.hasSub=='是'&&item3.menuLevel==3"    :key="item3.menuKey">
  <template #icon>
             <SettingOutlined />
           </template>
-          <template #title>{{item3.title}}</template>
+          <template #title>{{item3.menuTitle}}</template>
 
-<text    v-for="item4 in item3.subMenu"    :key="item4.key">
- <a-menu-item  v-if="!item4.hasSub&&item4.menuLevel==4" :key="item4.key">
+<template    v-for="item4 in item3.children"    :key="item4.key">
+ <a-menu-item  v-if="item4.hasSub=='否'&&item4.menuLevel==4" :key="item4.menuKey">
           <AppstoreOutlined />
           <span
             ><router-link
-              :to="item4.url"
+              :to="item4.menuUrl"
               style="color: rgba(255, 255, 255, 0.65)"
-              >{{item4.title}}</router-link
+              >{{item4.menuTitle}}</router-link
             ></span
           >
     </a-menu-item>
 
 
-</text>
+</template>
 
 
 
@@ -112,29 +126,18 @@
 
 
 
-</text>
-
-
-
- 
-
-
-
-
-
+</template>
 
 
 
   </a-sub-menu>
 
     
-</text>
+</template>
   
   </a-sub-menu>
 
-</text>
-
-
+</template> 
 
 
   <!-- <a-sub-menu  v-for="item in menuList"    :key="item.key">
@@ -391,6 +394,17 @@ import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import screenfull from "screenfull";
+
+import {
+  GetMenuColumn,
+  GetMenuDatas,
+  DeleteMenuById,
+
+} from "../Request/menuRequest";
+
+import {
+  IMenuInfo
+} from "../TypeInterface/IMenuInterface";
 export default defineComponent({
   components: {
     UserOutlined,
@@ -423,8 +437,63 @@ export default defineComponent({
       router.push({ path: "/login", query: { selected: "1" } });
     };
 
+let menuList=ref<IMenuInfo[]>();
 
-let menuList:any=[
+
+
+
+let menuLists:any=[
+
+  {
+    hasSub: true,
+menuIcon: "默认",
+menuId: "M0001",
+menuKey: "sub1",
+menuLevel: 1,
+menuParentId: "0000",
+menuTitle: "系统设置",
+menuUrl: "/",
+menuorder: 1,
+children:[
+  {
+    children: null,
+current: 0,
+hasSub: false,
+menuIcon: "默认",
+menuId: "S0001",
+menuKey: "/Home/UserListPage",
+menuLevel: 2,
+menuParentId: "M0001",
+menuTitle: "用户列表",
+menuUrl: "/Home/UserListPage",
+menuorder: 1,
+pageSize: 0,
+  },
+  {
+    children: null,
+current: 0,
+hasSub: false,
+menuIcon: "默认",
+menuId: "S0003",
+menuKey: "/Home/LoginRecordPage",
+menuLevel: 2,
+menuParentId: "M0001",
+menuTitle: "登录记录",
+menuUrl: "/Home/LoginRecordPage",
+menuorder: 2,
+pageSize: 0,
+  }
+]
+  }
+]
+
+
+
+
+
+
+
+let menuList1:any=[
 {
 menuId:"1",
 title:"系统设置",
@@ -483,8 +552,25 @@ order:3,
 
 
 
-    onMounted(() => {
+    onMounted(async () => {
        
+
+ let UserDatasList = await GetMenuDatas({
+        current: 1,
+        pageSize: 100,
+        
+      });
+   
+
+      console.log("a555mountMenuDatas", UserDatasList);
+      if (UserDatasList.isSuccess) {
+        menuList.value = UserDatasList.datas;
+          
+      }
+
+
+
+
    
       UserTitle.value=store.state.USERNAME;
       if (routeDescMeta.value && routeDescMeta.value.rName) {

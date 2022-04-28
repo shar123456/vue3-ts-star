@@ -82,6 +82,13 @@ const routes: Array<any> = [
         meta:{rName:"/系统设置/菜单列表",Sub:"sub1"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/MenuPage.vue')
       }
+      ,
+      {
+        path: 'ManagerFilePage',
+        name: 'ManagerFilePage',
+        meta:{rName:"/系统设置/文件管理",Sub:"sub1"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ManagerFilePage.vue')
+      }
     ]
   },
   {

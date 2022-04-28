@@ -6,7 +6,7 @@
     @refreshBtn="refreshBtn"
    
   >
-  </MenuHeader>
+  </MenuHeader> 
 
 <!-- 
   <a-table :columns="columns" :data-source="data"   :customRow="rowActionClick" >
@@ -48,6 +48,7 @@
 
   <div id="DataList">
     <a-table
+     v-if="showTable"
       bordered
       :rowClassName="(index:number) => (index % 2 == 1 ? 'table-striped' : null)"
       id="yy"
@@ -56,14 +57,26 @@
       :data-source="DataList"
       :scroll="{ x: 1000, y: 'calc(100vh - 310px)' }"
       :customRow="rowActionClick"
-      
+   :defaultExpandAllRows="defaultExpandAllRows"
+  :expandedRowKeys="expandedRowKeys"
+   :defaultExpandedRowKeys="defaultExpandedRowKeys"
       :pagination="false"
     >
+    
      <template #action>
-        <a
+       <a
           style="
             color: rgba(18, 96, 214, 0.733);
             font-size: 20px;
+            font-weight: 800;
+          "
+          title="编辑"
+          ><EditFilled mark="edit"
+        /></a>
+        <a
+          style="
+            color: rgba(18, 96, 214, 0.733);
+            font-size: 20px;margin-left: 9px;
             font-weight: 800;
           "
           title="删除"
@@ -72,22 +85,29 @@
       </template>
 
 
-
+ <template #name3="{ text: menuId }">
+        <span>
+          <a-tag :color="menuId.indexOf('M')>-1 ? 'blue' : 'red'">
+            {{ menuId }}
+          </a-tag>
+        </span>
+      </template>
 
  <template #name="{ text: menuLevel }">
         <span>
           <a-tag :color="menuLevel === 1 ? 'blue' : 'red'">
-            {{ menuLevel }}
+            {{ menuLevel === 1 ? '一级' : '二级' }}
           </a-tag>
         </span>
       </template>
- <template #name2="{ text: hasSub }">
+  <template #name2="{ text: hasSub }">
         <span>
-          <a-tag :color="hasSub ==true ? 'blue' : 'red'">
+          <!-- <a-tag :color="hasSub ==true ? 'blue' : 'red'">
             {{ hasSub }}
-          </a-tag>
+          </a-tag> -->
+          {{ hasSub === '是' ? '是' : '否' }}
         </span>
-      </template>
+      </template> 
     </a-table>
 
     <div class="userPagination">
@@ -124,7 +144,14 @@
 
 
 
-
+  <MenuEditModal
+    :visibleMenu="visibleMenu"
+    :modalTitlesMenu="modalTitlesMenu"
+    :MenuData="DataEntityState"
+    @closeMenuMoadl="closeMenuMoadl"
+    @UpdateMenuInfoBtn="UpdateMenuInfoBtn"
+   
+  />
 
 
 </template>
@@ -141,7 +168,7 @@ import {
 
 import MenuHeader from "../../components/MenuHeader.vue";
 import { deepClone } from "../../utility/commonFunc";
-
+import { message, Modal } from "ant-design-vue";
 import {
   EditTwoTone,
   DeleteTwoTone,
@@ -157,12 +184,12 @@ import {
 import {
   MenuDataEntity,IMenuInfo
 } from "../../TypeInterface/IMenuInterface";
-
+import MenuEditModal from "../../components/MenuEditModal.vue";
 import {
   GetMenuColumn,
   GetMenuDatas,
   DeleteMenuById,
-
+UpdateMenuDatas
 } from "../../Request/menuRequest";
 
 
@@ -192,9 +219,10 @@ const data: IMenuInfo[] = [
     menuUrl: '10.3.4.5654',
     menuorder: 1,
     menuLevel: 1,
-    hasSub: true,
+    hasSub: "true",
     menuIcon:"menuIcon",
     menuParentId: '0',
+    menuKey:"",
     children: [
       {
         key: 11,
@@ -203,9 +231,9 @@ const data: IMenuInfo[] = [
     menuUrl: '10.3.4.5654',
     menuorder: 1,
     menuLevel: 2,
-    hasSub: false,
+    hasSub: "false",
     menuIcon:"menuIcon",
-    menuParentId: '0001',
+    menuParentId: '0001', menuKey:""
       },
      {
         key: 12,
@@ -214,9 +242,9 @@ const data: IMenuInfo[] = [
     menuUrl: '10.3.4.5654',
     menuorder: 2,
     menuLevel: 2,
-    hasSub: false,
+    hasSub: "false",
     menuIcon:"menuIcon",
-    menuParentId: '0001',
+    menuParentId: '0001', menuKey:""
       },
        {
         key: 13,
@@ -225,9 +253,9 @@ const data: IMenuInfo[] = [
     menuUrl: '10.3.4.5654',
     menuorder: 2,
     menuLevel: 2,
-    hasSub: false,
+    hasSub: "false",
     menuIcon:"menuIcon",
-    menuParentId: '0001',
+    menuParentId: '0001', menuKey:""
       },
     ],
   },
@@ -238,13 +266,18 @@ const data: IMenuInfo[] = [
 export default defineComponent({
     components: {
     MenuHeader,
-    DeleteTwoTone,
+    DeleteTwoTone,EditFilled,MenuEditModal
    
   },
   setup() {
  const DataEntityState = reactive(new MenuDataEntity());
+  let visibleMenu = ref<boolean>(false);
+    let modalTitlesMenu = ref<string>("");
+  let defaultExpandAllRows = ref<boolean>(true);
+  let expandedRowKeys = ref<number[]|undefined>(undefined);
+    let defaultExpandedRowKeys = ref<number[]|undefined>(undefined);
+   let showTable = ref<boolean>(true);
 
- 
 /***分页****************/
     const pageSize = ref(10);
     const current1 = ref(1);
@@ -342,13 +375,17 @@ export default defineComponent({
       });
       loading.value = false;
 
-      console.log("amount", UserDatasList);
-      if (UserDatasList.isSuccess) {
-        //DataEntityState.DataList = UserDatasList.datas;
-           DataEntityState.DataList=data;
+      console.log("amountMenuDatas", UserDatasList);
+      if (UserDatasList.isSuccess) { 
+        
+        DataEntityState.DataList = UserDatasList.datas;
+           //DataEntityState.DataList=data;
         
         totalCount.value = UserDatasList.totalCount;
         current1.value = 1;
+       
+showTable.value=true;
+    
       }
     });
     /***数据初始化****************/
@@ -356,13 +393,14 @@ export default defineComponent({
 
 /***rowActionClick****************/
     const rowActionClick = (record: any) => {
+        console.log("record",record)
       return {
         onClick: (event: any) => {
           console.log(
             event.target.parentNode.parentNode.getAttribute("aria-label")
           );
           console.log(event.target.parentNode.getAttribute("data-icon"));
-          console.log("id", record);
+          console.log("menupageRecord", record);
 
           if (
             event.target.parentNode.getAttribute("data-icon") == "copy" ||
@@ -377,14 +415,87 @@ export default defineComponent({
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "edit"
           ) {
-            const Id = record.sysUserId;
+            const Id = record.menuId;
+              const menuLevel = record.menuLevel;
+              if(menuLevel==1)
+              {
+                 const res: IMenuInfo[] = DataEntityState.DataList.filter(
+              (i: IMenuInfo) => i.menuId == Id
+            );
+             DataEntityState.EditData.menuId = res[0].menuId;
+            DataEntityState.EditData.menuTitle = res[0].menuTitle;
+            DataEntityState.EditData.menuUrl = res[0].menuUrl;
+            DataEntityState.EditData.menuorder = res[0].menuorder;
+            DataEntityState.EditData.menuLevel = res[0].menuLevel;
+            DataEntityState.EditData.hasSub = res[0].hasSub;
+            DataEntityState.EditData.menuParentId = res[0].menuParentId;
+            DataEntityState.EditData.menuIcon = res[0].menuIcon;
+              }else
+              {
+                console.log(record.hasSub)
+                  DataEntityState.EditData.menuId = record.menuId;
+            DataEntityState.EditData.menuTitle =record.menuTitle;
+            DataEntityState.EditData.menuUrl = record.menuUrl;
+            DataEntityState.EditData.menuorder = record.menuorder;
+            DataEntityState.EditData.menuLevel = record.menuLevel;
+            DataEntityState.EditData.hasSub = record.hasSub;
+            DataEntityState.EditData.menuParentId =record.menuParentId;
+            DataEntityState.EditData.menuIcon = record.menuIcon;
+              }
+                  
+           
+        
+      
+       
+        
+            
+            visibleMenu.value = true;
+            modalTitlesMenu.value = "编辑【菜单信息】";
+                
+
+
+
+
+
+
           }
           if (
             event.target.parentNode.getAttribute("data-icon") == "delete" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "delete"
           ) {
-            const Id = record.loginRecordId;
+             const Id = record.menuId;
+
+            Modal.confirm({
+              title: "您确定要删除这条记录吗?",
+              icon: createVNode(ExclamationCircleOutlined),
+              content: `菜单名称：${record.menuTitle}`,
+              okText: "Yes",
+              okType: "danger",
+              cancelText: "No",
+              onOk() {
+                // const index = UserDataEntityState.UserDataList.findIndex(
+                //     (i: IUserInfo) => i.sysUserId == Id);
+                //     UserDataEntityState.UserDataList.splice(index, 1);
+
+                loading.value = true;
+                DeleteMenuById({ Id: Id }).then((res: any) => {
+                  console.log("DeleteMenuById",res)
+                  if (res.isSuccess) {
+                    refreshMark.value = new Date().getTime().toString();
+                    message.success("删除成功.");
+                  }
+                  else
+                  {
+                    refreshMark.value = new Date().getTime().toString();
+                    message.error(res.msg);
+                  }
+                });
+              },
+              onCancel() {
+                message.error("已取消.");
+              },
+            });
 
           
           }
@@ -409,7 +520,13 @@ export default defineComponent({
         DataEntityState.DataList = UserDatasList1.datas;
         totalCount.value = UserDatasList1.totalCount;
         current1.value = 1;
+        showTable.value=true;
+console.log("1111111111111111111111UserDatasList1",UserDatasList1)
+
+//expandedRowKeys.value=[3];
+
       }
+      //defaultExpandAllRows.value=true;
       DataEntityState.QueryConditionInfo = payload;
     };
 
@@ -449,7 +566,7 @@ export default defineComponent({
       loading.value = true;
       DataEntityState.QueryConditionInfo = {
         menuTitle: "",
-     
+     menuId:""
       };
       GetMenuDatas({
         current: current1.value,
@@ -467,6 +584,30 @@ export default defineComponent({
 
 
 
+
+const closeMenuMoadl = () => {
+      visibleMenu.value = false;
+    };
+
+const UpdateMenuInfoBtn = (payload: any) => {
+      console.log(payload);
+
+      UpdateMenuDatas(payload).then((res: any) => {
+        console.log(res);
+        if (res.isSuccessful) {
+          visibleMenu.value = false;
+          refreshMark.value = new Date().getTime().toString();
+          message.success(res.message);
+        } else {
+          message.error("更新失败.");
+        }
+      });
+    };
+
+
+
+
+
     return {
         ...toRefs(DataEntityState),
       DataEntityState,
@@ -480,11 +621,11 @@ export default defineComponent({
 
 SearchBtn,
      
-     
+     showTable,
       refreshBtn,
 
-
-
+visibleMenu,modalTitlesMenu,closeMenuMoadl,UpdateMenuInfoBtn,
+defaultExpandAllRows,expandedRowKeys,defaultExpandedRowKeys,
       data,
       columns,
       rowActionClick,

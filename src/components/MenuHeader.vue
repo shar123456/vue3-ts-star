@@ -2,13 +2,22 @@
   <div id="userListPad">
     <div class="upPad">
       <div class="upPad-up">
-       
-        <div>
-          <label>用户名：</label>
+         <div>
+          <label>菜单Id：</label>
           <div>
             <a-input
-              v-model:value="QueryConditionInfo.name"
-              placeholder="用户名"
+              v-model:value="QueryConditionInfo.menuId"
+              placeholder="菜单Id："
+            />
+          </div>     
+        </div>
+
+        <div>
+          <label>名称：</label>
+          <div>
+            <a-input
+              v-model:value="QueryConditionInfo.menuTitle"
+              placeholder="名称："
             />
           </div>     
         </div>
@@ -36,7 +45,7 @@
 
 <script lang="ts">
 import { reactive, toRefs, defineComponent } from "vue";
-import { LoginRecordDataEntity } from "../TypeInterface/ILoginRecordInterface";
+import { MenuDataEntity } from "../TypeInterface/IMenuInterface";
 import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined} from "@ant-design/icons-vue";
 import {dateFormat} from '../utility/commonFunc'
 export default defineComponent({
@@ -45,7 +54,7 @@ export default defineComponent({
   },
   props: {  },
   setup(props, context) {
-    const state = reactive(new LoginRecordDataEntity());
+    const state = reactive(new MenuDataEntity());
     const SearchBtn = () => {
       
     
@@ -54,8 +63,8 @@ export default defineComponent({
     
     const ClearQueryBtn = () => {
     
-      state.QueryConditionInfo.name = "";
-     
+      state.QueryConditionInfo.menuTitle = "";
+      state.QueryConditionInfo.menuId = "";
      
     };
 
