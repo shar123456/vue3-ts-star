@@ -34,7 +34,22 @@ class LoginRecordDataEntity{
     selectedRowKeys:string[]= [];
     selectedRows:ILoginRecordInfo[]= [];
   }
-export {LoginRecordDataEntity,ILoginRecordInfo}
+
+
+
+  const LoginRecordColumns = [
+    { title: '用户名',width:100, dataIndex: 'name', isUse: true,configOrder: 1 },
+    { title: '终端设备类型',width:100, dataIndex: 'loginType', isUse: true,configOrder: 2 ,slots: { customRender: 'loginType' }},
+    { title: '登录次数',width:100, dataIndex: 'loginNum', isUse: true,configOrder: 3 },
+    { title: '上次登录时间',width:100, dataIndex: 'loginLastTimeStr', isUse: true,configOrder: 4 },
+    { title: '最后一次登录时间',width:100, dataIndex: 'loginEndTimeStr', isUse: true,configOrder: 5 },
+    
+    { title: 'Action', key: 'operation',width:60, slots: { customRender: 'action' },isUse: true,configOrder: 6  },
+  ];
+  
+
+
+export {LoginRecordDataEntity,ILoginRecordInfo,LoginRecordColumns}
 
 
 

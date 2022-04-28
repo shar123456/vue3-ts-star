@@ -20,8 +20,10 @@ const instance = axios.create({
 instance.interceptors.request.use(
     config => {
         //如果有一个接口需要认证token才可以访问，就在这统一设置
-        //const token=localStorage.getItem("starToken");
-        //config.headers.token=token;
+        const token=localStorage.getItem("starToken");
+        console.log("1111111111111token",token)
+
+        config.headers['Authorization']=token;
        
         console.log("axios拦截")
         //直接放行

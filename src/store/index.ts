@@ -27,7 +27,7 @@ export default createStore({
                 commit("SetToken",res.token);
                 commit("SetUserName",user);
                 
-                localStorage.setItem("starToken",JSON.stringify(res.token));
+                localStorage.setItem("starToken","Bearer "+res.token);
                 resolve(true);
                }
             }).catch((err:any)=>{

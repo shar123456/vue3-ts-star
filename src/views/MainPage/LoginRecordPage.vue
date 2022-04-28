@@ -97,7 +97,7 @@ import {
   SettingFilled,
 } from "@ant-design/icons-vue";
 import {
-  LoginRecordDataEntity,
+  LoginRecordDataEntity,LoginRecordColumns
 } from "../../TypeInterface/ILoginRecordInterface";
 import LoginRecordQueryHeader from "../../components/LoginRecordQueryHeader.vue";
 import configGridModal from "../../components/configGridModal.vue";
@@ -186,6 +186,13 @@ export default defineComponent({
     onMounted(async () => {
       //获取表格列及处理表格列
       let columnList = await GetLoginRecordColumn({ pageName: "LoginRecord" });
+      console.log("amountLoginRecordcolumnList",columnList)
+if(columnList==undefined||columnList.length==0)
+{
+  columnList=LoginRecordColumns
+}
+      console.log("amountLoginRecordcolumnList11111",columnList)
+
       DataEntityState.ListColumns = deepClone(columnList);
 
       var len = columnList.length - 1;
@@ -329,6 +336,11 @@ export default defineComponent({
       let columnList = await GetLoginRecordColumn({ pageName: "LoginRecord" });
       console.log("GetLoginRecordColumn", columnList);
       console.log("amount", columnList);
+      if(columnList==undefined)
+{
+  columnList=LoginRecordColumns
+}
+
       DataEntityState.ListColumns = deepClone(columnList);
 
       var len = columnList.length - 1;

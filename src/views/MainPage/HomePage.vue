@@ -1,7 +1,16 @@
 <template>
     <div class="HomePage">
         <!-- <div class="HomePageContent"> 主页显示</div> -->
- <div  ref="myRef" id="chinaChart"></div>
+ <!-- <div  ref="myRef" id="chinaChart"></div> -->
+ <div class="HP-Up">
+      <div class="HP-Up-Left" id="chinaChart">
+     
+ </div>
+ <div class="HP-Up-Right">
+     
+ </div>
+ </div>
+ <div class="HP-Down"></div>
     </div>
 </template>
 
@@ -20,10 +29,18 @@ export default defineComponent({
     const myRef = ref(null);
  onMounted(() => {
 
+showEchart();
+
+
+
+
+
+
+
+ })
+
+let showEchart=()=>{
 const ProductEfficiencyChart =echarts.init(document?.getElementById("chinaChart") as HTMLElement);
-//const myChart =echarts.init(myRef?.value);
-
-
 
     let ProductEfficiencyOption;
   
@@ -45,13 +62,7 @@ const ProductEfficiencyChart =echarts.init(document?.getElementById("chinaChart"
         }
     };
 
-const h: g = function(sss:any,item:any, index:number) {
-        json.chart0.lowLine.push([{
-            coord: [index,json?.chart0?.low[index]]
-        }, {
-            coord: [index + 1, json?.chart0?.low[index + 1]]
-        }]);
-}
+
 
     var zrUtil = echarts.util;
     zrUtil.each(json.chart0.xcategory, function(item:any, index:any) {
@@ -69,7 +80,7 @@ const h: g = function(sss:any,item:any, index:number) {
 
     ProductEfficiencyOption = {
         title: {
-            text: '销售业绩统计量比',
+            text: '生产效率统计量比',
             textStyle: {
                 align: 'center',
                 color: 'black',
@@ -269,16 +280,7 @@ const h: g = function(sss:any,item:any, index:number) {
 
 
 
-
-
-
-
-
-
-
- })
-
-
+}
 
         return {
             ...toRefs(state),myRef
@@ -289,22 +291,8 @@ const h: g = function(sss:any,item:any, index:number) {
 
 <style scoped>
 
-#chinaChart{
-  height: 600px;
-  width: 100%;
-}
-.HomePage{
-    border:0px solid red;
-    box-sizing: border-box;
-   padding:0px;
-    
-    
-       
-     height: calc(100vh - 92px);
-   overflow: auto;
-    
-    
-}
+
+
 .HomePageContent{
     border:1px solid rgb(19, 92, 201);
     box-sizing: border-box;
@@ -318,5 +306,56 @@ const h: g = function(sss:any,item:any, index:number) {
     background-size: cover; */
     background-color: darkgray;
      
+}
+.HomePage{
+    border:1px solid red;
+    box-sizing: border-box;
+   padding:1px;
+    height: calc(100vh - 92px);
+   overflow: auto;
+   display: flex;
+   flex-direction: column;
+   justify-content:space-around;
+   align-items: center;
+    
+    
+}
+
+.HP-Up{
+border: 1px solid blue;
+
+box-sizing: border-box;
+width: 100%;
+height: 43.8%;
+display: flex;
+flex-direction: row;
+justify-content: space-around;
+align-items: center;
+}
+.HP-Up-Left
+{
+    border: 1px solid blue;
+
+box-sizing: border-box;
+width:74%;
+height: 100%;
+}
+.HP-Up-Right
+{
+    border: 1px solid blue;
+background-color: rgb(213, 237, 29);
+box-sizing: border-box;
+width:25.8%;
+height: 100%;
+}
+
+
+
+.HP-Down{
+border: 1px solid blue;
+background-color: aquamarine;
+box-sizing: border-box;
+width: 100%;
+height: 56%;
 }
 </style>
