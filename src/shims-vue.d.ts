@@ -8,6 +8,7 @@ declare module '*.vue' {
 declare module 'mockjs'
 declare module 'file-saver'
 declare module 'screenfull'
+declare module 'vue-seamless-scroll';
 
 
 

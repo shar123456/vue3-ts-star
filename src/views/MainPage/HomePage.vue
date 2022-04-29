@@ -1,4 +1,14 @@
 <template>
+<div style="height: 220px;overflow: hidden">
+<vue-seamless-scroll :data="listData" class="warp" ref="myRef"  :class-option="defaultOption"> 
+    <ul class="item" style="height:auto">
+      <li v-for="(item, index) in listData" :key="index">
+        <span class="title" v-text="item.title"></span>
+        <span  class="date" v-text="item.title"></span>
+      </li>
+    </ul>
+  </vue-seamless-scroll>
+  </div>
     <div class="HomePage">
         <!-- <div class="HomePageContent"> 主页显示</div> -->
  <!-- <div  ref="myRef" id="chinaChart"></div> -->
@@ -10,7 +20,18 @@
      
  </div>
  </div>
- <div class="HP-Down"></div>
+ <div class="HP-Down">
+
+   
+
+
+
+
+
+
+
+
+ </div>
     </div>
 </template>
 
@@ -18,18 +39,93 @@
 interface g{
         (ss:any,item:any, index:number): void;
 }
-import { reactive,ref, toRefs,defineComponent,onMounted} from 'vue'
-
+import { reactive,ref,watch, toRefs,defineComponent,onMounted,computed } from 'vue'
+  import {vueSeamlessScroll} from 'vue-seamless-scroll'
 import * as echarts from 'echarts'
 export default defineComponent({
+    components: {
+      vueSeamlessScroll
+    },
     setup (props,context) {
         const state = reactive({
             count: 0,
+               listData:[{
+                   'title': '无缝滚动第一行无缝滚动第一行',
+                 }, {
+                    'title': '无缝滚动第二行无缝滚动第二行',
+                 }, {
+                     'title': '无缝滚动第三行无缝滚动第三行',
+                 }, {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }, {
+                     'title': '无缝滚动第五行无缝滚动第五行',
+                 }]
+ 
         })
-    const myRef = ref(null);
+
+                  
+
+
+
+
+const defaultOption = computed(() => {
+    console.log("state.listData.length",state.listData.length)
+      return {
+        step: 0.2, // 数值越大速度滚动越快
+        limitMoveNum: state.listData.length, // 开始无缝滚动的数据量 this.dataList.length
+        hoverStop: true, // 是否开启鼠标悬停stop
+        direction: 1, // 0向下 1向上 2向左 3向右
+        openWatch: true, // 开启数据实时监控刷新dom
+        singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
+        singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
+        waitTime: 1000 // 单步运动停止的时间(默认值1000ms)
+      }
+    })
+
+    const myRef =ref<null>(null)
  onMounted(() => {
 
-showEchart();
+     setTimeout(() => {
+
+state.listData=[{
+                   'title': '无缝滚动第一行无缝滚动第一行',
+                 }, {
+                    'title': '无缝滚动第二行无缝滚动第二行',
+                 }, {
+                     'title': '无缝滚动第三行无缝滚动第三行',
+                 }, {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 },
+                 {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }, {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }
+                 , {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }
+                 , {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }
+                 , {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }
+                 , {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }
+                 , {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }
+                 , {
+                     'title': '无缝滚动第四行无缝滚动第四行',
+                 }
+]
+state.listData.push()
+
+     },3000)
+
+ 
+//showEchart();
 
 
 
@@ -283,7 +379,7 @@ const ProductEfficiencyChart =echarts.init(document?.getElementById("chinaChart"
 }
 
         return {
-            ...toRefs(state),myRef
+            ...toRefs(state),myRef,defaultOption
         }
     }
 })
@@ -291,8 +387,29 @@ const ProductEfficiencyChart =echarts.init(document?.getElementById("chinaChart"
 
 <style scoped>
 
-
-
+ .warp {
+    height: 370px;
+    width: 360px;
+    margin: 0 auto;
+ 
+    border:1px solid rgb(21, 51, 221);
+    padding:3px
+    
+  }
+  .warp ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto;
+      
+    }
+ .warp ul li,a {
+        display: block;
+        height: 30px;
+        line-height: 30px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 15px;border:1px solid red
+      }
 .HomePageContent{
     border:1px solid rgb(19, 92, 201);
     box-sizing: border-box;

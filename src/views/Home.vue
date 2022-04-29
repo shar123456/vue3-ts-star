@@ -277,7 +277,7 @@
               @click="Mycollapsed(collapsed)"
             />
           </a-col>
-          <a-col :xs="0" :sm="0" :md="0" :lg="10" :xl="10">
+          <a-col :xs="0" :sm="0" :md="0" :lg="10" :xl="7">
             <span
               style="
                 font-size: 18px;
@@ -287,7 +287,14 @@
               >您好，欢迎使用企业级后台管理系统</span
             >
           </a-col>
-          <a-col :xs="0" :sm="0" :md="0" :lg="10" :xl="10">
+
+  <a-col :xs="0" :sm="0" :md="0" :lg="0" :xl="9" style="border:0px solid red">
+       
+         
+      
+          </a-col>
+
+          <a-col :xs="0" :sm="0" :md="0" :lg="10" :xl="4">
             <div class="funbox">
               <a href="#" title="全屏" @click="toggleFullscreen"
                 ><FullscreenOutlined
@@ -394,7 +401,7 @@ import { defineComponent, onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import screenfull from "screenfull";
-
+//https://blog.csdn.net/qq_26642611/article/details/109528669
 import {
   GetMenuColumn,
   GetMenuDatas,
@@ -654,6 +661,12 @@ order:3,
 });
 </script>
 <style>
+
+
+
+
+
+
 .trigger {
   font-size: 18px;
   line-height: 64px;
