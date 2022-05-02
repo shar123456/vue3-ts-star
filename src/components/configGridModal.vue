@@ -53,7 +53,7 @@ interface Itest {
 
 export default defineComponent({
       props: { ListColumns:Object,
-       visibleModelConfigGrid:Boolean,modalTitleConfigGrid: String,},
+       visibleModelConfigGrid:Boolean,modalTitleConfigGrid: String,configType:String},
        components: {
     InboxOutlined,
   },
@@ -65,11 +65,11 @@ export default defineComponent({
           let titleConfigGrid = ref<string|undefined>(props.modalTitleConfigGrid);
            let LColumns=ref<any>(props.ListColumns);
         
-
+ let configType = ref<string|undefined>(props.configType);
 const handleOk = (e: MouseEvent) => {
 
 
- SetLoginRecordGrid(props.ListColumns).then((res: any) => {
+ SetLoginRecordGrid({ListColumns:props.ListColumns,configType:configType.value}).then((res: any) => {
             if (res.isSuccess) {
               
             context.emit("refreshBtn");

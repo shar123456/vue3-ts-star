@@ -229,13 +229,17 @@ export function BatchDeleteLoginRecord(param:any):any {
           return ret
         }],
   })
-}export function SetLoginRecordGrid(param:any):any {
+}
+
+
+export function SetLoginRecordGrid(param:any):any {
     console.log("------",param)
+    const{ListColumns,configType}=param;
   return instance({
-      url: '/LoginRecord/SetLoginRecordGrid',
+      url: '/LoginRecord/SetLoginRecordGrid'+`?configType=${configType}`,
       
       method: 'post',
-      data:param,
-     
+      data:ListColumns,
+      
   })
 }

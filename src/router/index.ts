@@ -89,6 +89,13 @@ const routes: Array<any> = [
         meta:{rName:"/系统设置/文件管理",Sub:"sub1"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ManagerFilePage.vue')
       }
+      ,
+      {
+        path: 'DevicePage',
+        name: 'DevicePage',
+        meta:{rName:"/设备管理/设备列表",Sub:"sub3"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/DevicePage.vue')
+      }
     ]
   },
   {

@@ -78,16 +78,18 @@ export default defineComponent({
 
     const beforeUpload: any['beforeUpload'] =  (file:any) => {
       fileList.value = [...fileList.value, file];
+        console.log(fileList.value);
       return false;
     };
 
     const handleUpload = () => {
       const formData = new FormData();
       fileList.value.forEach((file: ['fileList'][number]) => {
+         console.log(file);
         formData.append('files', file as any);
       });
       uploading.value = true;
-
+ 
       axios({
                 method: 'post',
                 data: formData,

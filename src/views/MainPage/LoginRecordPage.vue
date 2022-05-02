@@ -68,6 +68,7 @@
     :visibleModelConfigGrid="visibleModelConfigGrid"
     :modalTitleConfigGrid="modalTitleConfigGrid"
     :ListColumns="DataEntityState.ListColumns"
+    configType="LoginRecord"
     @CloseConfigGridMoadl="CloseConfigGridMoadl"
     @refreshBtn="refreshBtn"
   />

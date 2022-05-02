@@ -10,5 +10,8 @@ declare module 'file-saver'
 declare module 'screenfull'
 declare module 'vue-seamless-scroll';
 
+declare module 'lodash-es';
+
+
 
 

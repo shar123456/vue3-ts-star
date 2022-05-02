@@ -589,9 +589,15 @@ order:3,
         routeDescArr.value = routeDesc.value.split("/");
         routeDescArr.value.splice(0, 1);
       }
- if(route.meta && route.meta.Sub&&route.meta.Sub=="sub1")
+//  if(route.meta && route.meta.Sub&&route.meta.Sub=="sub1")
+//          {
+//  openKeys.value=["sub1"]
+//         }
+ if(route.meta && route.meta.Sub&&route.meta.Sub!="")
          {
- openKeys.value=["sub1"]
+           openKeys.value=[];
+         let openKeyStr=  route.meta.Sub;
+ openKeys.value=[`${openKeyStr}`]
         }
 
       if (collapsed.value) {
@@ -616,7 +622,12 @@ order:3,
           routeDescArr.value = routeDesc.value.split("/");
           routeDescArr.value.splice(0, 1);
         }
-       
+       if(route.meta && route.meta.Sub&&route.meta.Sub!="")
+         {
+           openKeys.value=[];
+         let openKeyStr=  route.meta.Sub;
+ openKeys.value=[`${openKeyStr}`]
+        }
 
         // console.log(routeDesc.value);
       }
