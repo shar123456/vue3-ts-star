@@ -190,7 +190,7 @@ export default defineComponent({
       console.log("amountLoginRecordcolumnList",columnList)
 if(columnList==undefined||columnList.length==0)
 {
-  columnList=LoginRecordColumns
+  columnList=deepClone(LoginRecordColumns)
 }
       console.log("amountLoginRecordcolumnList11111",columnList)
 
@@ -339,7 +339,7 @@ if(columnList==undefined||columnList.length==0)
       console.log("amount", columnList);
       if(columnList==undefined)
 {
-  columnList=LoginRecordColumns
+  columnList=deepClone(LoginRecordColumns)
 }
 
       DataEntityState.ListColumns = deepClone(columnList);

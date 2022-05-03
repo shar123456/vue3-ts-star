@@ -108,7 +108,7 @@ const handleOk = (e: MouseEvent) => {
       (newValue) => {
            
       
-          
+          console.log("newValue",newValue);
             LColumns.value=newValue;
       }
     );

@@ -96,6 +96,13 @@ const routes: Array<any> = [
         meta:{rName:"/设备管理/设备列表",Sub:"sub3"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/DevicePage.vue')
       }
+      ,
+      {
+        path: 'RoleListPage',
+        name: 'RoleListPage',
+        meta:{rName:"/系统设置/角色列表",Sub:"sub1"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/RoleListPage.vue')
+      }
     ]
   },
   {

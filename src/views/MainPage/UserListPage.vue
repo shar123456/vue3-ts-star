@@ -155,9 +155,16 @@
   />
 
 
+    <SettingModal
+    :visibleSetting="visibleSetting"
+    :modalTitleSetting="modalTitleSetting"
+    :CurrentUser="CurrentUser"
+    @CloseSetingMoadl="CloseSetingMoadl"
+   
+  />
 
 
-
+  
 
 
 
@@ -191,6 +198,7 @@ import UserListModal from "../../components/UserListModal.vue";
 
 import ExportExcelModal from "../../components/ExportExcelModal.vue";
 
+import SettingModal from "../../components/SettingModal.vue";
 
 
 import {
@@ -224,7 +232,7 @@ export default defineComponent({
     HighlightFilled,
     CopyOutlined,
     SettingOutlined,
-    SettingFilled,ExportExcelModal
+    SettingFilled,ExportExcelModal,SettingModal
   },
   setup() {
     const UserDataEntityState = reactive(new UserDataEntity());
@@ -236,6 +244,18 @@ export default defineComponent({
     const pageSizeOptions = ref<string[]>(["5", "10", "20", "30", "40", "50"]);
     let modalTitle = ref<string>("");
 let modalExportExcelTitle = ref<string>("");
+    let CurrentUser = ref<string>("");
+
+
+
+let visibleSetting = ref<boolean>(false);
+    let modalTitleSetting = ref<string>("");
+
+ const CloseSetingMoadl = () => {
+      visibleSetting.value = false;
+         CurrentUser.value= "";
+    };
+
 
 
 
@@ -695,6 +715,25 @@ console.log("headers",res.headers)
               },
             });
           }
+
+
+ if (
+            event.target.parentNode.getAttribute("data-icon") == "setting" ||
+            event.target.parentNode.parentNode.getAttribute("aria-label") ==
+              "setting"
+          ) {
+            const Id = record.sysUserId;
+          CurrentUser.value= record.sysUserId;
+           visibleSetting.value = true;
+      modalTitleSetting.value = "【配置角色】";
+          }
+
+
+
+
+
+
+
         },
       };
     };
@@ -726,6 +765,11 @@ console.log("headers",res.headers)
       UpdateInfoBtn,
       CreateInfoBtn,
       exportExcel,importExcel,visibleExportExcel,modalExportExcelTitle,closeExportExcelMoadl
+
+
+      ,visibleSetting,
+      modalTitleSetting,CloseSetingMoadl,CurrentUser
+
     };
   },
 });

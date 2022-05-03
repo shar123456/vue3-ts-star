@@ -1,14 +1,14 @@
 <template>
-  <ManagerFileQueryHeader
+  <RoleListQueryHeader
     @SearchBtn="SearchBtn"
     @showConfigGrid="showConfigGrid"
     @batchDelete="batchDelete"
     @refreshBtn="refreshBtn"
-    @fileUploadBtn="fileUploadBtn"
+    @showCreateModal="showCreateModal" 
+    
   >
-  </ManagerFileQueryHeader>
-
-  <div id="DataList">
+  </RoleListQueryHeader>
+<div id="DataList">
     <a-table
       bordered
       :rowClassName="(index:number) => (index % 2 == 1 ? 'table-striped' : null)"
@@ -25,34 +25,66 @@
       :pagination="false"
     >
       <template #action>
-        <a
+       <a
           style="
             color: rgba(18, 96, 214, 0.733);
             font-size: 20px;
             font-weight: 800;
           "
-          title="删除"
-          ><delete-two-tone mark="delete"
+          title="编辑"
+          ><EditFilled mark="edit"
         /></a>
+      
+        <delete-two-tone
+          style="
+            color: red;
+            font-size: 20px;
+            font-weight: 800;
+            margin-left: 9px;
+            cursor: pointer;
+          "
+        />
+       
+
         <a
           style="
             color: rgba(18, 96, 214, 0.733);
-            font-size: 23px;
+            font-size: 20px;
             font-weight: 800;
             margin-left: 9px;
           "
-          title="下载"
-          ><CloudFilled mark="download"
+          title="复制"
+          ><CopyFilled mark="copy"
+        /></a>
+
+        <a
+          style="
+            color: rgba(18, 96, 214, 0.733);
+            font-size: 20px;
+            font-weight: 800;
+            margin-left: 9px;
+          "
+          title="设置"
+          ><SettingFilled mark="set"
         /></a>
       </template>
 
-      <template #fileType="{ text: fileType }">
+      <template #roleType="{ text: roleType }">
         <span>
-          <a-tag :color="fileType === '' ? 'blue' : 'blue'">
-            {{ fileType }}
+          <a-tag :color="roleType === '' ? 'green' : 'green'">
+            {{ roleType }}
           </a-tag>
         </span>
       </template>
+ <template #useStatus="{ text: useStatus }">
+        <span>
+          <a-tag :color="useStatus === '启用' ? 'blue' : 'red'">
+            {{ useStatus }}
+          </a-tag>
+        </span>
+      </template>
+
+
     </a-table>
 
     <div class="userPagination">
@@ -72,62 +104,48 @@
       </a-pagination>
     </div>
   </div>
-
-  <upLoadFileModal
-    :visibleFileUpload="visibleFileUpload"
-    :modalFileUploadTitles="modalFileUploadTitles"
-    :UserData="DataEntityState"
-    @closeFileUploadModal="closeFileUploadModal"
-  />
-
   <configGridModal
     :visibleModelConfigGrid="visibleModelConfigGrid"
     :modalTitleConfigGrid="modalTitleConfigGrid"
-    :ListColumns="DataEntityState.ListColumns"
-    configType="ManagerFile"
+    :ListColumns="ListColumns"
+    configType="Role"
     @CloseConfigGridMoadl="CloseConfigGridMoadl"
     @refreshBtn="refreshBtn"
   />
+
+<RoleEditModal
+    :visibleRoleEdit="visibleRoleEdit"
+    :modalTitleRoleEdit="modalTitleRoleEdit"
+    :UserData="DataEntityState"
+    @closeRoleEditMoadl="closeRoleEditMoadl"
+    @UpdateRoleInfoBtn="UpdateRoleInfoBtn"
+    @CreateRoleInfoBtn="CreateRoleInfoBtn"
+  />
+
 </template>
 
 <script lang="ts">
-import {
-  reactive,
-  toRefs,
-  defineComponent,
-  ref,
-  watch,
-  onMounted,
-  createVNode,
-} from "vue";
-import ManagerFileQueryHeader from "../../components/ManagerFileQueryHeader.vue";
-import UpLoadFileModal from "../../components/UpLoadFileModal.vue";
-import {
-  ManagerFileDataEntity,
-  IManagerFileInfo,
-  ManagerFileColumns,
-} from "../../TypeInterface/IManagerFlieInterface";
+import { reactive, toRefs, defineComponent ,ref,watch,onMounted,createVNode} from "vue";
+import RoleListQueryHeader from "../../components/RoleListQueryHeader.vue";
+
+import { RoleDataEntity,IRoleInfo,RoleColumns } from "../../TypeInterface/IRoleInterface";
 import { deepClone } from "../../utility/commonFunc";
 import { message, Modal } from "ant-design-vue";
 import configGridModal from "../../components/configGridModal.vue";
-import axios from "axios";
+import RoleEditModal from "../../components/RoleEditModal.vue";
 import {
   GetLoginRecordColumn,
-  GetLoginRecordDatas,
-  DeleteLoginRecordById,
-  BatchDeleteLoginRecord,
+ 
 } from "../../Request/userRequest";
 
 import {
-  GetFileDatas,
-  ExportFile,
-  DeleteFileById,
-  BatchDeleteFile,
-} from "../../Request/FileRequest";
+ GetRoleDatas,DeleteRoleById,BatchDeleteRole,UpdateRoleDatas,AddRoleDatas,CopyRoleDataById
+} from "../../Request/RoleRequest";
 import {
   EditTwoTone,
   DeleteTwoTone,
   ExclamationCircleOutlined,
+
   FormOutlined,
   CopyFilled,
   EditFilled,
@@ -135,29 +153,79 @@ import {
   CopyOutlined,
   SettingOutlined,
   SettingFilled,
-  CloudDownloadOutlined,
-  CloudFilled,
 } from "@ant-design/icons-vue";
 export default defineComponent({
   components: {
-    ManagerFileQueryHeader,
-    UpLoadFileModal,
-    ExclamationCircleOutlined,
-    DeleteTwoTone,
-    CloudDownloadOutlined,
-    CloudFilled,
+    RoleListQueryHeader,ExclamationCircleOutlined,DeleteTwoTone,
     configGridModal,
+     EditTwoTone,
+ 
+    FormOutlined,
+    CopyFilled,
+    EditFilled,
+    HighlightFilled,
+    CopyOutlined,
+    SettingOutlined,
+    SettingFilled,RoleEditModal
   },
   setup() {
     const state = reactive({
       count: 0,
     });
 
-    const DataEntityState = reactive(new ManagerFileDataEntity());
-    let visibleFileUpload = ref<boolean>(false);
-    let modalFileUploadTitles = ref<string>("");
+ const DataEntityState = reactive(new RoleDataEntity());
+   let visibleModelConfigGrid = ref<boolean>(false);
+    let modalTitleConfigGrid = ref<string>("");
 
-    /***分页****************/
+
+let visibleRoleEdit = ref<boolean>(false);
+    let modalTitleRoleEdit = ref<string>("");
+
+const closeRoleEditMoadl = () => {
+      visibleRoleEdit.value = false;
+    };
+
+    const showCreateModal = () => {
+      visibleRoleEdit.value = true;
+      modalTitleRoleEdit.value = "新增【角色信息】";
+      DataEntityState.EditData.sysRoleId = "";
+      DataEntityState.EditData.name = "";
+
+      DataEntityState.EditData.roleType = "未选择";
+      DataEntityState.EditData.useStatus = "未选择";
+
+      
+    };
+const CreateRoleInfoBtn = (payload: any) => {
+      console.log(payload);
+
+      AddRoleDatas(payload).then((res: any) => {
+        console.log(res);
+        if (res.isSuccessful) {
+          visibleRoleEdit.value = false;
+          refreshMark.value = new Date().getTime().toString();
+          message.success(res.message);
+        } else {
+          message.error("添加失败.");
+        }
+      });
+    };
+ const UpdateRoleInfoBtn = (payload: any) => {
+      console.log(payload);
+
+      UpdateRoleDatas(payload).then((res: any) => {
+        console.log(res);
+        if (res.isSuccessful) {
+          visibleRoleEdit.value = false;
+          refreshMark.value = new Date().getTime().toString();
+          message.success(res.message);
+        } else {
+          message.error("更新失败.");
+        }
+      });
+    };
+
+/***分页****************/
     const pageSize = ref(10);
     const current1 = ref(1);
     const totalCount = ref(0);
@@ -166,7 +234,7 @@ export default defineComponent({
     let loading = ref<boolean>(false);
     const onShowSizeChange = (current: number, pageSize: number) => {
       loading.value = true;
-      GetFileDatas({
+      GetRoleDatas({
         current: current,
         pageSize: pageSize,
         ...DataEntityState.QueryConditionInfo,
@@ -183,7 +251,7 @@ export default defineComponent({
     });
     watch(current1, () => {
       loading.value = true;
-      GetFileDatas({
+      GetRoleDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -197,7 +265,7 @@ export default defineComponent({
     });
     watch(refreshMark, () => {
       loading.value = true;
-      GetFileDatas({
+      GetRoleDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -216,12 +284,16 @@ export default defineComponent({
     /***数据初始化****************/
     onMounted(async () => {
       //获取表格列及处理表格列
-      let columnList = await GetLoginRecordColumn({ pageName: "ManagerFile" });
-      console.log("amountLoginRecordcolumnList", columnList);
-      if (columnList == undefined || columnList.length == 0) {
-        columnList = deepClone(ManagerFileColumns);
-      }
-      console.log("amountLoginRecordcolumnList11111", columnList);
+      let columnList = await GetLoginRecordColumn({ pageName: "Role" });
+      debugger
+      console.log("amountLoginRecordcolumnList",columnList)
+       console.log("amountRoleColumnsList",RoleColumns)
+      
+if(columnList==undefined||columnList.length==0)
+{
+  columnList=deepClone(RoleColumns);
+}
+      console.log("amountLoginRecordcolumnList11111",columnList)
 
       DataEntityState.ListColumns = deepClone(columnList);
 
@@ -247,10 +319,10 @@ export default defineComponent({
           delete DataEntityState.ListColumns[z]["slots"];
         }
       }
-
+console.log("DataEntityState.ListColumns",DataEntityState.ListColumns)
       //获用户数据
       loading.value = true;
-      let UserDatasList = await GetFileDatas({
+      let UserDatasList = await GetRoleDatas({
         current: 1,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -278,7 +350,7 @@ export default defineComponent({
     };
     /***排序****************/
     /***勾选****************/
-    const onSelectChange = (selectedRowKeys: [], selectedRows: []) => {
+    const onSelectChange = (selectedRowKeys: [], selectedRows: []) => { 
       DataEntityState.selectedRowKeys = selectedRowKeys;
       DataEntityState.selectedRows = selectedRows;
     };
@@ -287,7 +359,7 @@ export default defineComponent({
     /***rowActionClick****************/
     const rowActionClick = (record: any) => {
       return {
-        onClick: async (event: any) => {
+        onClick: async(event: any) => {
           console.log(
             event.target.parentNode.parentNode.getAttribute("aria-label")
           );
@@ -295,71 +367,28 @@ export default defineComponent({
           console.log("id", record);
 
           if (
-            event.target.parentNode.getAttribute("data-icon") == "cloud" ||
+            event.target.parentNode.getAttribute("data-icon") == "copy" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
-              "cloud"
+              "copy"
           ) {
-            //  var res=  await ExportFile({"FileName":"test1","FileExtension":"xlsx"});
-            const FileName = record.name;
-            const FileExtension = record.fileType;
-
-            var res = await axios({
-              method: "get",
-              params: { FileName: FileName, FileExtension: FileExtension },
-              responseType: "blob",
-
-              transformRequest: [
-                function (data) {
-                  //加这个post发送数据到后台才能接收到数据，否则接收不到
-                  let ret = "";
-                  for (const it in data) {
-                    ret +=
-                      encodeURIComponent(it) +
-                      "=" +
-                      encodeURIComponent(data[it]) +
-                      "&";
-                  }
-                  return ret;
-                },
-              ],
-              url: "/api/ManagerFile/DownLoadFile",
+           
+  const Id = record.sysRoleId;
+loading.value = true;
+            CopyRoleDataById({ Id: Id }).then((res: any) => {
+              console.log(res);
+              if (res.isSuccessful) {
+                refreshMark.value = new Date().getTime().toString();
+                // DataEntityState.selectedRowKeys = [];
+                // DataEntityState.selectedRows = [];
+                message.success("复制成功.");
+                loading.value = false;
+              }
+              else
+              {
+                 loading.value = false;
+              }
             });
 
-            console.log(res);
-            let typeContent = "";
-            switch (FileExtension) {
-              case "xls":
-                typeContent = "application/vnd.ms-excel";
-                break;
-              case "xlsx":
-                typeContent =
-                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                break;
-              case "docx":
-                typeContent =
-                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                break;
-              case "txt":
-                typeContent = "text/plain";
-                break;
-            }
-            const blob = new Blob([res.data], { type: typeContent });
-            const f = "统计.xlsx";
-            // const contentDisposition =
-            //   res.headers['content-disposition'] ||
-            //   res.headers['Content-Disposition']
-            // const fileName =
-            //   (contentDisposition && contentDisposition.split(';')[1]).split('=')[1] || f || '';
-
-            const fileName = `${FileName}.${FileExtension}`;
-            const elink = document.createElement("a");
-            elink.download = fileName;
-            elink.style.display = "none";
-            elink.href = URL.createObjectURL(blob);
-            document.body.appendChild(elink);
-            elink.click();
-            URL.revokeObjectURL(elink.href); // 释放URL 对象
-            document.body.removeChild(elink);
           }
 
           if (
@@ -367,19 +396,30 @@ export default defineComponent({
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "edit"
           ) {
-            const Id = record.sysUserId;
+            const Id = record.sysRoleId;
+            const res: IRoleInfo[] = DataEntityState.DataList.filter(
+              (i: IRoleInfo) => i.sysRoleId == Id
+            );
+            console.log(res[0]);
+            DataEntityState.EditData.sysRoleId = res[0].sysRoleId;
+            DataEntityState.EditData.name = res[0].name;
+            DataEntityState.EditData.roleType = res[0].roleType;
+            DataEntityState.EditData.useStatus = res[0].useStatus;
+            
+            visibleRoleEdit.value = true;
+            modalTitleRoleEdit.value = "编辑【角色信息】";
           }
           if (
             event.target.parentNode.getAttribute("data-icon") == "delete" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "delete"
           ) {
-            const Id = record.fileId;
+            const Id = record.sysRoleId;
 
             Modal.confirm({
               title: "您确定要删除这条记录吗?",
               icon: createVNode(ExclamationCircleOutlined),
-              content: `文件名：${record.name}`,
+              content: `角色名：${record.name}`,
               okText: "Yes",
               okType: "danger",
               cancelText: "No",
@@ -389,10 +429,15 @@ export default defineComponent({
                 //     UserDataEntityState.UserDataList.splice(index, 1);
 
                 loading.value = true;
-                DeleteFileById({ Id: Id }).then((res: any) => {
+                DeleteRoleById({ Id: Id }).then((res: any) => {
+                    console.log(res)
                   if (res.isSuccess) {
                     refreshMark.value = new Date().getTime().toString();
                     message.success("删除成功.");
+                  }else
+                  {
+   refreshMark.value = new Date().getTime().toString();
+                    message.success(`${res.msg}`);
                   }
                 });
               },
@@ -406,28 +451,24 @@ export default defineComponent({
     };
     /***rowActionClick****************/
 
-    //------------------------------
 
-    const closeFileUploadModal = () => {
-      visibleFileUpload.value = false;
-      refreshMark.value = new Date().getTime().toString();
-    };
 
-    //------------------------------
 
-    let visibleModelConfigGrid = ref<boolean>(false);
-    let modalTitleConfigGrid = ref<string>("");
-    const CloseConfigGridMoadl = () => {
-      visibleModelConfigGrid.value = false;
-    };
-    // --------------
+
+
+
+
+
+
+
+ // --------------
     const UpdateConfigGrid = async () => {
       //获取表格列及处理表格列
-      let columnList = await GetLoginRecordColumn({ pageName: "ManagerFile" });
+      let columnList = await GetLoginRecordColumn({ pageName: "Role" });
       console.log("GetLoginRecordColumn", columnList);
       console.log("amount", columnList);
       if (columnList == undefined||columnList.length==0) {
-        columnList = deepClone(ManagerFileColumns);
+        columnList = deepClone(RoleColumns);
       }
 
       DataEntityState.ListColumns = deepClone(columnList);
@@ -455,11 +496,13 @@ export default defineComponent({
         }
       }
     };
-
+const CloseConfigGridMoadl = () => {
+      visibleModelConfigGrid.value = false;
+    };
     const SearchBtn = async (payload: any) => {
       loading.value = true;
 
-      let UserDatasList1 = await GetFileDatas({
+      let UserDatasList1 = await GetRoleDatas({
         current: 1,
         pageSize: pageSize.value,
         ...payload,
@@ -500,13 +543,17 @@ export default defineComponent({
           disabled: isDesibleOkBtn,
         },
         onOk() {
-          BatchDeleteFile({ keys: keys }).then((res: any) => {
+          BatchDeleteRole({ keys: keys }).then((res: any) => {
             if (res.isSuccess) {
               refreshMark.value = new Date().getTime().toString();
               DataEntityState.selectedRowKeys = [];
               DataEntityState.selectedRows = [];
               message.success("删除成功.");
-            }
+            }else
+                  {
+   refreshMark.value = new Date().getTime().toString();
+                    message.success(`${res.msg}`);
+                  }
           });
         },
         onCancel() {
@@ -522,10 +569,10 @@ export default defineComponent({
       DataEntityState.QueryConditionInfo = {
         name: "",
 
-        fileId: "",
-        fileType: "未选择",
+        useStatus: "未选择",
+        roleType: "未选择",
       };
-      GetFileDatas({
+      GetRoleDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -538,17 +585,19 @@ export default defineComponent({
         }
       });
     };
-    const fileUploadBtn = (payload: any) => {
-      visibleFileUpload.value = true;
-      console.log("【文件上传】", visibleFileUpload.value);
-      modalFileUploadTitles.value = "【文件上传】";
-    };
+    
     // --------------
+
+
+
+ 
+
+    
     return {
       ...toRefs(state),
-      DataEntityState,
-      ...toRefs(DataEntityState),
-      rowActionClick,
+DataEntityState,
+...toRefs(DataEntityState),
+rowActionClick,
       onSelectChange,
 
       pageSize,
@@ -556,23 +605,29 @@ export default defineComponent({
       totalCount,
       onShowSizeChange,
       handleTableChange,
-
+      
       loading,
       pageSizeOptions,
 
-      visibleModelConfigGrid,
+
+ visibleModelConfigGrid,
       modalTitleConfigGrid,
       CloseConfigGridMoadl,
 
-      visibleFileUpload,
-      modalFileUploadTitles,
-      closeFileUploadModal,
+     
 
       SearchBtn,
       showConfigGrid,
       batchDelete,
       refreshBtn,
-      fileUploadBtn,
+   
+visibleRoleEdit,
+modalTitleRoleEdit,
+closeRoleEditMoadl,
+UpdateRoleInfoBtn,
+CreateRoleInfoBtn,
+ showCreateModal
+
     };
   },
 });

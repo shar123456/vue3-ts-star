@@ -1,17 +1,8 @@
 <template>
-<div style="height: 220px;overflow: hidden">
-<vue-seamless-scroll :data="listData" class="warp" ref="myRef"  :class-option="defaultOption"> 
-    <ul class="item" style="height:auto">
-      <li v-for="(item, index) in listData" :key="index">
-        <span class="title" v-text="item.title"></span>
-        <span  class="date" v-text="item.title"></span>
-      </li>
-    </ul>
-  </vue-seamless-scroll>
-  </div>
+
     <div class="HomePage">
         <!-- <div class="HomePageContent"> 主页显示</div> -->
- <!-- <div  ref="myRef" id="chinaChart"></div> -->
+
  <div class="HP-Up">
       <div class="HP-Up-Left" id="chinaChart">
      
@@ -36,31 +27,18 @@
 </template>
 
 <script lang="ts">
-interface g{
-        (ss:any,item:any, index:number): void;
-}
+
 import { reactive,ref,watch, toRefs,defineComponent,onMounted,computed } from 'vue'
-  import {vueSeamlessScroll} from 'vue-seamless-scroll'
+
 import * as echarts from 'echarts'
 export default defineComponent({
     components: {
-      vueSeamlessScroll
+      //vueSeamlessScroll
     },
     setup (props,context) {
         const state = reactive({
             count: 0,
-               listData:[{
-                   'title': '无缝滚动第一行无缝滚动第一行',
-                 }, {
-                    'title': '无缝滚动第二行无缝滚动第二行',
-                 }, {
-                     'title': '无缝滚动第三行无缝滚动第三行',
-                 }, {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }, {
-                     'title': '无缝滚动第五行无缝滚动第五行',
-                 }]
- 
+               
         })
 
                   
@@ -68,65 +46,16 @@ export default defineComponent({
 
 
 
-const defaultOption = computed(() => {
-    console.log("state.listData.length",state.listData.length)
-      return {
-        step: 0.2, // 数值越大速度滚动越快
-        limitMoveNum: state.listData.length, // 开始无缝滚动的数据量 this.dataList.length
-        hoverStop: true, // 是否开启鼠标悬停stop
-        direction: 1, // 0向下 1向上 2向左 3向右
-        openWatch: true, // 开启数据实时监控刷新dom
-        singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
-        singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
-        waitTime: 1000 // 单步运动停止的时间(默认值1000ms)
-      }
-    })
 
-    const myRef =ref<null>(null)
+  let ProductEfficiencyChart:any=undefined;
  onMounted(() => {
 
-     setTimeout(() => {
+     
 
-state.listData=[{
-                   'title': '无缝滚动第一行无缝滚动第一行',
-                 }, {
-                    'title': '无缝滚动第二行无缝滚动第二行',
-                 }, {
-                     'title': '无缝滚动第三行无缝滚动第三行',
-                 }, {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 },
-                 {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }, {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }
-                 , {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }
-                 , {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }
-                 , {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }
-                 , {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }
-                 , {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }
-                 , {
-                     'title': '无缝滚动第四行无缝滚动第四行',
-                 }
-]
-state.listData.push()
-
-     },3000)
 
  
-//showEchart();
-
+showEchart();
+setTimeout(()=>{ProductEfficiencyChart.resize();},100);
 
 
 
@@ -136,7 +65,7 @@ state.listData.push()
  })
 
 let showEchart=()=>{
-const ProductEfficiencyChart =echarts.init(document?.getElementById("chinaChart") as HTMLElement);
+ ProductEfficiencyChart =echarts.init(document?.getElementById("chinaChart") as HTMLElement);
 
     let ProductEfficiencyOption;
   
@@ -379,7 +308,7 @@ const ProductEfficiencyChart =echarts.init(document?.getElementById("chinaChart"
 }
 
         return {
-            ...toRefs(state),myRef,defaultOption
+            ...toRefs(state)
         }
     }
 })
