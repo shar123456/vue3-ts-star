@@ -7,27 +7,34 @@
     v-model:visible="visibleExportExcel"
     width="1000px"
     :title="modalTitleeExportExcel"
-     :ok-button-props="{ style:{display:''} }"
+     :ok-button-props="{ style:{display:'none'} }"
     @Cancel="onCancel"
       @ok="handleOk"
   >
   
      <div class="clearfix">
-    <a-upload :file-list="fileList" :before-upload="beforeUpload" @remove="handleRemove">
+    <a-upload :file-list="fileList" :before-upload="beforeUpload" @remove="handleRemove" multiple="false">
       <a-button>
         <upload-outlined></upload-outlined>
-        Select File
+        选择文件
       </a-button>
     </a-upload>
-    <a-button
+   <div>
+
+     <a-row>
+    <a-col :span="12"><a-button
       type="primary"
       :disabled="fileList.length === 0"
       :loading="uploading"
       style="margin-top: 16px"
       @click="handleUpload"
     >
-      {{ uploading ? 'Uploading' : 'Start Upload' }}
-    </a-button>
+      {{ uploading ? 'Uploading' : '执行导入' }}
+    </a-button></a-col>
+    <a-col :span="12">仅支持扩展名：.xlsx 文件，大小：最大支持30M</a-col>
+  </a-row>
+   </div>
+    
   </div>
   
   </a-modal>
@@ -77,6 +84,20 @@ export default defineComponent({
     };
 
     const beforeUpload: any['beforeUpload'] =  (file:any) => {
+
+console.log(file.type );
+const isfile = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      if (!isfile) {
+        message.error(`请上传 xlsx 格式的文件.`);
+         return false;
+      }
+
+
+
+
+
+
+
       fileList.value = [...fileList.value, file];
         console.log(fileList.value);
       return false;
@@ -100,7 +121,10 @@ export default defineComponent({
             })
             .then(res => {
                 res = res.data;
-                
+                 uploading.value = false;
+                 fileList.value=[];
+                  message.success(`导入成功`);
+                   context.emit("closeExportExcelMoadl");
             });
     }
 
@@ -134,7 +158,7 @@ export default defineComponent({
       (newValue) => {
            
          console.log(newValue)
-          
+          fileList.value=[];
             visibleExportExcel.value=newValue;
       }
     );

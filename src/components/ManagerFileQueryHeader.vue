@@ -43,7 +43,7 @@
     </div>
     <div class="downPad">
        <a-button  type="primary"   @click="configGridBtn">   <template #icon><ToolOutlined /></template>配置列表</a-button>&nbsp;
-         <a-button  type="primary"   @click="fileUploadBtn">   <template #icon><PlusOutlined /></template>文件上传</a-button>&nbsp;
+         <a-button  type="primary"   @click="fileUploadBtn">   <template #icon><CloudUploadOutlined /></template>文件上传</a-button>&nbsp;
       <a-button danger type="primary"   @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
       <a-button type="primary"   @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
       <a-button  
@@ -63,11 +63,11 @@
 <script lang="ts">
 import { reactive, toRefs, defineComponent } from "vue";
 import { ManagerFileDataEntity } from "../TypeInterface/IManagerFlieInterface";
-import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined} from "@ant-design/icons-vue";
+import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined,CloudUploadOutlined} from "@ant-design/icons-vue";
 import {dateFormat} from '../utility/commonFunc'
 export default defineComponent({
   components: {
-    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined
+    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined,CloudUploadOutlined
   },
   props: {  },
   setup(props, context) {

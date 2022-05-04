@@ -76,8 +76,8 @@
     <div class="downPad">
       <a-button type="primary" @click="showCreateModal"> <template #icon><plus-outlined  /></template>
         新增 </a-button>&nbsp;
-      <a-button type="primary" @click="exportExcel"> <template #icon><bar-chart-outlined /></template>导出</a-button>&nbsp;
-        <a-button type="primary" @click="importExcel"> <template #icon><appstore-add-outlined /></template>导入</a-button>&nbsp;
+      <a-button type="primary" @click="exportExcel"> <template #icon><download-outlined /></template>导出</a-button>&nbsp;
+        <a-button type="primary" @click="importExcel"> <template #icon><cloud-upload-outlined /></template>导入</a-button>&nbsp;
       <a-button danger type="primary" @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
       <a-button type="primary" @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
       <a-button
@@ -97,11 +97,11 @@
 <script lang="ts">
 import { reactive, toRefs, defineComponent } from "vue";
 import { UserDataEntity } from "../TypeInterface/IUserInterface";
-import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined} from "@ant-design/icons-vue";
+import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,DownloadOutlined,CloudUploadOutlined} from "@ant-design/icons-vue";
 import * as XLSX from "xlsx";
 export default defineComponent({
   components: {
-    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined
+    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,DownloadOutlined,CloudUploadOutlined
   },
   props: { UserData: UserDataEntity },
   setup(props, context) {

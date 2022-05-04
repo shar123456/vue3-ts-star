@@ -365,6 +365,7 @@ let visibleSetting = ref<boolean>(false);
 
  const closeExportExcelMoadl = () => {
       visibleExportExcel.value = false;
+      refreshMark.value = new Date().getTime().toString();
     };
 
 

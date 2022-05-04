@@ -66,7 +66,7 @@ import {defineComponent, reactive, toRefs,ref,onMounted,watch } from 'vue'
 import { IRoleInfo } from "../TypeInterface/IRoleInterface";
 import { message} from "ant-design-vue";
 import {
-GetRoleById
+GetRoleById,SetRole
  
 } from "../Request/RoleRequest";
 import {
@@ -108,7 +108,18 @@ let rolesPC=ref<any[]>([]);
 let rolesWeChart=ref<any[]>([]);
 let rolesApp=ref<any[]>([]);
 const handleOk = (e: MouseEvent) => {
-
+  if(RoleValue.value==undefined||RoleValue.value.length<1)
+  {
+    message.success("请勾选要配置的角色.");
+    return false;
+  }
+      SetRole({roleIds:RoleValue.value,userId:CurrentUser.value}).then((res: any) => {
+   console.log(res)
+            if (res.isSuccess) {
+                  message.success("配置成功.");
+          context.emit("CloseSetingMoadl");
+            }
+         });
 
 console.log(RoleValue.value)
   };

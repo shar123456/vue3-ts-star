@@ -8,7 +8,23 @@
      
  </div>
  <div class="HP-Up-Right">
-     
+     <div :style="{ width: '100%', border: '1px solid #d9d9d9', borderRadius: '4px' }">
+     <a-calendar v-model:value="value" :fullscreen="true" :locale="locale"   @select="onSelect" @panelChange="onPanelChange"  >   
+    <template #dateCellRender="{ current }">
+      <ul class="events">
+        <li v-for="item in getListData(current)" :key="item.content">
+          <a-badge :status="item.type" :text="item.content"/>
+        </li>
+      </ul>
+    </template>
+    <template #monthCellRender="{ current }">
+      <div v-if="getMonthData(current)" class="notes-month">
+        <section>{{ getMonthData(current) }}</section>
+        <span>Backlog number</span>
+      </div>
+    </template>
+  </a-calendar>
+     </div>
  </div>
  </div>
  <div class="HP-Down">
@@ -29,7 +45,7 @@
 <script lang="ts">
 
 import { reactive,ref,watch, toRefs,defineComponent,onMounted,computed } from 'vue'
-
+ import 'moment/locale/zh-cn';
 import * as echarts from 'echarts'
 export default defineComponent({
     components: {
@@ -40,13 +56,64 @@ export default defineComponent({
             count: 0,
                
         })
+        //https://ant.design/components/calendar-cn/
+//https://blog.csdn.net/qq_41619796/article/details/104795405
+         const value = ref<any>();
+ let listData:any[]|undefined=undefined;
+    const getListData = (value: any) => {
+ listData=[];
+      switch (value.date()) {
+           case 3:
+          listData = [
+            { type: 'success', content: '总部视频会议.' },
+            //{ type: 'success', content: 'This is usual event.' },
+          ];
+          break;
+           case 19:
+          listData = [
+            { type: 'success', content: '拟定排产初步方案.' },
+            //{ type: 'success', content: 'This is usual event.' },
+          ];
+          break;
+        case 8:
+          listData = [
+            { type: 'success', content: '生产会议.' },
+            //{ type: 'success', content: 'This is usual event.' },
+          ];
+          break;
+        case 10:
+          listData = [
+            { type: 'warning', content: '提交采购合同.' },
+          //  { type: 'success', content: 'This is usual event.' },
+            //{ type: 'error', content: 'This is error event.' },
+          ];
+          break;
+        case 15:
+          listData = [
+            { type: 'warning', content: '预定酒店' },
+          //  { type: 'success', content: 'This is very long usual event。。....' },
+          //  { type: 'error', content: 'This is error event 1.' },
+           // { type: 'error', content: 'This is error event 2.' },
+           // { type: 'error', content: 'This is error event 3.' },
+           // { type: 'error', content: 'This is error event 4.' },
+          ];
+          break;
+        default:
+      }         
+ return listData || [];
+    }
 
-                  
-
-
-
-
-
+const getMonthData = (value: any) => {
+      if (value.month() === 8) {
+        return "约见重要客人";
+      }
+    };
+ const onSelect = (value: any) => {
+     console.log(value)
+    };
+    const onPanelChange = (value: any) => {
+     value
+    };
   let ProductEfficiencyChart:any=undefined;
  onMounted(() => {
 
@@ -308,9 +375,20 @@ let showEchart=()=>{
 }
 
         return {
-            ...toRefs(state)
+            ...toRefs(state),value,
+      getListData,
+      getMonthData,locale: {
+          lang: {
+            month: '月',
+            year: '年',
+          },
+        }, onSelect,
+      onPanelChange,
+
         }
     }
+
+    
 })
 </script>
 
@@ -389,10 +467,11 @@ height: 100%;
 .HP-Up-Right
 {
     border: 1px solid blue;
-background-color: rgb(213, 237, 29);
+
 box-sizing: border-box;
 width:25.8%;
 height: 100%;
+overflow: auto;
 }
 
 
@@ -403,5 +482,30 @@ background-color: aquamarine;
 box-sizing: border-box;
 width: 100%;
 height: 56%;
+}
+
+
+
+.events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.events .ant-badge-status {
+  overflow: auto;
+  white-space: wrap;
+  width: 100%;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+.notes-month {
+  text-align: center;
+  font-size: 23px;
+}
+.notes-month section {
+  font-size: 23px;
+}
+.ant-badge-status-text{
+    color: blue!important;
 }
 </style>
