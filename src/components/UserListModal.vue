@@ -27,13 +27,24 @@
       <div class="modalEditCol">
         <label>密码：</label>
         <div>
-          <a-input v-model:value="EditData.pwd" placeholder="密码" />
+          <a-input   :disabled="modalTitlee=='新增【用户信息】'?false:true" v-model:value="EditData.pwd" placeholder="密码" />
         </div>
       </div>
       <div class="modalEditCol">
-        <label>Level：</label>
+       <label>Level：</label>
         <div>
-          <a-input v-model:value="EditData.level" placeholder="Level" />
+          <a-select
+            ref="select"
+            v-model:value="EditData.level"
+            style="width: 150px"
+          >
+            <a-select-option value="未选择">未选择</a-select-option>
+            <a-select-option value="一级">一级</a-select-option>
+
+            <a-select-option value="二级">二级</a-select-option>
+              <a-select-option value="三级">三级</a-select-option>
+                <a-select-option value="四级">四级</a-select-option>
+          </a-select>
         </div>
       </div>
     </div>
@@ -85,6 +96,12 @@
       </div>
     </div>
 
+
+
+
+
+
+
     <div class="modalEditRow">
       <div class="modalEditCol">
         <label>地址：</label>
@@ -98,6 +115,73 @@
         <div><a-input v-model:value="EditData.userDesc" placeholder="备注" /></div>
       </div>
     </div>
+
+
+
+ <div class="modalEditRow">
+      <div class="modalEditCol">
+        <label>PC端登录：</label>
+        <div>
+          <a-select
+            ref="select"
+            v-model:value="EditData.pcLoginStatus"
+            style="width: 150px"
+          >
+            <a-select-option value="未选择">未选择</a-select-option>
+            <a-select-option value="允许">允许</a-select-option>
+
+            <a-select-option value="禁止">禁止</a-select-option>
+          </a-select>
+        </div>
+      </div>
+      <div class="modalEditCol">
+        <label>微信端登录：</label>
+        <div>
+          <a-select
+            ref="select"
+            v-model:value="EditData.weChatLoginStatus"
+            style="width: 150px"
+          >
+            <a-select-option value="未选择">未选择</a-select-option>
+            <a-select-option value="允许">允许</a-select-option>
+
+            <a-select-option value="禁止">禁止</a-select-option>
+          </a-select>
+        </div>
+      </div>
+    </div>
+
+<div class="modalEditRow">
+      <div class="modalEditCol">
+        <label>App端登录：</label>
+        <div>
+          <a-select
+            ref="select"
+            v-model:value="EditData.appLoginStatus"
+            style="width: 150px"
+          >
+            <a-select-option value="未选择">未选择</a-select-option>
+            <a-select-option value="允许">允许</a-select-option>
+
+            <a-select-option value="禁止">禁止</a-select-option>
+          </a-select>
+        </div>
+      </div>
+      <div class="modalEditCol">
+       
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
   </a-modal>
     </div>
 </template>

@@ -302,10 +302,10 @@ export default defineComponent({
             //  var res=  await ExportFile({"FileName":"test1","FileExtension":"xlsx"});
             const FileName = record.name;
             const FileExtension = record.fileType;
-
+                   const FileId = record.fileId;
             var res = await axios({
               method: "get",
-              params: { FileName: FileName, FileExtension: FileExtension },
+              params: { FileName: FileName, FileExtension: FileExtension,Id:FileId },
               responseType: "blob",
 
               transformRequest: [
@@ -360,6 +360,7 @@ export default defineComponent({
             elink.click();
             URL.revokeObjectURL(elink.href); // 释放URL 对象
             document.body.removeChild(elink);
+             refreshMark.value = new Date().getTime().toString();
           }
 
           if (

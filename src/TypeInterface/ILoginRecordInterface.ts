@@ -44,7 +44,7 @@ class LoginRecordDataEntity{
     { title: '上次登录时间',width:100, dataIndex: 'loginLastTimeStr', isUse: true,configOrder: 4 },
     { title: '最后一次登录时间',width:100, dataIndex: 'loginEndTimeStr', isUse: true,configOrder: 5 },
     
-    { title: 'Action', key: 'operation',width:60, slots: { customRender: 'action' },isUse: true,configOrder: 6  },
+    { title: '操作', key: 'operation',width:60, slots: { customRender: 'action' },isUse: true,configOrder: 6  },
   ];
   
 

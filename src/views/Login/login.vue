@@ -105,11 +105,11 @@ export default defineComponent({
         // let sss=   await  login(formState)
         //   console.log(sss.data);
 
-      let result = await store.dispatch("LoginSys", formState);
+      let res = await store.dispatch("LoginSys", formState);
        //console.log(result);
 
-      if (!result) {
-        message.error("用户名或密码不正确.");
+      if (!res.result) {
+        message.error(res.msg);
       } else {
        router.push({path: '/Home/HomePage', query: {selected: "1"}});
       }

@@ -15,7 +15,8 @@
 
  
      <a-menu-item key="/Home/HomePage">
-          <AppstoreOutlined />
+          <!-- <AppstoreOutlined /> -->
+          <iconFont  IconStr="AppstoreOutlined"  />
           <span
             ><router-link
               to="/Home/HomePage"
@@ -37,7 +38,7 @@
 <template  v-for="item1 in menuList" :key="item1.key">
 
   <a-menu-item  v-if="(item1.hasSub=='否'&&item1.menuLevel==1)" :key="item1.menuKey" >
-          <AppstoreOutlined />
+           <iconFont  :IconStr="item1.menuIcon"  />
           <span
             ><router-link
               :to="item1.menuUrl"
@@ -52,7 +53,7 @@
     
 <a-sub-menu  v-if="item1.hasSub!='否'&&item1.menuLevel==1"  :key="item1.menuKey">
  <template #icon>
-            <SettingOutlined />
+          <iconFont  :IconStr="item1.menuIcon"  />
           </template>
           <template #title>{{item1.menuTitle}}</template>
 
@@ -60,7 +61,7 @@
 <template   v-for="item2 in item1.children"    :key="item2.key">
 
 <a-menu-item  v-if="item2.hasSub=='否'&&item2.menuLevel==2" :key="item2.menuKey">
-          <AppstoreOutlined />
+       <iconFont  :IconStr="item2.menuIcon"  />
           <span
             ><router-link
               :to="item2.menuUrl"
@@ -71,7 +72,7 @@
     </a-menu-item>
 <a-sub-menu  v-if="item2.hasSub=='是'&&item2.menuLevel==2"  :key="item2.menuKey" >
  <template #icon>
-            <SettingOutlined />
+            <iconFont  :IconStr="item2.menuIcon"  />
           </template>
           <template #title>{{item2.menuTitle}}</template>
 
@@ -79,7 +80,7 @@
 
 <template    v-for="item3 in item2.children"    :key="item3.key">
  <a-menu-item  v-if="!item3.hasSub&&item3.menuLevel==3" :key="item3.menuKey">
-          <AppstoreOutlined />
+          <iconFont  :IconStr="item3.menuIcon"  />
           <span
             ><router-link
               :to="item3.menuUrl"
@@ -91,13 +92,13 @@
 
 <a-sub-menu  v-if="item3.hasSub=='是'&&item3.menuLevel==3"    :key="item3.menuKey">
  <template #icon>
-            <SettingOutlined />
+           <iconFont  :IconStr="item3.menuIcon"  />
           </template>
           <template #title>{{item3.menuTitle}}</template>
 
 <template    v-for="item4 in item3.children"    :key="item4.key">
  <a-menu-item  v-if="item4.hasSub=='否'&&item4.menuLevel==4" :key="item4.menuKey">
-          <AppstoreOutlined />
+          <iconFont  :IconStr="item4.menuIcon"  />
           <span
             ><router-link
               :to="item4.menuUrl"
@@ -412,6 +413,7 @@ import {
 import {
   IMenuInfo
 } from "../TypeInterface/IMenuInterface";
+import iconFont from "../components/iconFont.vue";
 export default defineComponent({
   components: {
     UserOutlined,
@@ -425,7 +427,7 @@ export default defineComponent({
     SearchOutlined,
     AppstoreOutlined,
     SettingOutlined,
-    TrademarkCircleOutlined,SnippetsOutlined
+    TrademarkCircleOutlined,SnippetsOutlined,iconFont
   },
   setup() {
     const router = useRouter();

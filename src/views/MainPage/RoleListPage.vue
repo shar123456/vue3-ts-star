@@ -121,6 +121,13 @@
     @UpdateRoleInfoBtn="UpdateRoleInfoBtn"
     @CreateRoleInfoBtn="CreateRoleInfoBtn"
   />
+  <RoleFunConfigModal
+    :visibleRoleFunConfig="visibleRoleFunConfig"
+    :modalTitleRoleFunConfig="modalTitleRoleFunConfig"
+    :CurrentUser="CurrentUser"
+    @CloseSetingMoadl="CloseRoleFunConfigMoadl"
+   
+  />
 
 </template>
 
@@ -133,6 +140,7 @@ import { deepClone } from "../../utility/commonFunc";
 import { message, Modal } from "ant-design-vue";
 import configGridModal from "../../components/configGridModal.vue";
 import RoleEditModal from "../../components/RoleEditModal.vue";
+import RoleFunConfigModal from "../../components/RoleFunConfigModal.vue";
 import {
   GetLoginRecordColumn,
  
@@ -166,7 +174,7 @@ export default defineComponent({
     HighlightFilled,
     CopyOutlined,
     SettingOutlined,
-    SettingFilled,RoleEditModal
+    SettingFilled,RoleEditModal,RoleFunConfigModal
   },
   setup() {
     const state = reactive({
@@ -184,6 +192,22 @@ let visibleRoleEdit = ref<boolean>(false);
 const closeRoleEditMoadl = () => {
       visibleRoleEdit.value = false;
     };
+
+    let CurrentUser = ref<string>("");
+let visibleRoleFunConfig = ref<boolean>(false);
+    let modalTitleRoleFunConfig = ref<string>("");
+
+ const CloseRoleFunConfigMoadl = () => {
+      visibleRoleFunConfig.value = false;
+         CurrentUser.value= "";
+    };
+
+
+
+
+
+
+
 
     const showCreateModal = () => {
       visibleRoleEdit.value = true;
@@ -285,7 +309,7 @@ const CreateRoleInfoBtn = (payload: any) => {
     onMounted(async () => {
       //获取表格列及处理表格列
       let columnList = await GetLoginRecordColumn({ pageName: "Role" });
-      debugger
+   
       console.log("amountLoginRecordcolumnList",columnList)
        console.log("amountRoleColumnsList",RoleColumns)
       
@@ -446,6 +470,20 @@ loading.value = true;
               },
             });
           }
+
+if (
+            event.target.parentNode.getAttribute("data-icon") == "setting" ||
+            event.target.parentNode.parentNode.getAttribute("aria-label") ==
+              "setting"
+          ) {
+            const Id = record.SysRoleId;
+          CurrentUser.value= record.sysUserId;
+           visibleRoleFunConfig.value = true;
+           console.log( visibleRoleFunConfig.value )
+      modalTitleRoleFunConfig.value = "【配置角色功能权限】";
+          }
+
+
         },
       };
     };
@@ -628,6 +666,10 @@ UpdateRoleInfoBtn,
 CreateRoleInfoBtn,
  showCreateModal
 
+
+
+ ,visibleRoleFunConfig,
+      modalTitleRoleFunConfig,CloseRoleFunConfigMoadl,CurrentUser
     };
   },
 });

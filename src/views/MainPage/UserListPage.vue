@@ -17,7 +17,7 @@
       :loading="loading"
       :columns="UserListColumns"
       :data-source="UserDataList"
-      :scroll="{ x: 1000, y: 'calc(100vh - 310px)' }"
+      :scroll="{ x: 200, y: 'calc(100vh - 310px)' }"
       :customRow="rowActionClick"
       :row-selection="{
         selectedRowKeys: selectedRowKeys,
@@ -91,6 +91,21 @@
           title="复制"
           ><CopyFilled mark="copy"
         /></a>
+
+
+
+
+<a
+          style="
+            color: rgba(18, 96, 214, 0.733);
+            font-size: 20px;
+            font-weight: 800;
+            margin-left: 9px;
+          "
+          title="重置密码"
+          ><ApiFilled mark="set"
+        /></a>
+
 
         <a
           style="
@@ -190,7 +205,7 @@ import {
   BatchDeleteUser,
   UpdateUserDatas,
   AddUserDatas,
-  CopyUserDataById,BatchExportUser
+  CopyUserDataById,BatchExportUser,ReSetUserPwd
 } from "../../Request/userRequest";
 import { message, Modal } from "ant-design-vue";
 import UserListQueryHeader from "../../components/UserListQueryHeader.vue";
@@ -211,7 +226,7 @@ import {
   HighlightFilled,
   CopyOutlined,
   SettingOutlined,
-  SettingFilled,
+  SettingFilled,ApiFilled
 } from "@ant-design/icons-vue";
 // import FileSaver from "file-saver";
 /*eslint-disabled*/
@@ -232,7 +247,7 @@ export default defineComponent({
     HighlightFilled,
     CopyOutlined,
     SettingOutlined,
-    SettingFilled,ExportExcelModal,SettingModal
+    SettingFilled,ExportExcelModal,SettingModal,ApiFilled
   },
   setup() {
     const UserDataEntityState = reactive(new UserDataEntity());
@@ -293,9 +308,12 @@ let visibleSetting = ref<boolean>(false);
       UserDataEntityState.EditData.phone = "";
 
       UserDataEntityState.EditData.email = "";
-      UserDataEntityState.EditData.level = "";
+      UserDataEntityState.EditData.level = "未选择";
       UserDataEntityState.EditData.userDesc = "";
       UserDataEntityState.EditData.useStatus = "未选择";
+       UserDataEntityState.EditData.pcLoginStatus = "未选择";
+        UserDataEntityState.EditData.weChatLoginStatus = "未选择";
+         UserDataEntityState.EditData.appLoginStatus = "未选择";
     };
 
     const closeMoadl = () => {
@@ -589,11 +607,26 @@ console.log("headers",res.headers)
       let columnList = await GetUserColumn({"pageName":"SysUser"});
        console.log("amount",columnList)
       for (var i in columnList) {
+        if(columnList[i].title=="操作")
+        {
+          columnList[i].fixed="right"
+         columnList[i].width=160
+          columnList[i].dataIndex="action"
+        }
+ if(columnList[i].title=="密码")
+        {
+         
+         columnList[i].width=280
+         
+        }
+
+         
         console.log(columnList[i]["slots"]);
         if (columnList[i]["slots"] == null) {
           delete columnList[i]["slots"];
         }
       }
+      console.log("columnList",columnList)
       UserDataEntityState.UserListColumns = columnList;
 
       //获用户数据
@@ -660,6 +693,23 @@ console.log("headers",res.headers)
               }
             });
           }
+ if (
+            event.target.parentNode.getAttribute("data-icon") == "api" ||
+            event.target.parentNode.parentNode.getAttribute("aria-label") ==
+              "api"
+          ) {
+            const Id = record.sysUserId;
+
+            ReSetUserPwd({ Id: Id }).then((res: any) => {
+              console.log(res);
+              if (res.isSuccessful) {
+                refreshMark.value = new Date().getTime().toString();
+                UserDataEntityState.selectedRowKeys = [];
+                UserDataEntityState.selectedRows = [];
+                message.success("密码重置成功.");
+              }
+            });
+          }
 
           if (
             event.target.parentNode.getAttribute("data-icon") == "edit" ||
@@ -681,6 +731,9 @@ console.log("headers",res.headers)
             UserDataEntityState.EditData.userDesc = res[0].userDesc;
             UserDataEntityState.EditData.useStatus = res[0].useStatus;
             UserDataEntityState.EditData.gender = res[0].gender;
+             UserDataEntityState.EditData.pcLoginStatus = res[0].pcLoginStatus;
+              UserDataEntityState.EditData.weChatLoginStatus = res[0].weChatLoginStatus;
+               UserDataEntityState.EditData.appLoginStatus = res[0].appLoginStatus;
             visible.value = true;
             modalTitle.value = "编辑【用户信息】";
           }

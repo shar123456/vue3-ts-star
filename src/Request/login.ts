@@ -49,7 +49,20 @@ export function register(res:IFormRegisterState ):any {
     })
 }
 
+
 export function getCode():any {
+    return instance({
+        url: '/Authentication/GetCode',
+        method: 'get',
+      
+    })
+}
+
+
+
+
+
+export function getCode1():any {
     return instance({
         url: '/GetCode',
         method: 'post',

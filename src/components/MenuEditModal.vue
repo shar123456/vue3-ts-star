@@ -64,10 +64,10 @@
             style="width: 150px"
           >
             <a-select-option value="未选择">未选择</a-select-option>
-            <a-select-option value="AppstoreOutlined">AppstoreOutlined</a-select-option>
-            <a-select-option value="AppstoreOutlined">AppstoreOutlined</a-select-option>
-              <a-select-option value="AppstoreOutlined">AppstoreOutlined</a-select-option>
-                 <a-select-option value="AppstoreOutlined">AppstoreOutlined</a-select-option>
+            <a-select-option value="<SettingOutlined/>"><SettingOutlined/></a-select-option>
+            <a-select-option value="<FileWordOutlined/>"><FileWordOutlined/></a-select-option>
+              <a-select-option value="<SnippetsOutlined/>"><SnippetsOutlined/></a-select-option>
+                 <a-select-option value="<TrademarkCircleOutlined/>"><TrademarkCircleOutlined/></a-select-option>
           </a-select>
         </div>
       </div>
@@ -104,9 +104,37 @@
 <script lang="ts">
 import {defineComponent, reactive, toRefs,ref,onMounted,watch } from 'vue'
 import { MenuDataEntity,IMenuInfo } from "../TypeInterface/IMenuInterface";
+import {
+  UserOutlined,
+  VideoCameraOutlined,
+  UploadOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+  DownOutlined,
+  FullscreenOutlined,
+  BellOutlined,
+  SearchOutlined,
+  AppstoreOutlined,
+  SettingOutlined,
+  TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined
+} from "@ant-design/icons-vue";
 export default defineComponent({
       props: { MenuData: MenuDataEntity,
        visibleMenu:Boolean,modalTitlesMenu: String,},
+        components: {
+    UserOutlined,
+    VideoCameraOutlined,
+    UploadOutlined,
+    MenuUnfoldOutlined,
+    MenuFoldOutlined,
+    DownOutlined,
+    FullscreenOutlined,
+    BellOutlined,
+    SearchOutlined,
+    AppstoreOutlined,
+    SettingOutlined,
+    TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined
+  },
     setup (props,context) {
         const state = reactive({
             count: 0,

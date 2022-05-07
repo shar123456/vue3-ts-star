@@ -6,10 +6,28 @@
         <div>
           <label>角色名：</label>
           <div>
-            <a-input
+            <!-- <a-input
               v-model:value="QueryConditionInfo.name"
               placeholder="角色名"
-            />
+            /> -->
+
+ <a-auto-complete
+    v-model:value="QueryConditionInfo.name"
+    style="width: 200px"
+    placeholder="角色名"
+    @search="handleSearch"
+  >
+    <template #dataSource>
+      <a-select-option v-for="email in result" :key="email">
+        {{ email }}
+      </a-select-option>
+    </template>
+  </a-auto-complete>
+
+
+
+
+
           </div>     
         </div>
 
@@ -72,10 +90,14 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, defineComponent } from "vue";
+import { reactive, toRefs, defineComponent,ref } from "vue";
 import { RoleDataEntity } from "../TypeInterface/IRoleInterface";
 import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined} from "@ant-design/icons-vue";
 import {dateFormat} from '../utility/commonFunc'
+
+import {
+ getRoleByName
+} from "../Request/RoleRequest";
 export default defineComponent({
   components: {
     SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined
@@ -83,6 +105,36 @@ export default defineComponent({
   props: {  },
   setup(props, context) {
     const state = reactive(new RoleDataEntity());
+
+
+
+const value = ref('');
+    const result = ref<string[]>([]);
+    const handleSearch = (val: string) => {
+      let res: string[];
+      // if (!val || val.indexOf('@') >= 0) {
+      //   res = [];
+      // } else {
+      //   res = ['gmail.com', '163.com', 'qq.com'].map(domain => `${val}@${domain}`);
+      // }
+
+
+ getRoleByName({ Name: val }).then((res1: any) => {
+                 
+                  if (res1.isSuccess) {
+                  result.value = res1.datas;
+                  }
+                
+
+    })
+    }
+
+
+
+
+
+
+
     const SearchBtn = () => {
       
     
@@ -138,7 +190,9 @@ const configGridBtn = () => {
       SearchBtn,
     
       ClearQueryBtn,
-      exportExcel,batchDeleteBtn,refreshBtn,importExcel,configGridBtn,showCreateModal
+      exportExcel,batchDeleteBtn,refreshBtn,importExcel,configGridBtn,showCreateModal,value,
+      result,
+      handleSearch,
     };
   },
 });

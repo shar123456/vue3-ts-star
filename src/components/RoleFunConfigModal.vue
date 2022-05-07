@@ -12,51 +12,26 @@
       @ok="handleOk"
   >
 
-<a-checkbox-group v-model:value="RoleValue" style="border:0px solid red;width:100%">
-<a-tag color="" style="margin-bottom:5px">
-    <template #icon>
-      <linkedin-outlined />
-    </template>
-    PC端
-  </a-tag>
 
-   
-   <a-row >
-    <a-col :span="6" v-for="(item) in rolesPC" :key="item.key">
-         <a-checkbox :value="item.sysRoleId" :disabled="item.useStatus=='禁用'">{{item.name}} </a-checkbox>
-         </a-col>
+
+ <a-row>
+    <a-col  style="border:0px solid red"  :span="8" v-for="(item,index) in treeEntitys" :key="index">
+
+ <a-tree
+    checkable
+    :tree-data="item.treeData"
+    v-model:expandedKeys="item.expandedKeys"
+    v-model:selectedKeys="item.selectedKeys"
+    v-model:checkedKeys="item.checkedKeys"
+  >
+
+  </a-tree>
+
+    </a-col>
    
   </a-row>
-  
-    <a-divider v-if="rolesWeChart!=undefined&&rolesWeChart.length>0" style="border-color: #7cb305" dashed />
-    <a-tag v-if="rolesWeChart!=undefined&&rolesWeChart.length>0" color="" style="margin-bottom:5px">
-    <template #icon>
-      <linkedin-outlined />
-    </template>
-    WeChart端
-  </a-tag>
 
-   <a-row v-if="rolesWeChart!=undefined&&rolesWeChart.length>0">
-     <a-col :span="6" v-for="(item) in rolesWeChart" :key="item.key">
-         <a-checkbox :value="item.sysRoleId" :disabled="item.useStatus=='禁用'">{{item.name}} </a-checkbox>
-         </a-col>
-  </a-row>
  
-  <a-divider  v-if="rolesApp!=undefined&&rolesApp.length>0" style="border-color: #7cb305" dashed />
-  <a-tag  v-if="rolesApp!=undefined&&rolesApp.length>0" color="" style="margin-bottom:5px">
-    <template #icon>
-      <linkedin-outlined />
-    </template>
-    App端
-  </a-tag>
-
-  <a-row v-if="rolesApp!=undefined&&rolesApp.length>0">
-    <a-col :span="6" v-for="(item) in rolesApp" :key="item.key">
-         <a-checkbox :value="item.sysRoleId" :disabled="item.useStatus=='禁用'">{{item.name}} </a-checkbox>
-         </a-col>
-  </a-row>
-   
-  </a-checkbox-group>
   </a-modal>
     </div>
 </template>
@@ -82,10 +57,77 @@ interface Itest {
     colsForeignKeyId: string;
     
   }
-
+const treeData1: any[] = [
+  {
+    title: '系统设置',
+    key: '0-0',
+    children: [
+      {
+        title: '用户列表',
+        key: '0-0-0',
+        disabled: false,
+       
+      },
+      {
+        title: '角色列表',
+        key: '0-0-1',
+    }
+    ,
+      {
+        title: '菜单列表',
+        key: '0-0-2',
+    }
+     ,
+      {
+        title: '登录记录',
+        key: '0-0-3',
+    }
+     ,
+      {
+        title: '文件管理',
+        key: '0-0-4',
+    }],
+      
+    
+  }
+];
+const treeData2: any[] = [
+  {
+    title: '系统设置1',
+    key: '0-1',
+    children: [
+      {
+        title: '用户列表1',
+        key: '0-1-0',
+        disabled: false,
+       
+      },
+      {
+        title: '角色列表1',
+        key: '0-1-1',
+    }
+    ,
+      {
+        title: '菜单列表1',
+        key: '0-1-2',
+    }
+     ,
+      {
+        title: '登录记录1',
+        key: '0-1-3',
+    }
+     ,
+      {
+        title: '文件管理1',
+        key: '0-1-4',
+    }],
+      
+    
+  }
+];
 export default defineComponent({
       props: { CurrentUser:String,
-       visibleSetting:Boolean,modalTitleSetting: String},
+       visibleRoleFunConfig:Boolean,modalTitleRoleFunConfig: String},
        components: {
     InboxOutlined, TwitterOutlined,
   YoutubeOutlined,
@@ -96,41 +138,75 @@ export default defineComponent({
         const state = reactive({
             count: 0,
         })
-          let visibleConfigGrid = ref<boolean>(props.visibleSetting);
-          let titleConfigGrid = ref<string|undefined>(props.modalTitleSetting);
+          let visibleConfigGrid = ref<boolean>(props.visibleRoleFunConfig);
+          let titleConfigGrid = ref<string|undefined>(props.modalTitleRoleFunConfig);
            let CurrentUser=ref<string|undefined>(props.CurrentUser);
         
 
+   let treeEntitys =ref<any[]>();
 
-              let RoleValue=ref<any[]>([]);
 
-let rolesPC=ref<any[]>([]);
-let rolesWeChart=ref<any[]>([]);
-let rolesApp=ref<any[]>([]);
+
+
+    const expandedKeys = ref<string[]>(['0-0', '0-1']);
+    const selectedKeys = ref<string[]>(['0-0-0', '0-0-1']);
+    const checkedKeys = ref<string[]>(['0-0-0', '0-0-1']);
+    watch(expandedKeys, () => {
+      console.log('expandedKeys', expandedKeys);
+    });
+    watch(selectedKeys, () => {
+      console.log('selectedKeys', selectedKeys);
+    });
+    watch(checkedKeys, () => {
+      console.log('checkedKeys', checkedKeys);
+    });
 const handleOk = (e: MouseEvent) => {
-  if(RoleValue.value==undefined||RoleValue.value.length<1)
-  {
-    message.success("请勾选要配置的角色.");
-    return false;
-  }
-      SetRole({roleIds:RoleValue.value,userId:CurrentUser.value}).then((res: any) => {
-   console.log(res)
-            if (res.isSuccess) {
-                  message.success("配置成功.");
-          context.emit("CloseSetingMoadl");
-            }
-         });
+  
+   treeEntitys.value?.forEach((item)=>{
+           console.log(item.checkedKeys)
+                //console.log(item.selectedKeys)
+   })
 
-console.log(RoleValue.value)
   };
 
  
+
+
+ onMounted(()=>{
+     let ss1={
+    treeData:treeData1,
+     expandedKeys:['0-0'],
+      selectedKeys:['0-0-0', '0-0-1'],
+       checkedKeys:['0-0-0', '0-0-1']}
+
+let ss2=
+    {treeData:treeData2,
+     expandedKeys:['0-1'],
+      selectedKeys:['0-1-0', '0-1-1'],
+       checkedKeys:['0-1-0', '0-1-1']}
+let ss3=
+    {treeData:treeData2,
+     expandedKeys:['0-1'],
+      selectedKeys:['0-1-0', '0-1-1'],
+       checkedKeys:['0-1-0', '0-1-1']}
+       let ss4=
+    {treeData:treeData2,
+     expandedKeys:['0-1'],
+      selectedKeys:['0-1-0', '0-1-1'],
+       checkedKeys:['0-1-0', '0-1-1']}
+       let ss5=
+    {treeData:treeData2,
+     expandedKeys:['0-1'],
+      selectedKeys:['0-1-0', '0-1-1'],
+       checkedKeys:['0-1-0', '0-1-1']}
+treeEntitys.value=[ss1,ss2,ss3,ss4,ss5]
+ })
  
     const onCancel = (e: MouseEvent) => {
    context.emit("CloseSetingMoadl");
     };
     watch(
-      () => props.visibleSetting,
+      () => props.visibleRoleFunConfig,
       (newValue) => {
            
         
@@ -139,10 +215,10 @@ console.log(RoleValue.value)
       }
     );
      watch(
-      () => props.modalTitleSetting,
+      () => props.modalTitleRoleFunConfig,
       (newValue) => {
            
-      
+     console.log("modalTitleRoleFunConfig",newValue);
           
             titleConfigGrid.value=newValue;
       }
@@ -152,18 +228,7 @@ console.log(RoleValue.value)
       (newValue) => {
            
  CurrentUser.value=newValue;
- RoleValue.value=[];
- GetRoleById({Id:newValue}).then((res: any) => {
-   console.log(res)
-            if (res.isSuccess) {
-             
-           rolesPC.value=res.datas.rolePC;
-            rolesWeChart.value=res.datas.roleWeChat;
-             rolesApp.value=res.datas.roleApp;
-              RoleValue.value=res.datas.selectedRoleIds;
-            }
-         });
-
+ 
 
 
 
@@ -218,7 +283,10 @@ console.log(RoleValue.value)
       }
     );
         return {
-            ...toRefs(state),visibleConfigGrid,titleConfigGrid,onCancel,handleOk,RoleValue,rolesPC,rolesWeChart,rolesApp
+            ...toRefs(state),visibleConfigGrid,titleConfigGrid,onCancel,handleOk,treeEntitys,
+      expandedKeys,
+      selectedKeys,
+      checkedKeys
      
    
         }

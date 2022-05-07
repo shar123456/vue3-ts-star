@@ -18,6 +18,14 @@ interface IDataItem {
     level: string;
     createTimeStr: string;
    gender: string;
+   pcLoginStatus: string;
+   weChatLoginStatus: string;
+   appLoginStatus: string;
+
+
+  
+
+
   }
     interface IUserQueryInfo {
    
@@ -43,8 +51,9 @@ interface IDataItem {
       address: "",
       phone: "",
       email: "",
-      level: "",
-   
+      level: "未选择",
+    
+
     }
     
     UserDataList:Array<IUserInfo>=[];
@@ -63,7 +72,10 @@ interface IDataItem {
         email: "",
         level:"",
         createTimeStr: "",
-        gender:""
+        gender:"",
+        pcLoginStatus: "",
+        weChatLoginStatus: "",
+        appLoginStatus: "",
   }
     UserListColumns:any=[];
     selectedRowKeys:string[]= [];

@@ -107,11 +107,12 @@ export default defineComponent({
     const handleFinish = async (values: any) => {
       spinning.value = !spinning.value;
 
-      let result = await store.dispatch("RegisterSys", formRegisterState);
-      console.log(result);
+      let res = await store.dispatch("RegisterSys", formRegisterState);
+      console.log(res.result);
 
-      if (!result) {
-        message.error("注册失败.");
+      if (!res.result) {
+        message.error(res.msg);
+         spinning.value = !spinning.value;
       } else {
         spinning.value = !spinning.value;
         message.success("注册成功,正在跳转到登录页面.");
@@ -145,9 +146,9 @@ export default defineComponent({
       SetInetervalConfig.timer = setInterval(() => {
         const s = SetInetervalConfig.sec--;
         SetInetervalConfig.btn_txt = `${s} 秒`;
-        if (s <= 0) {
+        if (s <= 0||result.success) {
           clearInterval(SetInetervalConfig.timer);
-
+              
           SetInetervalConfig.btn_txt = `重新获取`;
           SetInetervalConfig.sec = 10;
           SetInetervalConfig.btn_disabled = false;

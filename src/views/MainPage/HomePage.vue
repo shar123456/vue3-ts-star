@@ -8,7 +8,7 @@
      
  </div>
  <div class="HP-Up-Right">
-     <div :style="{ width: '100%', border: '1px solid #d9d9d9', borderRadius: '4px' }">
+     <!-- <div :style="{ width: '700px', border: '1px solid #d9d9d9', borderRadius: '4px' }">
      <a-calendar v-model:value="value" :fullscreen="true" :locale="locale"   @select="onSelect" @panelChange="onPanelChange"  >   
     <template #dateCellRender="{ current }">
       <ul class="events">
@@ -24,7 +24,15 @@
       </div>
     </template>
   </a-calendar>
-     </div>
+     </div> -->
+     <a-card title="本月消息通知" headStyle="font-size:21px;font-weight:600" style="width: 100%;height:100%">
+    <template #extra><a href="#">更多</a></template>
+    <p>1.总部视频会议，主要讨论第三季生产部产能消耗问题.</p>
+    <p>2.拟定排产初步方案.</p>
+      <p>3.生产会议，针对第三产线生产设备优化等相关问题.</p>
+    <p>4.提交采购合同，并对相关附件信息进行审核，签字确认.</p>
+    
+  </a-card>
  </div>
  </div>
  <div class="HP-Down">
@@ -32,7 +40,16 @@
    
 
 
-
+ <a-row style="width:100%;height:100%;border:0px solid red">
+    <a-col  :span="6"><div style="width:100%;height:85%;" id="pinA"></div>
+    <div style="width:100%;height:15%;text-align:center;font-size:18px;font-weight:700;color:#83757E" >设备号ED0001</div></a-col>
+    <a-col :span="6" style="border-left:1px dotted #dedede"><div style="width:100%;height:85%;" id="pinB"></div>
+     <div style="width:100%;height:15%;text-align:center;font-size:18px;font-weight:700;color:#83757E" >设备号ED0002</div></a-col>
+    <a-col :span="6" style="border-left:1px dotted #dedede"><div style="width:100%;height:85%;" id="pinC"></div>
+     <div style="width:100%;height:15%;text-align:center;font-size:18px;font-weight:700;color:#83757E" >设备号ED0003</div></a-col>
+    <a-col :span="6" style="border-left:1px dotted #dedede"><div style="width:100%;height:85%;" id="pinD"></div>
+     <div style="width:100%;height:15%;text-align:center;font-size:18px;font-weight:700;color:#83757E" >设备号ED0004</div></a-col>
+  </a-row>
 
 
 
@@ -115,6 +132,10 @@ const getMonthData = (value: any) => {
      value
     };
   let ProductEfficiencyChart:any=undefined;
+    let showPinAChart:any=undefined;
+       let showPinBChart:any=undefined;
+          let showPinCChart:any=undefined;
+             let showPinDChart:any=undefined;
  onMounted(() => {
 
      
@@ -122,7 +143,18 @@ const getMonthData = (value: any) => {
 
  
 showEchart();
-setTimeout(()=>{ProductEfficiencyChart.resize();},100);
+showPinA();
+showPinB();
+showPinC();
+showPinD();
+
+setTimeout(()=>{ProductEfficiencyChart.resize();
+
+showPinAChart.resize();
+showPinBChart.resize();
+showPinCChart.resize();
+showPinDChart.resize();
+},100);
 
 
 
@@ -130,6 +162,400 @@ setTimeout(()=>{ProductEfficiencyChart.resize();},100);
 
 
  })
+
+
+let showPinA=()=>{
+    const handred = 100;
+let point = 66;
+ showPinAChart =echarts.init(document?.getElementById("pinA") as HTMLElement);
+
+    let showPinAOption;
+showPinAOption = {
+  title: {
+    text: point + "%",
+    x: "center",
+    y: "center",
+    textStyle: {
+      fontWeight: "normal",
+      color: "#29EEF3",
+      fontSize: "60",
+    },
+  },
+  tooltip: {
+    formatter: function (params:any) {
+      return params.name + "：" + params.percent + " %";
+    },
+  },
+  legend: {
+    show: true,
+    itemGap: 12,
+    data: ["产能", "剩余"], 
+  },
+
+  series: [
+    {
+      name: "circle",
+      type: "pie",
+      clockWise: true,
+      radius: ["50%", "66%"],
+      itemStyle: {
+        normal: {
+          label: {
+            show: false,
+          },
+          labelLine: {
+            show: false,
+          },
+        },
+      },
+      hoverAnimation: false,
+      data: [
+        {
+          value: point,
+          name: "产能",
+          itemStyle: {
+            normal: {
+              color: {
+                // 颜色渐变
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "#4FADFD", // 0% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: "#28E8FA", // 100% 处的颜色1
+                  },
+                ],
+              },
+              label: {
+                show: false,
+              },
+              labelLine: {
+                show: false,
+              },
+            },
+          },
+        },
+        {
+          name: "剩余",
+          value: handred - point,
+          itemStyle: {
+            normal: {
+              color: "#E1E8EE",
+            },
+          },
+        },
+      ],
+    },
+  ],
+};
+
+// 3. 把配置给实例对象
+    showPinAChart.setOption(showPinAOption);
+    // 4. 让图表跟随屏幕自动的去适应
+    window.addEventListener("resize", function() {
+        showPinAChart.resize();
+    });
+
+
+
+}
+
+let showPinD=()=>{
+    const handred = 100;
+let point = 70;
+ showPinDChart =echarts.init(document?.getElementById("pinD") as HTMLElement);
+
+    let showPinDOption;
+showPinDOption = {
+  title: {
+    text: point + "%",
+    x: "center",
+    y: "center",
+    textStyle: {
+      fontWeight: "normal",
+      color: "#29EEF3",
+      fontSize: "60",
+    },
+  },
+  tooltip: {
+    formatter: function (params:any) {
+      return params.name + "：" + params.percent + " %";
+    },
+  },
+  legend: {
+    show: true,
+    itemGap: 12,
+    data: ["产能", "剩余"],
+  },
+
+  series: [
+    {
+      name: "circle",
+      type: "pie",
+      clockWise: true,
+      radius: ["50%", "66%"],
+      itemStyle: {
+        normal: {
+          label: {
+            show: false,
+          },
+          labelLine: {
+            show: false,
+          },
+        },
+      },
+      hoverAnimation: false,
+      data: [
+        {
+          value: point,
+          name: "产能",
+          itemStyle: {
+            normal: {
+              color: {
+                // 颜色渐变
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "#D5D81A", // 0% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: "#F0F290", // 100% 处的颜色1
+                  },
+                ],
+              },
+              label: {
+                show: false,
+              },
+              labelLine: {
+                show: false,
+              },
+            },
+          },
+        },
+        {
+          name: "剩余",
+          value: handred - point,
+          itemStyle: {
+            normal: {
+              color: "#E1E8EE",
+            },
+          },
+        },
+      ],
+    },
+  ],
+};
+
+// 3. 把配置给实例对象
+    showPinDChart.setOption(showPinDOption);
+    // 4. 让图表跟随屏幕自动的去适应
+    window.addEventListener("resize", function() {
+        showPinDChart.resize();
+    });
+
+
+
+}
+let showPinC=()=>{
+    const handred = 100;
+let point = 77;
+ showPinCChart =echarts.init(document?.getElementById("pinC") as HTMLElement);
+
+    let showPinCOption;
+showPinCOption = {
+  title: {
+    text: point + "%",
+    x: "center",
+    y: "center",
+    textStyle: {
+      fontWeight: "normal",
+      color: "#29EEF3",
+      fontSize: "60",
+    },
+  },
+  tooltip: {
+    formatter: function (params:any) {
+      return params.name + "：" + params.percent + " %";
+    },
+  },
+  legend: {
+    show: true,
+    itemGap: 12,
+    data: ["产能", "剩余"],
+  },
+
+  series: [
+    {
+      name: "circle",
+      type: "pie",
+      clockWise: true,
+      radius: ["50%", "66%"],
+      itemStyle: {
+        normal: {
+          label: {
+            show: false,
+          },
+          labelLine: {
+            show: false,
+          },
+        },
+      },
+      hoverAnimation: false,
+      data: [
+        {
+          value: point,
+          name: "产能",
+          itemStyle: {
+            normal: {
+              color: {
+                // 颜色渐变
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "#56E11B", // 0% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: "#ADF290", // 100% 处的颜色1
+                  },
+                ],
+              },
+              label: {
+                show: false,
+              },
+              labelLine: {
+                show: false,
+              },
+            },
+          },
+        },
+        {
+          name: "剩余",
+          value: handred - point,
+          itemStyle: {
+            normal: {
+              color: "#E1E8EE",
+            },
+          },
+        },
+      ],
+    },
+  ],
+};
+
+// 3. 把配置给实例对象
+    showPinCChart.setOption(showPinCOption);
+    // 4. 让图表跟随屏幕自动的去适应
+    window.addEventListener("resize", function() {
+        showPinCChart.resize();
+    });
+
+
+
+}
+let showPinB=()=>{
+    const handred = 100;
+let point = 38;
+ showPinBChart =echarts.init(document?.getElementById("pinB") as HTMLElement);
+
+    let showPinBOption;
+showPinBOption = {
+  title: {
+    text: point + "%",
+    x: "center",
+    y: "center",
+    textStyle: {
+      fontWeight: "normal",
+      color: "#29EEF3",
+      fontSize: "60",
+    },
+  },
+  tooltip: {
+    formatter: function (params:any) {
+      return params.name + "：" + params.percent + " %";
+    },
+  },
+  legend: {
+    show: true,
+    itemGap: 12,
+    data: ["产能", "剩余"],
+  },
+
+  series: [
+    {
+      name: "circle",
+      type: "pie",
+      clockWise: true,
+      radius: ["50%", "66%"],
+      itemStyle: {
+        normal: {
+          label: {
+            show: false,
+          },
+          labelLine: {
+            show: false,
+          },
+        },
+      },
+      hoverAnimation: false,
+      data: [
+        {
+          value: point,
+          name: "产能",
+          itemStyle: {
+            normal: {
+              color: {
+                // 颜色渐变
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "#CE45E3", // 0% 处的颜色
+                  },
+                  {
+                    offset: 1,
+                    color: "#EFC0F6", // 100% 处的颜色1
+                  },
+                ],
+              },
+              label: {
+                show: false,
+              },
+              labelLine: {
+                show: false,
+              },
+            },
+          },
+        },
+        {
+          name: "剩余",
+          value: handred - point,
+          itemStyle: {
+            normal: {
+              color: "#E1E8EE",
+            },
+          },
+        },
+      ],
+    },
+  ],
+};
+
+// 3. 把配置给实例对象
+    showPinBChart.setOption(showPinBOption);
+    // 4. 让图表跟随屏幕自动的去适应
+    window.addEventListener("resize", function() {
+        showPinBChart.resize();
+    });
+
+
+
+}
+
+
+
 
 let showEchart=()=>{
  ProductEfficiencyChart =echarts.init(document?.getElementById("chinaChart") as HTMLElement);
@@ -394,7 +820,7 @@ let showEchart=()=>{
 
 <style scoped>
 
- .warp {
+ /* .warp {
     height: 370px;
     width: 360px;
     margin: 0 auto;
@@ -416,9 +842,9 @@ let showEchart=()=>{
         display: flex;
         justify-content: space-between;
         font-size: 15px;border:1px solid red
-      }
+      } */
 .HomePageContent{
-    border:1px solid rgb(19, 92, 201);
+    border:0px solid rgb(19, 92, 201);
     box-sizing: border-box;
    
       min-width:1000px;
@@ -432,7 +858,7 @@ let showEchart=()=>{
      
 }
 .HomePage{
-    border:1px solid red;
+    border:0px solid red;
     box-sizing: border-box;
    padding:1px;
     height: calc(100vh - 92px);
@@ -446,7 +872,7 @@ let showEchart=()=>{
 }
 
 .HP-Up{
-border: 1px solid blue;
+border: 0px solid blue;
 
 box-sizing: border-box;
 width: 100%;
@@ -458,18 +884,18 @@ align-items: center;
 }
 .HP-Up-Left
 {
-    border: 1px solid blue;
+    border:1px solid #dedede;
 
 box-sizing: border-box;
-width:74%;
+width:70%;
 height: 100%;
 }
 .HP-Up-Right
 {
-    border: 1px solid blue;
+    border: 1px solid #dedede;
 
 box-sizing: border-box;
-width:25.8%;
+width:29.8%;
 height: 100%;
 overflow: auto;
 }
@@ -477,8 +903,8 @@ overflow: auto;
 
 
 .HP-Down{
-border: 1px solid blue;
-background-color: aquamarine;
+border: 1px solid #dedede;
+
 box-sizing: border-box;
 width: 100%;
 height: 56%;

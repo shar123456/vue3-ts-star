@@ -22,17 +22,17 @@ export default createStore({
            login({user,password}).then((res:any)=>{
        
               if (!res.result) {
-                resolve(false);
+                resolve({result:false,msg:res.msg});
               } else {
                 commit("SetToken",res.token);
                 commit("SetUserName",user);
                 
                 localStorage.setItem("starToken","Bearer "+res.token);
-                resolve(true);
+                resolve({result:true,msg:""});
                }
             }).catch((err:any)=>{
               console.log(err);
-              resolve(false);
+              resolve({result:false,msg:"网络异常,通讯失败."});
             });
         }, 200);
       });
@@ -43,15 +43,15 @@ export default createStore({
          setTimeout(  ()  => {          
           register(payLoad).then((res:any)=>{
                if (!res.result) {
-                 resolve(false);
+                 resolve({result:false,msg:res.msg});
                } else {
                 commit("SetToken","");
                 commit("SetUserName","***");
-                 resolve(true);
+                 resolve({result:true,msg:""});
                 }
              }).catch((err:any)=>{
                console.log(err);
-               resolve(false);
+               resolve({result:false,msg:"网络异常,通讯失败."});
              });
          }, 1);
        });
