@@ -108,6 +108,21 @@
           {{ hasSub === '是' ? '是' : '否' }}
         </span>
       </template> 
+
+
+ <template #name4="{ text: MenuIcon }">
+        <span>
+          <!-- <a-tag :color="hasSub ==true ? 'blue' : 'red'">
+            {{ hasSub }}
+          </a-tag> -->
+         <iconFont  :IconStr="MenuIcon"  />
+        </span>
+      </template> 
+
+ 
+
+
+
     </a-table>
 
     <div class="userPagination">
@@ -191,7 +206,7 @@ import {
   DeleteMenuById,
 UpdateMenuDatas
 } from "../../Request/menuRequest";
-
+import iconFont from "../../components/iconFont.vue";
 
 const columns = [
   // { title: '菜单Id', dataIndex: 'menuId',width:300, key: 'name' },
@@ -266,7 +281,7 @@ const data: IMenuInfo[] = [
 export default defineComponent({
     components: {
     MenuHeader,
-    DeleteTwoTone,EditFilled,MenuEditModal
+    DeleteTwoTone,EditFilled,MenuEditModal,iconFont
    
   },
   setup() {

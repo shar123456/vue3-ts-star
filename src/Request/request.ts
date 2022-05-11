@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useRouter, useRoute } from "vue-router";
 enum messageEnum{
 "操作成功"=200,
 "密码错误"=400,
@@ -44,8 +45,11 @@ instance.interceptors.response.use(
         {
             const result=  res.data ? res.data : res;
             const code:number=result.code;
-              if(code!=200)
+              if(res.status==401)
               {
+                const router = useRouter();
+           
+                router.push({ path: "/login", query: { selected: "1" } });
                   ///alert(messageEnum[code]);
                   //return Promise.reject(result);
                   return res.data;

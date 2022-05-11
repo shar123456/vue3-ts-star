@@ -41,7 +41,7 @@ import {defineComponent, reactive, toRefs,ref,onMounted,watch } from 'vue'
 import { IRoleInfo } from "../TypeInterface/IRoleInterface";
 import { message} from "ant-design-vue";
 import {
-GetRoleById,SetRole
+GetMenuById,SetRoleMenu
  
 } from "../Request/RoleRequest";
 import {
@@ -151,21 +151,47 @@ export default defineComponent({
     const expandedKeys = ref<string[]>(['0-0', '0-1']);
     const selectedKeys = ref<string[]>(['0-0-0', '0-0-1']);
     const checkedKeys = ref<string[]>(['0-0-0', '0-0-1']);
-    watch(expandedKeys, () => {
-      console.log('expandedKeys', expandedKeys);
-    });
-    watch(selectedKeys, () => {
-      console.log('selectedKeys', selectedKeys);
-    });
-    watch(checkedKeys, () => {
-      console.log('checkedKeys', checkedKeys);
-    });
+    // watch(expandedKeys, () => {
+    //   console.log('expandedKeys', expandedKeys);
+    // });
+    // watch(selectedKeys, () => {
+    //   console.log('selectedKeys', selectedKeys);
+    // });
+    // watch(checkedKeys, () => {
+    //   console.log('checkedKeys', checkedKeys);
+    // });
+      let MenuIdValue=ref<any>([]);
 const handleOk = (e: MouseEvent) => {
   
    treeEntitys.value?.forEach((item)=>{
-           console.log(item.checkedKeys)
+           console.log("checkedKeys",item.checkedKeys)
+           if(item.checkedKeys!=undefined||item.checkedKeys.length>0)
+           {
+MenuIdValue.value.push(...item.checkedKeys);
+           }
                 //console.log(item.selectedKeys)
    })
+
+
+ if(MenuIdValue.value==undefined||MenuIdValue.value.length<1)
+  {
+    message.success("请勾选要配置的权限.");
+    return false;
+  }
+
+
+
+console.log("MenuIdValue",MenuIdValue.value)
+
+
+   SetRoleMenu({MenuIds:MenuIdValue.value,roleId:CurrentUser.value}).then((res: any) => {
+   console.log(res)
+            if (res.isSuccess) {
+                  message.success("配置成功.");
+          context.emit("CloseSetingMoadl");
+            }
+         });
+
 
   };
 
@@ -199,7 +225,7 @@ let ss3=
      expandedKeys:['0-1'],
       selectedKeys:['0-1-0', '0-1-1'],
        checkedKeys:['0-1-0', '0-1-1']}
-treeEntitys.value=[ss1,ss2,ss3,ss4,ss5]
+//treeEntitys.value=[ss1,ss2,ss3,ss4,ss5]
  })
  
     const onCancel = (e: MouseEvent) => {
@@ -218,7 +244,7 @@ treeEntitys.value=[ss1,ss2,ss3,ss4,ss5]
       () => props.modalTitleRoleFunConfig,
       (newValue) => {
            
-     console.log("modalTitleRoleFunConfig",newValue);
+    
           
             titleConfigGrid.value=newValue;
       }
@@ -228,58 +254,32 @@ treeEntitys.value=[ss1,ss2,ss3,ss4,ss5]
       (newValue) => {
            
  CurrentUser.value=newValue;
- 
-
-
+  console.log("CurrentUserRoleFunConfig", CurrentUser.value);
+  treeEntitys.value=[];
+treeEntitys.value?.forEach((item)=>{
+          
+           if(item.checkedKeys!=undefined||item.checkedKeys.length>0)
+           {
+item.checkedKeys=[];
+           }
+                //console.log(item.selectedKeys)
+   })
+ GetMenuById({Id:newValue}).then((res: any) => {
+   console.log(res)
+            if (res.isSuccess) {
+             console.log(res)
+             treeEntitys.value=res.datas
+          //
+            }
+         });
 
 
 
 
       
-          console.log("CurrentUsernewValue",newValue);
+        
            
-            // RoleValue.value=['1','12'];
-            // rolesPC.value=[{
-            //     sysRoleId:"1",
-            //     name:"管理员",
-            //     useStatus:"启用",
-            //     roleType:"PC",
-            //     createTimeStr:"",
-            //     key:"0",
-              
-            // },{
-            //     sysRoleId:"12",
-            //     name:"管理员111",
-            //     useStatus:"启用",
-            //     roleType:"PC",
-            //     createTimeStr:"",
-            //     key:"0",
-                 
-            // },{
-            //     sysRoleId:"13",
-            //     name:"管理员WeCart",
-            //     useStatus:"禁用",
-            //     roleType:"WeCart",
-            //     createTimeStr:"",
-            //     key:"1",
-                
-            // },{
-            //     sysRoleId:"15",
-            //     name:"管理员App",
-            //     useStatus:"启用",
-            //     roleType:"App",
-            //     createTimeStr:"",
-            //     key:"2",
-                 
-            // },{
-            //     sysRoleId:"15",
-            //     name:"管理员App",
-            //     useStatus:"启用",
-            //     roleType:"App",
-            //     createTimeStr:"",
-            //     key:"2",
-                
-            // }];
+           
       }
     );
         return {

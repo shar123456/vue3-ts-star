@@ -14,18 +14,18 @@
 
 <a-row style="border:0px solid red;background-color:#f7f7f7;">
    <a-col :span="2" class="configCol">序号</a-col>
-   <a-col :span="6" class="configCol">列初始名</a-col>
-    <a-col :span="7" class="configCol">列当前名</a-col>
-    <a-col :span="3" class="configCol">显示开关</a-col>
-    <a-col :span="3" class="configCol">列宽</a-col>
+    <a-col :span="8" class="configCol">列初始名</a-col>
+        <a-col :span="8" class="configCol">列导出名</a-col>
+    <a-col :span="3" class="configCol">是否导出</a-col>
+  
     <a-col :span="3" class="configCol">排列位置</a-col>
   </a-row>
 <a-row  v-for="(item,index) in LColumns" :key="index">
  <a-col :span="2" style="text-align:center;border:1px solid #f0f0f0;">{{index}}</a-col>
-    <a-col :span="6"><a-input  disabled="true" v-model:value="item.oldTitle" :placeholder="item.oldTitle" /></a-col>
-        <a-col :span="7"><a-input  v-model:value="item.title" :placeholder="item.title" /></a-col>
+    <a-col :span="8"><a-input disabled="true"  v-model:value="item.oldTitle" :placeholder="item.oldTitle" /></a-col>
+      <a-col :span="8"><a-input  v-model:value="item.currentTitle" :placeholder="item.currentTitle" /></a-col>
     <a-col :span="3" style="text-align:center;border:1px solid #f0f0f0;"><a-switch checked-children="开" un-checked-children="关" v-model:checked="item.isUse" /></a-col>
-    <a-col :span="3" style="text-align:center;border:0px solid #f0f0f0;"><a-input-number  v-model:value="item.width" :min="10" :max="2000" /></a-col>
+   
     <a-col :span="3" style="text-align:center;border:0px solid #f0f0f0;"> <a-input-number  v-model:value="item.configOrder" :min="1" :max="100" /></a-col>
   </a-row>
 
@@ -41,17 +41,13 @@ import {defineComponent, reactive, toRefs,ref,onMounted,watch } from 'vue'
 import { UserDataEntity,IUserInfo } from "../TypeInterface/IUserInterface";
 import { message} from "ant-design-vue";
 import {
-SetLoginRecordGrid
+SetExpColumnsConfig
  
 } from "../Request/userRequest";
 
 import { InboxOutlined } from '@ant-design/icons-vue';
 
 
-interface Itest {
-    colsForeignKeyId: string;
-    
-  }
 
 export default defineComponent({
       props: { ListColumns:Object,
@@ -71,10 +67,11 @@ export default defineComponent({
 const handleOk = (e: MouseEvent) => {
 
 
- SetLoginRecordGrid({ListColumns:props.ListColumns,configType:configType.value}).then((res: any) => {
+ SetExpColumnsConfig({ListColumns:props.ListColumns,configType:configType.value}).then((res: any) => {
+            console.log(res)
             if (res.isSuccess) {
               
-            context.emit("refreshBtn");
+         
 
             context.emit("CloseConfigGridMoadl");
             message.success("配置成功.");

@@ -1,32 +1,32 @@
 <template>
-   <template v-if="iconMark=='<AppstoreOutlined/>'">
+   <template v-if="iconMark=='<AppstoreOutlined/>'||iconMark=='AppstoreOutlined'">
        <AppstoreOutlined/>
    </template>
- <template v-if="iconMark=='SettingOutlined'">
+ <template v-if="iconMark=='SettingOutlined'||iconMark=='<SettingOutlined/>'">
        <SettingOutlined />
    </template>
- <template v-if="iconMark=='FileWordOutlined'">
+ <template v-if="iconMark=='FileWordOutlined'||iconMark=='<FileWordOutlined/>'">
        <FileWordOutlined />
    </template>
- <template v-if="iconMark=='FileMarkdownOutlined'">
+ <template v-if="iconMark=='FileMarkdownOutlined'||iconMark=='<FileMarkdownOutlined/>'">
        <FileMarkdownOutlined />
    </template>
 
 
 
- <template v-if="iconMark=='SnippetsOutlined'">
+ <template v-if="iconMark=='SnippetsOutlined'||iconMark=='<SnippetsOutlined/>'">
        <SnippetsOutlined />
    </template>
 
- <template v-if="iconMark=='TrademarkCircleOutlined'">
+ <template v-if="iconMark=='TrademarkCircleOutlined'||iconMark=='<TrademarkCircleOutlined/>'">
        <TrademarkCircleOutlined />
    </template>
 
- <template v-if="iconMark=='TrademarkOutlined'">
+ <template v-if="iconMark=='TrademarkOutlined'||iconMark=='<TrademarkOutlined/>'">
        <TrademarkOutlined />
    </template>
 
- <template v-if="iconMark=='UserOutlined'">
+ <template v-if="iconMark=='UserOutlined'||iconMark=='<UserOutlined/>'">
        <UserOutlined />
    </template>
  <template v-if="iconMark==''||iconMark==undefined||iconMark=='默认'">
@@ -37,7 +37,7 @@
 </template>
 
 <script   lang="ts">
-import { reactive, toRefs,defineComponent,ref } from 'vue'
+import { reactive, toRefs,defineComponent,ref ,watch} from 'vue'
 import {
   UserOutlined,
   VideoCameraOutlined,
@@ -74,7 +74,15 @@ export default defineComponent({
             count: 0,
             iconMark : props.IconStr
         })
-    
+     watch(
+      () => props.IconStr,
+      (newValue) => {
+           
+        
+         
+            state.iconMark=newValue;
+      }
+    );
         return {
             ...toRefs(state),
         }

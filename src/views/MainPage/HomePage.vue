@@ -26,7 +26,7 @@
   </a-calendar>
      </div> -->
      <a-card title="本月消息通知" headStyle="font-size:21px;font-weight:600" style="width: 100%;height:100%">
-    <template #extra><a href="#">更多</a></template>
+    <template #extra><a href="#" @click="ShowSchedule">更多</a></template>
     <p>1.总部视频会议，主要讨论第三季生产部产能消耗问题.</p>
     <p>2.拟定排产初步方案.</p>
       <p>3.生产会议，针对第三产线生产设备优化等相关问题.</p>
@@ -57,22 +57,51 @@
 
  </div>
     </div>
+
+
+    <ShowScheduleModal
+    :visible="visibleShowSchedule"
+    :modalTitle="modalTitleShowSchedule"
+  @CloseSetingMoadl="CloseSchedule"
+  />
 </template>
 
 <script lang="ts">
 
 import { reactive,ref,watch, toRefs,defineComponent,onMounted,computed } from 'vue'
+
+import ShowScheduleModal from "../../components/ShowScheduleModal.vue";
+
+
+
+
  import 'moment/locale/zh-cn';
 import * as echarts from 'echarts'
 export default defineComponent({
     components: {
-      //vueSeamlessScroll
+    ShowScheduleModal
     },
     setup (props,context) {
         const state = reactive({
             count: 0,
                
         })
+let visibleShowSchedule = ref<boolean>(false);
+    let modalTitleShowSchedule = ref<string>("");
+ const ShowSchedule = () => {
+      visibleShowSchedule.value = true;
+      modalTitleShowSchedule.value = "待办事项计划时间表";
+     console.log(visibleShowSchedule.value);
+
+      
+    };
+
+ const CloseSchedule = () => {
+      visibleShowSchedule.value = false;
+         modalTitleShowSchedule.value= "";
+    };
+
+
         //https://ant.design/components/calendar-cn/
 //https://blog.csdn.net/qq_41619796/article/details/104795405
          const value = ref<any>();
@@ -810,7 +839,7 @@ let showEchart=()=>{
           },
         }, onSelect,
       onPanelChange,
-
+visibleShowSchedule,modalTitleShowSchedule,ShowSchedule,CloseSchedule
         }
     }
 

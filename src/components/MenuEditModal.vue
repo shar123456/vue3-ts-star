@@ -63,11 +63,16 @@
             v-model:value="EditData.menuIcon"
             style="width: 150px"
           >
+         
             <a-select-option value="未选择">未选择</a-select-option>
-            <a-select-option value="<SettingOutlined/>"><SettingOutlined/></a-select-option>
-            <a-select-option value="<FileWordOutlined/>"><FileWordOutlined/></a-select-option>
-              <a-select-option value="<SnippetsOutlined/>"><SnippetsOutlined/></a-select-option>
-                 <a-select-option value="<TrademarkCircleOutlined/>"><TrademarkCircleOutlined/></a-select-option>
+            <a-select-option value="SettingOutlined">   <iconFont  IconStr="SettingOutlined"  /></a-select-option>
+            <a-select-option value="FileWordOutlined"><iconFont  IconStr="FileWordOutlined"  /></a-select-option>
+              <a-select-option value="SnippetsOutlined"><iconFont  IconStr="SnippetsOutlined"  /></a-select-option>
+           <a-select-option value="TrademarkCircleOutlined"><iconFont  IconStr="TrademarkCircleOutlined"  /></a-select-option>
+ <a-select-option value="UserOutlined"><iconFont  IconStr="UserOutlined"  /></a-select-option>
+ <a-select-option value="TrademarkOutlined"><iconFont  IconStr="TrademarkOutlined"  /></a-select-option>
+ <a-select-option value="FileMarkdownOutlined"><iconFont  IconStr="FileMarkdownOutlined"  /></a-select-option>
+
           </a-select>
         </div>
       </div>
@@ -104,6 +109,7 @@
 <script lang="ts">
 import {defineComponent, reactive, toRefs,ref,onMounted,watch } from 'vue'
 import { MenuDataEntity,IMenuInfo } from "../TypeInterface/IMenuInterface";
+import iconFont from "../components/iconFont.vue";
 import {
   UserOutlined,
   VideoCameraOutlined,
@@ -133,7 +139,7 @@ export default defineComponent({
     SearchOutlined,
     AppstoreOutlined,
     SettingOutlined,
-    TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined
+    TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined,iconFont
   },
     setup (props,context) {
         const state = reactive({
@@ -149,7 +155,7 @@ export default defineComponent({
     context.emit("UpdateMenuInfoBtn",{ ...EditData });
       
   
-    
+   
     
     
     };

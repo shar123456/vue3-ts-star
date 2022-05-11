@@ -63,10 +63,23 @@
             font-size: 20px;
             font-weight: 800;
             margin-left: 9px;
+             cursor: pointer;
           "
           title="设置"
           ><SettingFilled mark="set"
         /></a>
+
+ <setting-two-tone
+          style="
+            color: red;
+            font-size: 20px;
+            font-weight: 800;
+            margin-left: 9px;
+            cursor: pointer;display:none
+          "
+        />
+
+
       </template>
 
       <template #roleType="{ text: roleType }">
@@ -160,7 +173,7 @@ import {
   HighlightFilled,
   CopyOutlined,
   SettingOutlined,
-  SettingFilled,
+  SettingFilled,SettingTwoTone
 } from "@ant-design/icons-vue";
 export default defineComponent({
   components: {
@@ -174,7 +187,7 @@ export default defineComponent({
     HighlightFilled,
     CopyOutlined,
     SettingOutlined,
-    SettingFilled,RoleEditModal,RoleFunConfigModal
+    SettingFilled,RoleEditModal,RoleFunConfigModal,SettingTwoTone
   },
   setup() {
     const state = reactive({
@@ -476,8 +489,8 @@ if (
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "setting"
           ) {
-            const Id = record.SysRoleId;
-          CurrentUser.value= record.sysUserId;
+            const Id = record.sysRoleId;
+          CurrentUser.value= record.sysRoleId;
            visibleRoleFunConfig.value = true;
            console.log( visibleRoleFunConfig.value )
       modalTitleRoleFunConfig.value = "【配置角色功能权限】";

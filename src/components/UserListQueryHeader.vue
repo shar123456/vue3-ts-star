@@ -76,6 +76,7 @@
     <div class="downPad">
       <a-button type="primary" @click="showCreateModal"> <template #icon><plus-outlined  /></template>
         新增 </a-button>&nbsp;
+         <a-button type="primary" @click="configExport"> <template #icon><LayoutOutlined /></template>导出配置</a-button>&nbsp;
       <a-button type="primary" @click="exportExcel"> <template #icon><download-outlined /></template>导出</a-button>&nbsp;
         <a-button type="primary" @click="importExcel"> <template #icon><cloud-upload-outlined /></template>导入</a-button>&nbsp;
       <a-button danger type="primary" @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
@@ -97,11 +98,12 @@
 <script lang="ts">
 import { reactive, toRefs, defineComponent } from "vue";
 import { UserDataEntity } from "../TypeInterface/IUserInterface";
-import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,DownloadOutlined,CloudUploadOutlined} from "@ant-design/icons-vue";
+import { LayoutOutlined,ProfileOutlined,SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,DownloadOutlined,CloudUploadOutlined} from "@ant-design/icons-vue";
 import * as XLSX from "xlsx";
 export default defineComponent({
   components: {
-    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,DownloadOutlined,CloudUploadOutlined
+    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,
+    ClearOutlined,AppstoreAddOutlined,DownloadOutlined,CloudUploadOutlined,ProfileOutlined,LayoutOutlined
   },
   props: { UserData: UserDataEntity },
   setup(props, context) {
@@ -173,6 +175,13 @@ const batchDeleteBtn = () => {
 
  context.emit("importExcel");
     }
+ const configExport = () => {
+
+ context.emit("configExport");
+    }
+
+
+
 
 
     return {
@@ -180,7 +189,7 @@ const batchDeleteBtn = () => {
       SearchBtn,
       showCreateModal,
       ClearQueryBtn,
-      exportExcel,batchDeleteBtn,refreshBtn,importExcel
+      exportExcel,batchDeleteBtn,refreshBtn,importExcel,configExport
     };
   },
 });

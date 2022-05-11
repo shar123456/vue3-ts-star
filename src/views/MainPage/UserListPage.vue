@@ -7,6 +7,7 @@
     @refreshBtn="refreshBtn"
     @exportExcel="exportExcel"
     @importExcel="importExcel"
+    @configExport="showConfigExport"
   ></UserListQueryHeader>
 
   <div id="userList">
@@ -182,7 +183,14 @@
   
 
 
-
+ <configExportModal
+    :visibleModelConfigGrid="visibleConfigExport"
+    :modalTitleConfigGrid="modalTitleConfigExport"
+    :ListColumns="UserDataEntityState.UserExportColumns"
+    configType="SysUser"
+    @CloseConfigGridMoadl="CloseConfigExportMoadl"
+ 
+  />
 
 
 
@@ -205,7 +213,7 @@ import {
   BatchDeleteUser,
   UpdateUserDatas,
   AddUserDatas,
-  CopyUserDataById,BatchExportUser,ReSetUserPwd
+  CopyUserDataById,BatchExportUser,ReSetUserPwd,GetExpColumnsConfig
 } from "../../Request/userRequest";
 import { message, Modal } from "ant-design-vue";
 import UserListQueryHeader from "../../components/UserListQueryHeader.vue";
@@ -214,7 +222,7 @@ import UserListModal from "../../components/UserListModal.vue";
 import ExportExcelModal from "../../components/ExportExcelModal.vue";
 
 import SettingModal from "../../components/SettingModal.vue";
-
+import configExportModal from "../../components/configExportModal.vue";
 
 import {
   EditTwoTone,
@@ -232,7 +240,7 @@ import {
 /*eslint-disabled*/
 // import * as XLSX from "xlsx";
 //import { UserDataEntity, IUserInfo } from "../../TypeInterface/userInterface";
-import { UserDataEntity, IUserInfo } from "../../TypeInterface/IUserInterface";
+import { UserDataEntity, IUserInfo,UserExportColumns } from "../../TypeInterface/IUserInterface";
 
 export default defineComponent({
   components: {
@@ -247,7 +255,7 @@ export default defineComponent({
     HighlightFilled,
     CopyOutlined,
     SettingOutlined,
-    SettingFilled,ExportExcelModal,SettingModal,ApiFilled
+    SettingFilled,ExportExcelModal,SettingModal,ApiFilled,configExportModal
   },
   setup() {
     const UserDataEntityState = reactive(new UserDataEntity());
@@ -270,6 +278,32 @@ let visibleSetting = ref<boolean>(false);
       visibleSetting.value = false;
          CurrentUser.value= "";
     };
+
+
+
+
+  let visibleConfigExport = ref<boolean>(false);
+    let modalTitleConfigExport = ref<string>("");
+  
+  const showConfigExport = () => {
+      visibleConfigExport.value = true;
+      modalTitleConfigExport.value = "配置【导出信息】";
+    };
+
+    const CloseConfigExportMoadl = () => {
+      visibleConfigExport.value = false;
+    };
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -626,8 +660,30 @@ console.log("headers",res.headers)
           delete columnList[i]["slots"];
         }
       }
-      console.log("columnList",columnList)
+   
       UserDataEntityState.UserListColumns = columnList;
+
+
+
+
+ let ExportColumnsList = await GetExpColumnsConfig({"pageName":"SysUser"});
+
+   console.log("ExportColumnsList",ExportColumnsList)
+
+if(ExportColumnsList!=undefined&&ExportColumnsList.length>0)
+{
+UserDataEntityState.UserExportColumns=ExportColumnsList;
+}
+else
+{
+  UserDataEntityState.UserExportColumns=UserExportColumns;
+}
+
+
+
+
+
+
 
       //获用户数据
       loading.value = true;
@@ -822,7 +878,11 @@ console.log("headers",res.headers)
 
 
       ,visibleSetting,
-      modalTitleSetting,CloseSetingMoadl,CurrentUser
+      modalTitleSetting,CloseSetingMoadl,CurrentUser,
+
+
+
+      visibleConfigExport,modalTitleConfigExport,showConfigExport,CloseConfigExportMoadl
 
     };
   },

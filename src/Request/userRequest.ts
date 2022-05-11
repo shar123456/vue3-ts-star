@@ -260,5 +260,27 @@ export function SetLoginRecordGrid(param:any):any {
 
 
 
+export function GetExpColumnsConfig(param:any):any {
+  return instance({
+      url: '/SysAccount/GetExpColumnsConfig',
+      method: 'get',
+      params:param
+  })
+}
+
+
+export function SetExpColumnsConfig(param:any):any {
+  console.log("------",param)
+  const{ListColumns,configType}=param;
+return instance({
+    url: '/SysAccount/SetExpColumnsConfig'+`?configType=${configType}`,
+    
+    method: 'post',
+    data:ListColumns,
+    
+})
+}
+
+
 
 

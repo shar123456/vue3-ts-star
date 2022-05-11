@@ -300,9 +300,14 @@
               <a href="#" title="全屏" @click="toggleFullscreen"
                 ><FullscreenOutlined
               /></a>
-              <a href="#" @click="toggleFullscreen" title="消息"
-                ><BellOutlined
-              /></a>
+
+
+       
+      <a href="#" @click="toggleFullscreen" title="消息"
+                >      <BellOutlined
+              /> </a>
+   
+             
               <a href="#" @click="toggleFullscreen" title="搜索"
                 ><SearchOutlined
               /></a>
@@ -407,6 +412,7 @@ import {
   GetMenuColumn,
   GetMenuDatas,
   DeleteMenuById,
+  GetMenuDatasById
 
 } from "../Request/menuRequest";
 
@@ -564,7 +570,7 @@ order:3,
     onMounted(async () => {
        
 
- let UserDatasList = await GetMenuDatas({
+ let UserDatasList = await GetMenuDatasById({
         current: 1,
         pageSize: 100,
         
@@ -603,10 +609,10 @@ order:3,
         }
 
       if (collapsed.value) {
-        titleTxt.value = "M";
+        titleTxt.value = "star";
         titleTxt1.value = "titleTxt11";
       } else {
-        titleTxt.value = "Motic 麦克奥迪";
+        titleTxt.value = "STAR 智能科技";
         titleTxt1.value = "titleTxt12";
       }
     });
@@ -646,12 +652,12 @@ order:3,
     const Mycollapsed = (p: boolean) => {
       if (collapsed.value) {
         setTimeout(() => {
-          titleTxt.value = "Motic 麦克奥迪";
+          titleTxt.value = "STAR 智能科技";
         }, 500);
 
         titleTxt1.value = "titleTxt12";
       } else {
-        titleTxt.value = "M";
+        titleTxt.value = "star";
         titleTxt1.value = "titleTxt11";
       }
 
@@ -758,7 +764,7 @@ order:3,
   display: flex !important;
   align-items: flex-start;
   justify-content: flex-end;
-  line-height: 30px;
+  line-height: 35px;
 }
 .funbox a {
   margin-right: 8px;
