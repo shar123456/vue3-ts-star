@@ -72,6 +72,7 @@ import { message } from "ant-design-vue";
 import { useStore } from "vuex";
 import{useRouter} from 'vue-router'
 import {GetUserDemo} from '../../Request/userRequest'
+
 interface FormState {
   user: string;
   password: string;

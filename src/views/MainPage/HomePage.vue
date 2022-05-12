@@ -183,7 +183,7 @@ showPinAChart.resize();
 showPinBChart.resize();
 showPinCChart.resize();
 showPinDChart.resize();
-},100);
+},200);
 
 
 
@@ -627,7 +627,7 @@ let showEchart=()=>{
 
     ProductEfficiencyOption = {
         title: {
-            text: '生产效率统计量比',
+            text: '设备产能利用率',
             textStyle: {
                 align: 'center',
                 color: 'black',

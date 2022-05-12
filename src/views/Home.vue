@@ -16,7 +16,7 @@
  
      <a-menu-item key="/Home/HomePage">
           <!-- <AppstoreOutlined /> -->
-          <iconFont  IconStr="AppstoreOutlined"  />
+          <iconFont  IconStr="BankOutlined"  />
           <span
             ><router-link
               to="/Home/HomePage"

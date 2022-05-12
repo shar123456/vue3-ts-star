@@ -13,7 +13,8 @@ const instance = axios.create({
     //baseURL:'/mock/',
     //baseURL:'http://localhost:3165/api/',
     //baseURL:'http://192.168.8.11:8086/Api/',
-     
+    //baseURL:'http://172.16.170.67:8055/Api/',
+    
     timeout: 5000
 })
 
@@ -25,7 +26,7 @@ instance.interceptors.request.use(
         console.log("1111111111111token",token)
 
         config.headers['Authorization']=token;
-       
+      
         console.log("axios拦截")
         //直接放行
         return config;

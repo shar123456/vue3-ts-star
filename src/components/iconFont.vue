@@ -1,4 +1,21 @@
 <template>
+
+
+
+ <template v-if="iconMark=='<ClusterOutlined/>'||iconMark=='ClusterOutlined'">
+       <ClusterOutlined/>
+   </template>
+
+
+ <template v-if="iconMark=='<ProfileOutlined/>'||iconMark=='ProfileOutlined'">
+       <ProfileOutlined/>
+   </template>
+ <template v-if="iconMark=='<BankOutlined/>'||iconMark=='BankOutlined'">
+       <BankOutlined/>
+   </template>
+ <template v-if="iconMark=='<FundOutlined/>'||iconMark=='FundOutlined'">
+       <FundOutlined/>
+   </template>
    <template v-if="iconMark=='<AppstoreOutlined/>'||iconMark=='AppstoreOutlined'">
        <AppstoreOutlined/>
    </template>
@@ -50,7 +67,9 @@ import {
   SearchOutlined,
   AppstoreOutlined,
   SettingOutlined,
-  TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined
+  TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined,
+
+  FundOutlined,BankOutlined,ProfileOutlined,ClusterOutlined
 } from "@ant-design/icons-vue";
 export default defineComponent({
     props: { IconStr:String,
@@ -68,6 +87,7 @@ export default defineComponent({
     AppstoreOutlined,
     SettingOutlined,
     TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined
+    ,FundOutlined,BankOutlined,ProfileOutlined,ClusterOutlined
   },
     setup (props) {
         const state = reactive({
