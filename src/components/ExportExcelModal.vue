@@ -110,13 +110,17 @@ const isfile = file.type === 'application/vnd.openxmlformats-officedocument.spre
         formData.append('files', file as any);
       });
       uploading.value = true;
- 
+  const token=localStorage.getItem("starToken");
+        
+
+      
       axios({
                 method: 'post',
                 data: formData,
                 transformRequest: [function(){
                     return formData;
                 }],
+               headers:{'Authorization':token},
                 url: '/api/SysAccount/UpLoadFile',
             })
             .then(res => {

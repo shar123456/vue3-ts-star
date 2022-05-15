@@ -290,8 +290,23 @@ let visibleSetting = ref<boolean>(false);
       modalTitleConfigExport.value = "配置【导出信息】";
     };
 
-    const CloseConfigExportMoadl = () => {
+    const CloseConfigExportMoadl = async() => {
       visibleConfigExport.value = false;
+
+ let ExportColumnsList = await GetExpColumnsConfig({"pageName":"SysUser"});
+
+   console.log("ExportColumnsList",ExportColumnsList)
+
+if(ExportColumnsList!=undefined&&ExportColumnsList.length>0)
+{
+UserDataEntityState.UserExportColumns=ExportColumnsList;
+}
+else
+{
+  UserDataEntityState.UserExportColumns=UserExportColumns;
+}
+
+
     };
 
 
