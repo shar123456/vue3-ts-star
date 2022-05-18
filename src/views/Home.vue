@@ -1,6 +1,6 @@
 <template>
   <a-layout id="Main">
-    <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
+    <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible  :style="{ overflow: 'auto', height: '100vh', }">
       <div class="logo">
         <span :class="titleTxt1">{{ titleTxt }}</span>
       </div>
@@ -10,6 +10,7 @@
         mode="inline"
         v-model:selectedKeys="selectedKeys"
         v-model:openKeys="openKeys"
+          @openChange="onOpenChange"
       >
 
 
@@ -308,7 +309,7 @@
               /> </a>
    
              
-              <a href="#" @click="toggleFullscreen" title="搜索"
+              <a href="#" @click="SearchMenuBtn" title="搜索"
                 ><SearchOutlined
               /></a>
 
@@ -387,6 +388,17 @@
       </a-layout-content>
     </a-layout>
   </a-layout>
+
+
+ <search-menu-modal
+    :visibleSetting="visibleSearchMenu"
+    :modalTitleSetting="modalTitleSearchMenu"
+   
+    @closeSearchMenuModal="CloseSearchMenu"
+ 
+  />
+
+  
 </template>
 <script lang="ts">
 import {
@@ -420,6 +432,7 @@ import {
   IMenuInfo
 } from "../TypeInterface/IMenuInterface";
 import iconFont from "../components/iconFont.vue";
+import SearchMenuModal from "../components/SearchMenuModal.vue";
 export default defineComponent({
   components: {
     UserOutlined,
@@ -433,7 +446,7 @@ export default defineComponent({
     SearchOutlined,
     AppstoreOutlined,
     SettingOutlined,
-    TrademarkCircleOutlined,SnippetsOutlined,iconFont
+    TrademarkCircleOutlined,SnippetsOutlined,iconFont,SearchMenuModal
   },
   setup() {
     const router = useRouter();
@@ -446,11 +459,52 @@ export default defineComponent({
     let selectedKeys = ref<string[]>([route.path]);
     let routeDesc = ref<string>(route.path);
     let routeDescMeta = ref<any>(route?.meta);
-     let openKeys= ref(['']);
+     let openKeys= ref<string[]>(['']);
     const LogOut = () => {
       localStorage.setItem("starToken", "");
+        localStorage.setItem("UserName", "");
       router.push({ path: "/login", query: { selected: "1" } });
     };
+
+let rootSubmenuKeys=ref<string[]>(['sub1', 'sub3', 'sub4', 'sub5'])
+
+
+const onOpenChange = (openKeyss: string[]) => {
+
+             if(openKeyss!=undefined&&openKeyss!=[]&&openKeyss.length>0)
+{
+    let lastItem= openKeyss[openKeyss.length-1];
+    openKeys.value=[`${lastItem}`] 
+}
+
+      
+    };
+
+
+
+
+
+
+
+
+
+let visibleSearchMenu = ref<boolean>(false);
+    let modalTitleSearchMenu = ref<string>("");
+
+ const CloseSearchMenu = () => {
+      visibleSearchMenu.value = false;
+         modalTitleSearchMenu.value= "";
+    };
+
+
+
+
+
+
+
+
+
+
 
 let menuList=ref<IMenuInfo[]>();
 
@@ -603,6 +657,7 @@ order:3,
 //         }
  if(route.meta && route.meta.Sub&&route.meta.Sub!="")
          {
+           console.log("route",route)
            openKeys.value=[];
          let openKeyStr=  route.meta.Sub;
  openKeys.value=[`${openKeyStr}`]
@@ -630,11 +685,17 @@ order:3,
           routeDescArr.value = routeDesc.value.split("/");
           routeDescArr.value.splice(0, 1);
         }
+           console.log("watchroute",route)
        if(route.meta && route.meta.Sub&&route.meta.Sub!="")
          {
            openKeys.value=[];
          let openKeyStr=  route.meta.Sub;
  openKeys.value=[`${openKeyStr}`]
+   selectedKeys.value=[];
+ let selectedKeyStr=  route.path;
+  selectedKeys.value =[`${selectedKeyStr}`] 
+
+
         }
 
         // console.log(routeDesc.value);
@@ -664,6 +725,13 @@ order:3,
       collapsed.value = !collapsed.value;
     };
 
+
+
+   const SearchMenuBtn=()=>{
+    visibleSearchMenu.value = true;
+         modalTitleSearchMenu.value= "【菜单搜索】";
+   }
+
     return {
       selectedKeys,
       collapsed,
@@ -674,7 +742,11 @@ order:3,
       routeDescArr,
       openKeys,
       toggleFullscreen,UserTitle,
-      menuList
+      menuList,
+      SearchMenuBtn,
+
+visibleSearchMenu,modalTitleSearchMenu,CloseSearchMenu,onOpenChange
+      ,
     };
   },
 });
@@ -806,5 +878,43 @@ order:3,
   .anticon {
   font-size: 24px !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+width:12px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+-webkit-box-shadow:inset006pxrgba(0,0,0,0.3);
+border-radius:10px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+border-radius:10px;
+background:rgba(0,0,0,0.1);
+-webkit-box-shadow:inset006pxrgba(0,0,0,0.5);
+}
+/* ::-webkit-scrollbar-thumb:window-inactive {
+background:rgba(255,0,0,0.4);
+} */
+
+
+
+
+
+
+
+
+
 </style>
 

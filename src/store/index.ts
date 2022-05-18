@@ -4,7 +4,7 @@ import {login,register,getCode} from '../Request/login'
 export default createStore({
   state: {
     TOKEN: "",
-    USERNAME:"***"
+    USERNAME:(localStorage.getItem("UserName")==""||localStorage.getItem("UserName")==undefined||localStorage.getItem("UserName")==null)?"***" :localStorage.getItem("UserName")
   },
   mutations: {
     SetToken(state, payLoad) {
@@ -12,6 +12,7 @@ export default createStore({
     },
     SetUserName(state, payLoad) {
       state.USERNAME = payLoad;
+      localStorage.setItem("UserName",payLoad);
     }
   },
   actions: {

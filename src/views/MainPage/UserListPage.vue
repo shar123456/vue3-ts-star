@@ -107,6 +107,19 @@
           ><ApiFilled mark="set"
         /></a>
 
+<a
+          style="
+            color: rgba(18, 96, 214, 0.733);
+            font-size: 20px;
+            font-weight: 800;
+            margin-left: 9px;
+          "
+          title="配置信息"
+          ><TagTwoTone mark="set"
+        /></a>
+
+
+
 
         <a
           style="
@@ -234,14 +247,14 @@ import {
   HighlightFilled,
   CopyOutlined,
   SettingOutlined,
-  SettingFilled,ApiFilled
+  SettingFilled,ApiFilled,TagTwoTone
 } from "@ant-design/icons-vue";
 // import FileSaver from "file-saver";
 /*eslint-disabled*/
 // import * as XLSX from "xlsx";
 //import { UserDataEntity, IUserInfo } from "../../TypeInterface/userInterface";
 import { UserDataEntity, IUserInfo,UserExportColumns } from "../../TypeInterface/IUserInterface";
-
+import{useRouter} from 'vue-router'
 export default defineComponent({
   components: {
     // SearchOutlined,
@@ -255,14 +268,14 @@ export default defineComponent({
     HighlightFilled,
     CopyOutlined,
     SettingOutlined,
-    SettingFilled,ExportExcelModal,SettingModal,ApiFilled,configExportModal
+    SettingFilled,ExportExcelModal,SettingModal,ApiFilled,configExportModal,TagTwoTone
   },
   setup() {
     const UserDataEntityState = reactive(new UserDataEntity());
 
     let visible = ref<boolean>(false);
     let visibleExportExcel = ref<boolean>(false)
-    
+       const router=useRouter();
     let loading = ref<boolean>(false);
     const pageSizeOptions = ref<string[]>(["5", "10", "20", "30", "40", "50"]);
     let modalTitle = ref<string>("");
@@ -659,7 +672,7 @@ console.log("headers",res.headers)
         if(columnList[i].title=="操作")
         {
           columnList[i].fixed="right"
-         columnList[i].width=160
+         columnList[i].width=190
           columnList[i].dataIndex="action"
         }
  if(columnList[i].title=="密码")
@@ -854,9 +867,14 @@ else
           }
 
 
-
-
-
+ if (
+            event.target.parentNode.getAttribute("data-icon") == "tag" ||
+            event.target.parentNode.parentNode.getAttribute("aria-label") ==
+              "tag"
+          ) {
+            const Id = record.sysUserId;
+                  router.push({path: '/Home/ConfigDetailInfo', query: {Id: Id}});
+}
 
 
         },

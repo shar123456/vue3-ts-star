@@ -15,7 +15,7 @@
 
 
  <a-row>
-    <a-col  style="border:0px solid red"  :span="8" v-for="(item,index) in treeEntitys" :key="index">
+    <a-col  style="border:0px solid red"  :span="6" v-for="(item,index) in treeEntitys" :key="index">
 
  <a-tree
     checkable

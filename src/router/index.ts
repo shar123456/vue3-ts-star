@@ -103,6 +103,59 @@ const routes: Array<any> = [
         meta:{rName:"/系统设置/角色列表",Sub:"sub1"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/RoleListPage.vue')
       }
+      ,
+      {
+        path: 'ConfigDetailInfo',
+        name: 'ConfigDetailInfo',
+        meta:{rName:"/系统设置/配置信息",Sub:"sub1"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ConfigDetailInfo.vue')
+      }
+      ,
+      {
+        path: 'CreateExaminationPage',
+        name: 'CreateExaminationPage',
+        meta:{rName:"/审批管理/创建审批任务",Sub:"sub5"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/CreateExaminationPage.vue')
+      }
+      ,
+      {
+        path: 'ExaminationFlowPage',
+        name: 'ExaminationFlowPage',
+        meta:{rName:"/审批管理/创建审批流程",Sub:"sub5"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationFlowPage.vue')
+      }
+      ,
+      {
+        path: 'ExaminationTaskPage',
+        name: 'ExaminationTaskPage',
+        meta:{rName:"/审批管理/审批任务列表",Sub:"sub5"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationTaskPage.vue')
+      } ,
+      {
+        path: 'ExaminationListPage',
+        name: 'ExaminationListPage',
+        meta:{rName:"/审批管理/审批列表",Sub:"sub5"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationListPage.vue')
+      }
+      ,
+      {
+        path: 'ExaminationFlowListPage',
+        name: 'ExaminationFlowListPage',
+        meta:{rName:"/审批管理/审批流程列表",Sub:"sub5"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationFlowListPage.vue')
+      }
+      ,
+      {
+        path: 'SeeingPanelPage',
+        name: 'SeeingPanelPage',
+        meta:{rName:"/看板管理/看板列表",Sub:"sub4"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/SeeingPanelPage.vue')
+      }
+
+      
+      
+
+
     ]
   },
   {

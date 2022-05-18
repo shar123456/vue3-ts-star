@@ -8,7 +8,7 @@ export function GetUserColumn(param:any):any {
     })
 }
 //http://172.16.170.33:8055/api/SysAccount/api/SysAccount/GetUsers
-export function GetUsers(param:any):any {
+export function GetUsers():any {
     
     return instance({
         url: '/SysAccount/GetUsers',
@@ -279,6 +279,22 @@ return instance({
     data:ListColumns,
     
 })
+}
+
+export function getUserByName(param:any):any {
+    
+  return instance({
+      url: '/SysAccount/GetUserByName',
+      method: 'post',
+      data:param,
+      transformRequest: [function (data) {//加这个post发送数据到后台才能接收到数据，否则接收不到
+          let ret = ''
+          for (const it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
+  })
 }
 
 
