@@ -34,29 +34,38 @@
     </a-col>
    
   </a-row>
-   <a-row>
-   
-    <a-col :span="24" class="content">
+     <div  id="tttt" class="content">
      
-     <div style="width:100%;height:60vh;display: flex;align-items: center;justify-content: center;"> <a-empty description="暂无数据"  /></div>
+     <div   v-if="!(list && list.length)" style="width:100%;height:60vh;display: flex;align-items: center;justify-content: center;"> <a-empty description="暂无数据"  /></div>
     
+
+ <line-111  style="width:100%;display: flex;align-items: center;justify-content: center;align-items:center"
+      v-if="(list && list.length)"
+      :list="list"
+      :showfields="showFields"
+    ></line-111>
+
+</div>
+
 
           
     
-    </a-col>
   
-  </a-row>
     </div>
      </div>
 </template>
 
 <script lang="ts">
+import line111 from '../../components/LeaderLine.vue'
 import { reactive, toRefs,defineComponent,onMounted,ref } from 'vue'
 import {
  getUserByName
 } from "../../Request/userRequest";
 import {useRouter, useRoute} from 'vue-router'
 export default defineComponent({
+   components:{
+        line111,
+    },
     setup () {
         const state = reactive({
             count: 0,
@@ -81,10 +90,80 @@ export default defineComponent({
 
 
 
+const list=ref([//datasource
+                {
+                    id: '1',
+                    name: 'span1',
+                      type: '用户',
+                    serviceId: 'service1',
+                    children: [
+                        {
+                            id: '1-1',
+                            name: 'user',
+                            serviceId: 'service-user',
+                             type: '角色',
+                              CreateTime: '2020-12-15',
+                            children: [
+                                {
+                                    id: '1-1-1',
+                                    name: 'shop',
+                                    serviceId: '18',
+                                    children: [
+                                        {
+                                            id: '1-1-1-1',
+                                            name: 'common',
+                                            serviceId: 'common-service',
+                                        },
+                                    ],
+                                },
+                                {
+                                    id: '1-1-2',
+                                    name: 'account1',
+                                    serviceId: 'account-service',
+                                },
+                                {
+                                    id: '1-1-3',
+                                    name: 'account2',
+                                    serviceId: 'account-service',
+
+                                },
+                                {
+                                    id: '1-1-4',
+                                    name: 'account3',
+                                    serviceId: 'account-service',
+                                },
+                            ],
+                        },
+                        {
+                            id: '1-2',
+                            name: 'truck', type: '角色',
+                            serviceId: 'truck-pay',
+                            work: 'web',
+                        },
+                    ],
+                },
+            ])
+
+            const showFields=ref([
+                {
+                    name: '名称：',
+                    key: 'name',
+                },
+                {
+                    name: '服务编号：',
+                    key: 'serviceId',
+                },
+                
+               
+                {
+                    name: '创建时间：',
+                    key: 'CreateTime',
+                },
+            ])
+        
 
 
-
-
+  
 
 
 
@@ -106,7 +185,7 @@ onMounted(() => {
         return {
             ...toRefs(state),returnBtn,QueryId,searchBtn
             ,   result,
-      handleSearch,UserName
+      handleSearch,UserName, list,showFields
         }
     }
 })
@@ -114,7 +193,7 @@ onMounted(() => {
 
 <style  scoped>
 .CfgDetailInfoContent
-{
+{   
 box-sizing: border-box;
     border:1px solid rgba(204, 204, 204, 0.644);
     background-color: rgba(223, 223, 223, 0);
@@ -139,6 +218,10 @@ box-sizing: border-box;
 }
 .CfgDetailInfo .content{
    border: 0px solid red;
-    
+   width:100%;
+    overflow: auto;
+    height: calc(100vh - 300px);
+   display: flex;align-items: center;justify-content: center;
+   
 }
 </style>

@@ -723,6 +723,12 @@ order:3,
       }
 
       collapsed.value = !collapsed.value;
+
+    store.state.CollapseMark=!store.state.CollapseMark
+ 
+
+
+
     };
 
 

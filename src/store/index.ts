@@ -1,10 +1,12 @@
+import { Collapse } from 'ant-design-vue';
 import { deburr } from 'lodash';
 import { createStore } from 'vuex'
 import {login,register,getCode} from '../Request/login'
 export default createStore({
   state: {
     TOKEN: "",
-    USERNAME:(localStorage.getItem("UserName")==""||localStorage.getItem("UserName")==undefined||localStorage.getItem("UserName")==null)?"***" :localStorage.getItem("UserName")
+    USERNAME:(localStorage.getItem("UserName")==""||localStorage.getItem("UserName")==undefined||localStorage.getItem("UserName")==null)?"***" :localStorage.getItem("UserName"),
+    CollapseMark:true
   },
   mutations: {
     SetToken(state, payLoad) {

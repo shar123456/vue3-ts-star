@@ -11,6 +11,7 @@ declare module 'screenfull'
 declare module 'vue-seamless-scroll';
 
 declare module 'lodash-es';
+declare module 'leader-line-vue';
 
 
 
