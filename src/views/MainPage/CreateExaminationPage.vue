@@ -19,9 +19,22 @@
 
   <a-row type="flex" justify="center">
 
-      <a-col class="col" :span="11"> <span>审批类型</span><a-input  placeholder="请输入审批类型" /></a-col>
+      <a-col class="col" :span="11"> <span>审批类型</span>
+      
+      <a-select   style="width:100%"  placeholder="请选择审批类型">
+        <a-select-option value="账户权限审批">账户权限审批</a-select-option>
+        <a-select-option value="请假审批">请假审批</a-select-option>
+           <a-select-option value="基本审批">基本审批</a-select-option>
+      </a-select>
+      
+      </a-col>
     <a-col class="col" :span="1" ></a-col>
-    <a-col class="col" :span="11"> <span>紧急程度</span><a-input  placeholder="请输入紧急程度" /></a-col>
+    <a-col class="col" :span="11"> <span>紧急程度</span>
+     <a-select   style="width:100%"  placeholder="请选择紧急程度">
+        <a-select-option value="低">低</a-select-option>
+        <a-select-option value="中">中</a-select-option>
+           <a-select-option value="高">高</a-select-option>
+      </a-select></a-col>
   </a-row>
 
 <a-row  style="height:5px"></a-row>
@@ -41,8 +54,8 @@
     <a-col class="col" :span="11" ><span>审批流程</span>  
     
      <a-select   style="width:100%"  placeholder="请选择审批流程">
-        <a-select-option value="shanghai">Zone one</a-select-option>
-        <a-select-option value="beijing">Zone two</a-select-option>
+        <a-select-option value="流程一">流程001</a-select-option>
+        <a-select-option value="流程002">流程002</a-select-option>
       </a-select>
     </a-col>
     <a-col class="col" :span="1" ></a-col>
@@ -74,9 +87,9 @@
    
        
 
- <a-checkbox value="A" style="color:rgba(0, 0, 0, 0.4);font-size:16px;font-weight:600">邮件</a-checkbox>
+ <a-checkbox value="A" style="color:rgba(0, 0, 0, 0.5);font-size:16px;font-weight:600">邮件</a-checkbox>
     
-        <a-checkbox value="B" style="color:rgba(0, 0, 0, 0.4);font-size:16px;font-weight:600">公众号推送</a-checkbox>
+        <a-checkbox value="B" style="color:rgba(0, 0, 0, 0.5);font-size:16px;font-weight:600">公众号推送</a-checkbox>
       
   </a-checkbox-group></a-col>
 
@@ -138,7 +151,7 @@
    
    
     <a-col class="col" :span="24" style="text-align:center">
-     <a-button type="primary">提交审核</a-button>&nbsp;
+     <a-button type="primary">提交审批</a-button>&nbsp;
       <a-button type="primary">保存草稿</a-button>&nbsp;
        <a-button >取消</a-button></a-col>
   </a-row>
@@ -199,7 +212,7 @@ box-sizing: border-box;
     line-height: 30px;
 }
 .mainSpContent .col span{
-    color:rgba(0, 0, 0, 0.4);
+    color:rgba(0, 0, 0, 0.5);
     font-weight: 600;
     font-size: 16px;
     
@@ -211,6 +224,6 @@ box-sizing: border-box;
     line-break: 40px;
     font-size:22px;
     font-weight: 600;
-    color: rgba(51, 108, 161, 0.574);
+    color: rgba(51, 108, 161, 0.774);
 }
 </style>

@@ -5,6 +5,9 @@
         <a-col :span="24" class="title">创建审批流程</a-col>
       </a-row>
       <a-row style="height: 25px"></a-row>
+
+
+
       <a-row
         type="flex"
         justify="center"
@@ -32,11 +35,7 @@
 
        
       </a-row>
-     <a-row style="height: 15px"></a-row>
-<a-row>
-        <a-col :span="24" class="title">流程预览</a-col>
-      </a-row>
-     
+
 
  <a-row style="height: 20px"></a-row>
       <a-row
@@ -74,7 +73,9 @@
             :title="item.title"
           >
             <template #description>
-              <span>{{item.content}}.</span>
+              <span style="color:darkgrey;">手机号：{{item.content}}.</span><br/>
+                 <span style="color:darkgrey;">审批状态：{{"未审批"}}.</span><br/>
+                    <span style="color:darkgrey;">审批时间：{{"暂无"}}.</span>
             </template>
             <!-- <template v-if="item.isLast" #icon
               ><PlusCircleTwoTone @click="addPersonBtn"
@@ -100,7 +101,35 @@
       <a-step title="Waiting" description="This is a description." />
        <a-step title="Waiting" description="This is a description." />
   </a-steps> -->
+
+
+ 
+
+
+
       </a-row>
+
+     <a-row style="height: 15px"></a-row>
+<a-row>
+        <a-col :span="24" class="title">基本信息</a-col>
+      </a-row>
+     
+
+<a-row  style="height:5px"></a-row>
+ <a-row type="flex" justify="space-between">
+    <a-col class="col" :span="7" ><span>流程编号</span><a-input  placeholder="请输入流程编号" /></a-col>
+    <a-col class="col" :span="7" ><span>流程名称</span><a-input  placeholder="请输入流程名称" /></a-col>
+      <a-col class="col" :span="7" ><span>状态</span>
+      <a-select   style="width:100%"  placeholder="请选状态">
+        <a-select-option value="启用">启用</a-select-option>
+        <a-select-option value="禁用">禁用</a-select-option>
+        
+      </a-select></a-col>
+  </a-row>
+
+
+
+
   <a-row style="height: 75px"></a-row>
       <a-row>
         <a-col :span="24" style="text-align:center">
@@ -215,7 +244,7 @@ item.forEach((i:any)=>{
     title:i.name,
     content:i.phone
   })
-  if(steps.value.length>10){
+  if(steps.value.length>8){
 direction.value="vertical"
   }
   else
@@ -324,7 +353,7 @@ CloseConfigSearchModal
 });
 </script>
 
-<style  scoped>
+<style  >
 .mainSpFlowContent {
   box-sizing: border-box;
   border: 1px solid rgba(204, 204, 204, 0.644);
@@ -338,6 +367,16 @@ CloseConfigSearchModal
   line-break: 40px;
   font-size: 22px;
   font-weight: 600;
-  color: rgba(51, 108, 161, 0.574);
+  color: rgba(51, 108, 161, 0.774);
+}
+
+.mainSpFlowContent .col span{
+    color:rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+    font-size: 16px;
+    
+}
+.mainSpFlowContent .ant-steps-item-description {
+    max-width: 200px!important;
 }
 </style>
