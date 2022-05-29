@@ -75,6 +75,9 @@
  <template v-if="iconMark==''||iconMark==undefined||iconMark=='默认'">
        <AppstoreOutlined />
    </template>
+ <template v-if="iconMark=='CalendarOutlined'||iconMark=='<CalendarOutlined/>'">
+       <CalendarOutlined />
+   </template>
 
    
 </template>
@@ -96,7 +99,7 @@ import {
   TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined,
 
   FundOutlined,BankOutlined,ProfileOutlined,ClusterOutlined,SolutionOutlined,FormOutlined,ApartmentOutlined
-  ,BarsOutlined,ScheduleOutlined
+  ,BarsOutlined,ScheduleOutlined,CalendarOutlined
 } from "@ant-design/icons-vue";
 export default defineComponent({
     props: { IconStr:String,
@@ -115,7 +118,7 @@ export default defineComponent({
     SettingOutlined,
     TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined
     ,FundOutlined,BankOutlined,ProfileOutlined,ClusterOutlined,SolutionOutlined,FormOutlined,ApartmentOutlined,BarsOutlined
-    ,ScheduleOutlined
+    ,ScheduleOutlined,CalendarOutlined
   },
     setup (props) {
         const state = reactive({

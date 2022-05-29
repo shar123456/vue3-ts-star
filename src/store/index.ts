@@ -6,7 +6,8 @@ export default createStore({
   state: {
     TOKEN: "",
     USERNAME:(localStorage.getItem("UserName")==""||localStorage.getItem("UserName")==undefined||localStorage.getItem("UserName")==null)?"***" :localStorage.getItem("UserName"),
-    CollapseMark:true
+    CollapseMark:true,
+    NewMessageMark:false,
   },
   mutations: {
     SetToken(state, payLoad) {

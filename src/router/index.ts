@@ -146,15 +146,38 @@ const routes: Array<any> = [
       }
       ,
       {
+        path: 'ExaminationFlowDetail',
+        name: 'ExaminationFlowDetail',
+        meta:{rName:"/审批管理/审批流程详情",Sub:"sub5"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationFlowDetail.vue')
+      },
+      {
         path: 'SeeingPanelPage',
         name: 'SeeingPanelPage',
         meta:{rName:"/看板管理/看板列表",Sub:"sub4"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/SeeingPanelPage.vue')
+      },
+      {
+        path: 'WorkSchedulePage',
+        name: 'WorkSchedulePage',
+        meta:{rName:"/工作计划管理/工作计划列表",Sub:"gzjh"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/WorkSchedulePage.vue')
+      },
+      {
+        path: 'CreateWorkSchedule',
+        name: 'CreateWorkSchedule',
+        meta:{rName:"/工作计划管理/创建工作计划",Sub:"gzjh"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/CreateWorkSchedule.vue')
       }
-
       
+      ,
+      {
+        path: 'MyCalendarPage',
+        name: 'MyCalendarPage',
+        meta:{rName:"/工作计划管理/我的日历",Sub:"gzjh"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/MyCalendarPage.vue')
+      }
       
-
 
     ]
   },

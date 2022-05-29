@@ -26,14 +26,24 @@
 
              <p v-if="dataItem['type']=='角色'" style="background-color:#dedede;text-align:center"><strong>角色</strong></p>
  <p v-if="dataItem['type']=='用户'" style="background-color:#dedede;text-align:center"><strong>用户</strong></p>
+ <p v-if="dataItem['type']=='菜单'" style="background-color:#dedede;text-align:center"><strong>菜单</strong></p> 
 
-            <p
+            <p 
                 v-for="(showItem,index3) in showfields"
                 :key="'showItem'+index3"
               >
-            
+           <span v-if="dataItem['type']=='角色'&&(showItem.key=='roleName'||showItem.key=='createTime')">
              <strong>{{showItem.name}}</strong><span :style="{'color':showItem.color}">{{dataItem[showItem.key]}}</span>
-              
+            </span>
+             <span v-if="dataItem['type']=='用户'&&(showItem.key=='userName'||showItem.key=='createTime')">
+             <strong>{{showItem.name}}</strong><span :style="{'color':showItem.color}">{{dataItem[showItem.key]}}</span>
+            </span>
+                <span v-if="dataItem['type']=='菜单'&&(showItem.key=='menuName'||showItem.key=='createTime'||showItem.key=='urlAddress')">
+             <strong>{{showItem.name}}</strong><span :style="{'color':showItem.color}">{{dataItem[showItem.key]}}</span>
+            </span> 
+ 
+
+
               </p>
              
             </div>
@@ -57,6 +67,7 @@
           v-if="dataItem.children && dataItem.children.length"
         >
           <line-111
+         
             :list="dataItem.children"
             :showfields="showfields"
           />
@@ -69,8 +80,13 @@
 <script lang="ts">
 import{useRouter} from 'vue-router'
 import LeaderLine from 'leader-line-vue'
+import AnimEvent from 'anim-event'
+
+
+
+
 import { useStore } from "vuex";
-import { computed, defineComponent, ref,onMounted,nextTick,onBeforeUnmount,watch  } from "vue";
+import { computed, defineComponent, ref,onMounted,nextTick,onBeforeUnmount,watch,onBeforeUpdate,onUnmounted  } from "vue";
 
 export default defineComponent({
  
@@ -90,16 +106,15 @@ export default defineComponent({
 
   let   domready=ref(false)
        let     lines=ref<any>([])
-
+let mark=ref<number>(0);
 
    const router=useRouter();
 
  const store = useStore();
 
 
-
-
-onBeforeUnmount (()=> {
+onBeforeUnmount(()=> {
+  
 if (lines.value && lines.value.length) {
       lines.value.forEach((line:any) => {
          line.remove();
@@ -109,37 +124,85 @@ if (lines.value && lines.value.length) {
 
 
 onMounted(()=>{
-console.log("12222222222222222222222222",props.list )
-nextTick(() => {
-            domready.value= true
+
+ nextTick(() => {
+   
+  domready.value= true;
             drawArrowLine()
-            
+   
+          
+               
         })
 
+
+
+
+
+    window.addEventListener('resize', () => {
+    if(lines.value && lines.value.length){
+                lines.value.forEach((line:any) => {
+                      line.position();
+                })
+                  
+            }
+    }, false);
 
         document?.getElementById("tttt")?.addEventListener('resize', () => {
     if(lines.value && lines.value.length){
                 lines.value.forEach((line:any) => {
                       line.position();
                 })
+                  
             }
     }, false);
 
 
 document.getElementById("tttt")?.addEventListener('mousewheel', () => {
-   if(lines.value && lines.value.length){
+     if(lines.value && lines.value.length){
                 lines.value.forEach((line:any) => {
-                      line.position();
+                  
+                      line.hide();
                 })
             }
+          setTimeout(()=>{
+  
+  
+let showEffectName = 'draw'
+      // 动画参数
+let animOptions = {
+   duration: 500, //持续时长
+   timing: 'ease-in' // 动画函数
+}
+  if(lines.value && lines.value.length){
+                lines.value.forEach((line:any) => {
+                 line.show(showEffectName, animOptions)
+                      line.position();
+                })
+            }},500)
     }, false)
     document.getElementById("tttt")?.addEventListener('scroll', () => {
 
- if(lines.value && lines.value.length){
+   if(lines.value && lines.value.length){
                 lines.value.forEach((line:any) => {
-                      line.position();
+                  
+                      line.hide();
                 })
             }
+          setTimeout(()=>{
+  
+  
+let showEffectName = 'draw'
+      // 动画参数
+let animOptions = {
+   duration: 500, //持续时长
+   timing: 'ease-in' // 动画函数
+}
+  if(lines.value && lines.value.length){
+                lines.value.forEach((line:any) => {
+                 line.show(showEffectName, animOptions)
+                      line.position();
+                })
+            }},500)
    
             
          
@@ -162,9 +225,15 @@ document.getElementById("tttt")?.addEventListener('mousewheel', () => {
           setTimeout(()=>{
   
   
+let showEffectName = 'draw'
+      // 动画参数
+let animOptions = {
+   duration: 500, //持续时长
+   timing: 'ease-in' // 动画函数
+}
   if(lines.value && lines.value.length){
                 lines.value.forEach((line:any) => {
-                   line.show();
+                 line.show(showEffectName, animOptions)
                       line.position();
                 })
             }},500)
@@ -192,6 +261,7 @@ let showTree = computed(() => {
          * 递归绘制箭头
          */
     let   drawArrowLine=()=>{
+     
             drawLeaderLine(props.list)
         }
         /**
@@ -208,6 +278,7 @@ let showTree = computed(() => {
          * 根据上下级关系绘制线条
          */
       let  drawLeaderLine=(list:any)=>{
+         
             list.forEach((element:any)=> {
                 let start =  document.getElementById(element.id)
                 if(element.children && element.children.length){
@@ -215,16 +286,17 @@ let showTree = computed(() => {
                         let line = LeaderLine.setLine(start,  document.getElementById(child.id))
                         line.startPlug = 'square'
                         line.color = '#1890ff'
-                        line.path = 'grid'
+                       
                         line.size = 3
                         line.setOptions({
                             dash: {animation: true},
                         })
-                    
+                        line.path="grid"
                         lines.value.push(line)
                       
                     })
-                    drawLeaderLine(element.children) 
+                 
+                   
                    
                 }
             })
@@ -295,9 +367,9 @@ let showTree = computed(() => {
 
 </script>
 
-<style  scoped>
+<style  >
   .tree-right {
-  display: flex;width: 100%;
+  display: flex;
   
 }
 .tree-right p {
@@ -323,7 +395,7 @@ let showTree = computed(() => {
   height: 100%;
   display: flex;
   align-items: center;
-  width: 300px;
+ 
   text-align: center;
   justify-content: center;
   position: relative;
@@ -361,5 +433,13 @@ let showTree = computed(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+svg{
+  overflow: hidden!important;
+}
+.leader-line{
+   overflow: hidden!important;
+   position: fixed!important;
 }
 </style>

@@ -142,7 +142,18 @@
   </div>
 
 
- <SearchDataModal
+ <!-- <SearchDataModal
+    :visibleModelConfigGrid="visibleSearchModal"
+    :modalTitleConfigGrid="modalTitleSearchModal"
+  
+    configType="SysUser"
+    @CloseConfigGridMoadl="CloseConfigSearchModal"
+    :ListColumns="UserColumns"
+  :ListDatas="UserDatas"
+  @addStepsFunc="addStepsFunc"
+  /> -->
+
+<SearchDataModal2
     :visibleModelConfigGrid="visibleSearchModal"
     :modalTitleConfigGrid="modalTitleSearchModal"
   
@@ -152,7 +163,6 @@
   :ListDatas="UserDatas"
   @addStepsFunc="addStepsFunc"
   />
-
 
 </template>
 
@@ -164,7 +174,7 @@ import { reactive, toRefs, defineComponent, onMounted, ref,
 
 
 import SearchDataModal from "../../components/SearchDataModal.vue";
-
+import SearchDataModal2 from "../../components/SearchDataModal2.vue";
 
 
 
@@ -204,7 +214,7 @@ import {
 
 
 export default defineComponent({
-  components: { PlusCircleTwoTone,SearchDataModal },
+  components: { PlusCircleTwoTone,SearchDataModal2 },
   setup() {
     const state = reactive({
       count: 0,
@@ -239,8 +249,17 @@ let visibleSearchModal = ref<boolean>(false);
     let steps = ref<any[]>([]);
 let  addStepsFunc=(item:any)=>{
   CloseConfigSearchModal();
+  console.log(steps.value?.findIndex(j=>j.id==item[0].sysUserId))
+  if(steps.value?.findIndex(j=>j.id==item[0].sysUserId)!=-1)
+  {
+     message.error(`审批人:${item[0].name},已存在，禁止重复添加.`);
+     return ;
+  }
 item.forEach((i:any)=>{
+  
+  
   steps.value.push({
+    id:i.sysUserId,
     title:i.name,
     content:i.phone
   })

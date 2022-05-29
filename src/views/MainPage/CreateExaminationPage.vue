@@ -13,7 +13,7 @@
   <a-row type="flex" justify="center">
     <a-col class="col" :span="11" ><span>审批编号</span><a-input  placeholder="请输入审批编号" /></a-col>
     <a-col class="col" :span="1" ></a-col>
-      <a-col class="col" :span="11" ><span>审批名称</span><a-input  placeholder="请输入审批名称" /></a-col>
+      <a-col class="col" :span="11" ><span>审批标题</span><a-input  placeholder="请输入审批标题" /></a-col>
   </a-row>
 
 
@@ -133,9 +133,9 @@
 <a-row  style="height:5px"></a-row>
  <a-row type="flex" justify="center">
 
-  <a-col class="col" :span="11" ><span>备注</span>  <a-textarea placeholder="请输入备注" :rows="4" /></a-col>
+  <a-col class="col" :span="11" ><span>任务描述</span>  <a-textarea placeholder="请输入任务描述" :rows="4" /></a-col>
     <a-col class="col" :span="1" ></a-col>
-    <a-col class="col" :span="11"> </a-col>
+    <a-col class="col" :span="11"><span>备注</span>  <a-textarea placeholder="请输入备注" :rows="4" /> </a-col>
   </a-row>
 
 

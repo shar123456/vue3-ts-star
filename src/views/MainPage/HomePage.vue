@@ -25,7 +25,7 @@
     </template>
   </a-calendar>
      </div> -->
-     <a-card title="本月消息通知" headStyle="font-size:21px;font-weight:600" style="width: 100%;height:100%">
+     <a-card title="本月工作计划" headStyle="font-size:21px;font-weight:600" style="width: 100%;height:100%">
     <template #extra><a href="#" @click="ShowSchedule">更多</a></template>
     <p>1.总部视频会议，主要讨论第三季生产部产能消耗问题.</p>
     <p>2.拟定排产初步方案.</p>
@@ -64,6 +64,8 @@
     :modalTitle="modalTitleShowSchedule"
   @CloseSetingMoadl="CloseSchedule"
   />
+
+  <New-Message-Tip />
 </template>
 
 <script lang="ts">
@@ -71,28 +73,31 @@
 import { reactive,ref,watch, toRefs,defineComponent,onMounted,computed } from 'vue'
 
 import ShowScheduleModal from "../../components/ShowScheduleModal.vue";
+import NewMessageTip from "../../components/NewMessageTip.vue";
 
-
-
-
+import { useStore } from "vuex";
+import{useRouter} from 'vue-router'
  import 'moment/locale/zh-cn';
 import * as echarts from 'echarts'
 export default defineComponent({
     components: {
-    ShowScheduleModal
+    ShowScheduleModal,
+    NewMessageTip
     },
     setup (props,context) {
         const state = reactive({
             count: 0,
                
         })
+          const router=useRouter();
 let visibleShowSchedule = ref<boolean>(false);
     let modalTitleShowSchedule = ref<string>("");
+ const store = useStore();
  const ShowSchedule = () => {
-      visibleShowSchedule.value = true;
-      modalTitleShowSchedule.value = "待办事项计划时间表";
-     console.log(visibleShowSchedule.value);
-
+    //   visibleShowSchedule.value = true;
+    //   modalTitleShowSchedule.value = "待办事项计划时间表";
+    //  console.log(visibleShowSchedule.value);
+ router.push({path: '/Home/MyCalendarPage', query: {Id: "1"}});
       
     };
 
@@ -166,9 +171,13 @@ const getMonthData = (value: any) => {
           let showPinCChart:any=undefined;
              let showPinDChart:any=undefined;
  onMounted(() => {
-
+setTimeout(()=>{
+store.state.NewMessageMark=true;
+},1000)
      
-
+setTimeout(()=>{
+store.state.NewMessageMark=false;
+},5000)
 
  
 showEchart();
@@ -839,7 +848,7 @@ let showEchart=()=>{
           },
         }, onSelect,
       onPanelChange,
-visibleShowSchedule,modalTitleShowSchedule,ShowSchedule,CloseSchedule
+visibleShowSchedule,modalTitleShowSchedule,ShowSchedule,CloseSchedule,
         }
     }
 
@@ -848,6 +857,9 @@ visibleShowSchedule,modalTitleShowSchedule,ShowSchedule,CloseSchedule
 </script>
 
 <style scoped>
+
+
+
 
  /* .warp {
     height: 370px;

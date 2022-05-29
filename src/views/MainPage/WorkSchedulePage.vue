@@ -1,13 +1,13 @@
 <template>
- 
-  <ExamFlowQueryHeader
+   <WorkScheduleQueryHeader
     @SearchBtn="SearchBtn"
-
+@CreateBtn="CreateBtn"
     @batchDelete="batchDelete"
     @refreshBtn="refreshBtn"
-  
+  :StateEntity="NewWorkScheduleEntity"
   >
-  </ExamFlowQueryHeader>
+  </WorkScheduleQueryHeader>
+
   <div id="DataList">
     <a-table
       bordered
@@ -49,6 +49,23 @@
           title="查看"
           ><SearchOutlined  mark="delete"
         />&nbsp;查看</a>
+         <a  @click="EditBth(action)"
+          style="
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            border:1px solid #dedede;
+             padding-top:1px;
+               padding-bottom:3px;
+             padding-left:7px;
+               padding-right:7px;
+            background-color:#3c8dbc;
+            border-radius: 4px;
+          "
+         
+          title="编辑"
+          ><EditOutlined  mark="delete"
+        />&nbsp;编辑</a>
         <a  @click="DeleteBth(action)"
           style="
             color: #fff;
@@ -112,14 +129,14 @@ import {
 import { message, Modal } from "ant-design-vue";
 import {
   
-  DeleteFilled,
+  DeleteFilled,EditOutlined,
   ExclamationCircleOutlined,SearchOutlined,CloseOutlined
   
 } from "@ant-design/icons-vue";
 import {
-  ExaminationFlowEntity,ExaminationFlowColumns
-} from "../../TypeInterface/IExaminationInterface";
-import ExamFlowQueryHeader from "../../components/ExamFlowQueryHeader.vue";
+  WorkScheduleEntity,WorkScheduleColumns
+} from "../../TypeInterface/IWorkScheduleInterface";
+import WorkScheduleQueryHeader from "../../components/WorkScheduleQueryHeader.vue";
 import {
   GetLoginRecordColumn,
   GetLoginRecordDatas,
@@ -132,7 +149,7 @@ import{useRouter} from 'vue-router'
 export default defineComponent({
   components: {
 
-    DeleteFilled,SearchOutlined,ExamFlowQueryHeader,CloseOutlined
+    DeleteFilled,SearchOutlined,WorkScheduleQueryHeader,CloseOutlined,EditOutlined
 
   },
   setup() {
@@ -140,9 +157,9 @@ export default defineComponent({
       count: 0,
     });
   const router=useRouter();
-    const DataEntityState = reactive(new ExaminationFlowEntity());
+    const DataEntityState = reactive(new WorkScheduleEntity());
  
-
+    let  NewWorkScheduleEntity=new WorkScheduleEntity();
   
    
    /***分页****************/
@@ -208,7 +225,7 @@ export default defineComponent({
       console.log("amountLoginRecordcolumnList",columnList)
 if(columnList==undefined||columnList.length==0)
 {
-  columnList=deepClone(ExaminationFlowColumns)
+  columnList=deepClone(WorkScheduleColumns)
 }
       console.log("amountLoginRecordcolumnList11111",columnList)
 
@@ -253,8 +270,8 @@ if(columnList==undefined||columnList.length==0)
         current1.value = 1;
       }
       //测试
-       DataEntityState.DataList = DataEntityState.ExaminationFlowDatas;
-        totalCount.value = DataEntityState.ExaminationFlowDatas.length;
+       DataEntityState.DataList = DataEntityState.WorkScheduleDatas;
+        totalCount.value = DataEntityState.WorkScheduleDatas.length;
         current1.value = 1;
 
     });
@@ -321,7 +338,10 @@ const DetailBth=(item:any)=>{
 
   router.push({path: '/Home/ExaminationFlowDetail', query: {Id: item}});
 }
+const EditBth=(item:any)=>{
 
+  router.push({path: '/Home/ExaminationFlowDetail', query: {Id: item}});
+}
 const DeleteBth=(item:any)=>{
 
   Modal.confirm({
@@ -383,6 +403,9 @@ const DeleteBth=(item:any)=>{
     const ClearQueryBtn = (payload: any) => {
       console.log("ClearQueryBtn");
     };
+ const CreateBtn = (payload: any) => {
+      router.push({ path: "/Home/CreateWorkSchedule", query: {} });
+    };
 
     
 
@@ -426,11 +449,29 @@ const DeleteBth=(item:any)=>{
    
 
       loading.value = true;
-      DataEntityState.QueryConditionInfo = {
-        flowName: "",
-        flowNo: "",
-        useStatus: "未选择",
-      };
+    //   DataEntityState.QueryConditionInfo = {
+    //     workScheduleNo: "",
+    //     workScheduleName: "",
+    //     workScheduleType: "未选择",
+    //       workScheduleStatus: "未选择",
+    //   };
+
+ for(let item in  DataEntityState.QueryConditionInfo)
+  {
+if(DataEntityState.QueryConditionInfoConfig[item].type=="text")
+        {
+            DataEntityState.QueryConditionInfo[item]="";
+        }
+        if(DataEntityState.QueryConditionInfoConfig[item].type=="select")
+        {
+            DataEntityState.QueryConditionInfo[item]="未选择";
+        }
+  }
+
+
+
+
+
       GetLoginRecordDatas({
         current: current1.value,
         pageSize: pageSize.value,
@@ -450,7 +491,7 @@ const DeleteBth=(item:any)=>{
       ...toRefs(state),
       ...toRefs(DataEntityState),
       DataEntityState,
-
+NewWorkScheduleEntity,
       rowActionClick,
       onSelectChange,
 
@@ -463,7 +504,7 @@ const DeleteBth=(item:any)=>{
       loading,
       pageSizeOptions,
 DeleteBth,
-DetailBth,
+DetailBth,EditBth,CreateBtn,
 
 
 

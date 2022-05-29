@@ -304,7 +304,7 @@
 
 
        
-      <a href="#" @click="toggleFullscreen" title="消息"
+      <a href="#" @click="NewMessageBtn" title="消息"
                 >      <BellOutlined
               /> </a>
    
@@ -710,6 +710,16 @@ order:3,
       }
     }
 
+ function NewMessageBtn() {
+     
+     store.state.NewMessageMark=!store.state.NewMessageMark
+    }
+
+
+
+
+
+
     const Mycollapsed = (p: boolean) => {
       if (collapsed.value) {
         setTimeout(() => {
@@ -749,7 +759,7 @@ order:3,
       openKeys,
       toggleFullscreen,UserTitle,
       menuList,
-      SearchMenuBtn,
+      SearchMenuBtn,NewMessageBtn,
 
 visibleSearchMenu,modalTitleSearchMenu,CloseSearchMenu,onOpenChange
       ,
