@@ -6,4 +6,15 @@ const SearchUserColumns = [
   
     { title: '操作', dataIndex: 'sysUserId', key: 'operation',width:60, slots: { customRender: 'action' } },
   ];
-  export {SearchUserColumns}
+
+
+  const SearchFlowColumns = [
+
+ 
+    { title: '流程编号',width:100, dataIndex: 'flowNo', },
+    {title: '流程名称',width:100, dataIndex: 'flowName',},
+ 
+  
+    { title: '操作', dataIndex: 'flowId', key: 'operation',width:60, slots: { customRender: 'action' } },
+  ];
+  export {SearchUserColumns,SearchFlowColumns}

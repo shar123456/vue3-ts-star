@@ -1,5 +1,7 @@
 <template>
+
     <div>
+     
  <a-modal
     cancelText="关闭"
      okText="确认"
@@ -10,9 +12,11 @@
      :ok-button-props="{ style:{display:''} }"
     @Cancel="onCancel"
       @ok="handleOk"
+      :maskClosable="maskClosable"
+      :confirm-loading="confirmLoading"
   >
 
-
+ <a-spin :spinning="spinning" tip="Loading...">
 
  <a-row>
     <a-col  style="border:0px solid red"  :span="6" v-for="(item,index) in treeEntitys" :key="index">
@@ -31,9 +35,11 @@
    
   </a-row>
 
- 
+ </a-spin>
   </a-modal>
+  
     </div>
+   
 </template>
 
 <script lang="ts">
@@ -136,8 +142,12 @@ export default defineComponent({
   },
     setup (props,context) {
         const state = reactive({
-            count: 0,
+            count: 0, spinning :false,
+            confirmLoading:false,
+            maskClosable:false
         })
+
+      
           let visibleConfigGrid = ref<boolean>(props.visibleRoleFunConfig);
           let titleConfigGrid = ref<string|undefined>(props.modalTitleRoleFunConfig);
            let CurrentUser=ref<string|undefined>(props.CurrentUser);
@@ -162,7 +172,8 @@ export default defineComponent({
     // });
       let MenuIdValue=ref<any>([]);
 const handleOk = (e: MouseEvent) => {
-  
+    state.spinning = !state.spinning;
+     state.confirmLoading = true;
    treeEntitys.value?.forEach((item)=>{
            console.log("checkedKeys",item.checkedKeys)
            if(item.checkedKeys!=undefined||item.checkedKeys.length>0)
@@ -175,6 +186,8 @@ MenuIdValue.value.push(...item.checkedKeys);
 
  if(MenuIdValue.value==undefined||MenuIdValue.value.length<1)
   {
+     state.spinning = false;
+        state.confirmLoading = false;
     message.success("请勾选要配置的权限.");
     return false;
   }
@@ -188,8 +201,11 @@ console.log("MenuIdValue",MenuIdValue.value)
    console.log(res)
             if (res.isSuccess) {
                   message.success("配置成功.");
+                  state.spinning = false;
+                     state.confirmLoading = false
           context.emit("CloseSetingMoadl");
             }
+               state.confirmLoading = false
          });
 
 
@@ -227,7 +243,7 @@ let ss3=
        checkedKeys:['0-1-0', '0-1-1']}
 //treeEntitys.value=[ss1,ss2,ss3,ss4,ss5]
  })
- 
+  state.spinning = false;
     const onCancel = (e: MouseEvent) => {
    context.emit("CloseSetingMoadl");
     };

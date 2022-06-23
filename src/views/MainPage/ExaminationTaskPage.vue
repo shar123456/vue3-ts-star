@@ -1,11 +1,10 @@
 <template>
- 
   <ExamTaskQueryHeader
     @SearchBtn="SearchBtn"
-
+    @CreateBtn="CreateBtn"
     @batchDelete="batchDelete"
     @refreshBtn="refreshBtn"
-  
+    :StateEntity="NewExaminationTaskEntity"
   >
   </ExamTaskQueryHeader>
   <div id="DataList">
@@ -24,21 +23,55 @@
       }"
       :pagination="false"
     >
-     <template #useStatus="{ text: useStatus }">
+      <template #useStatus="{ text: useStatus }">
         <span>
           <a-tag :color="useStatus === '启用' ? 'blue' : 'red'">
             {{ useStatus }}
           </a-tag>
         </span>
       </template>
-      <template #action="{ text: action }">
-       <a  @click="DetailBth(action)"
+<template #examStatus="{ text: examStatus }">
+       
+
+ <span>
+          <a-tag v-if="examStatus === '进行中'"  color='#C1CE28'>
+            {{ examStatus }}
+          </a-tag>
+           <a-tag v-else-if="examStatus === '已完成'"  color='green'>
+            {{ examStatus }}
+          </a-tag>
+            <a-tag v-else-if="examStatus === '已过期'"  color='#dd4b39'>
+            {{ examStatus }}
+          </a-tag>
+          <a-tag v-else-if="examStatus === '未开始'"  color='#A3A98D'>
+            {{ examStatus }}
+          </a-tag>
+           <a-tag v-else  color='pink'>
+            {{ examStatus }}
+          </a-tag>
+        </span>
+
+
+
+
+
+      </template>
+
+
+
+
+
+
+
+
+      <template #actions="{ record }">
+      <a  v-if="!(record.examStatus=='已完成'||record.examStatus=='已取消')" @click="RemindBth(record.examTaskId)"
           style="
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             border:1px solid #dedede;
-            padding-top:1px;
+             padding-top:1px;
                padding-bottom:3px;
              padding-left:7px;
                padding-right:7px;
@@ -46,35 +79,63 @@
             border-radius: 4px;
           "
          
-          title="查看"
-          ><SearchOutlined  mark="delete"
-        />&nbsp;查看</a>
-        <a  @click="DeleteBth(action)"
+          title="提醒"
+          ><BellOutlined   mark="remind"
+        />&nbsp;提醒</a>
+        <a  v-else
           style="
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             border:1px solid #dedede;
-            padding-top:1px; padding-bottom:3px;
+             padding-top:1px;
+               padding-bottom:3px;
              padding-left:7px;
                padding-right:7px;
-            background-color:#dd4b39 ;
+              background-color: #C3C3CD;
             border-radius: 4px;
           "
-         
+          disabled="disabled"
+          title="提醒"
+          ><BellOutlined   mark="remind"
+        />&nbsp;提醒</a>
+        <a
+          @click="DetailBth(record.examTaskId)"
+          style="
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #dedede;
+            padding-top: 1px;
+            padding-bottom: 3px;
+            padding-left: 7px;
+            padding-right: 7px;
+            background-color: #3c8dbc;
+            border-radius: 4px;
+          "
+          title="查看"
+          ><SearchOutlined mark="delete" />&nbsp;查看</a
+        >
+        <a
+          @click="DeleteBth(record.examTaskId,record.examTaskNo)"
+          style="
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #dedede;
+            padding-top: 1px;
+            padding-bottom: 3px;
+            padding-left: 7px;
+            padding-right: 7px;
+            background-color: #dd4b39;
+            border-radius: 4px;
+          "
           title="删除"
-          ><CloseOutlined  mark="delete"
-        />&nbsp;删除</a>
-     
+          ><CloseOutlined mark="delete" />&nbsp;删除</a
+        >
       </template>
 
-      <template #loginType="{ text: loginType }">
-        <span>
-          <a-tag :color="loginType === '微信小程序' ? 'blue' : 'red'">
-            {{ loginType }}
-          </a-tag>
-        </span>
-      </template>
+  
     </a-table>
 
     <div class="userPagination">
@@ -94,8 +155,6 @@
       </a-pagination>
     </div>
   </div>
-
- 
 </template>
 
 <script lang="ts">
@@ -110,13 +169,14 @@ import {
 } from "vue";
 import { message, Modal } from "ant-design-vue";
 import {
-  
   DeleteFilled,
-  ExclamationCircleOutlined,SearchOutlined,CloseOutlined
-  
+  ExclamationCircleOutlined,
+  SearchOutlined,
+  CloseOutlined,
 } from "@ant-design/icons-vue";
 import {
-  ExaminationTaskEntity,ExaminationTaskColumns
+  ExaminationTaskEntity,
+  ExaminationTaskColumns,
 } from "../../TypeInterface/IExaminationInterface";
 import ExamTaskQueryHeader from "../../components/ExamTaskQueryHeader.vue";
 import {
@@ -125,26 +185,26 @@ import {
   DeleteLoginRecordById,
   BatchDeleteLoginRecord,
 } from "../../Request/userRequest";
-
+import { GetExaminationTaskDatas,DeleteExaminationTaskById,BatchDeleteExaminationTask,EmailRemind } from "../../Request/ExaminationRequest";
 import { deepClone } from "../../utility/commonFunc";
-import{useRouter} from 'vue-router'
+import { useRouter } from "vue-router";
 export default defineComponent({
   components: {
-
-    DeleteFilled,SearchOutlined,ExamTaskQueryHeader,CloseOutlined
-
+    DeleteFilled,
+    SearchOutlined,
+    ExamTaskQueryHeader,
+    CloseOutlined,
   },
   setup() {
     const state = reactive({
       count: 0,
     });
-  const router=useRouter();
+    const router = useRouter();
     const DataEntityState = reactive(new ExaminationTaskEntity());
- 
 
-  
-   
-   /***分页****************/
+    let NewExaminationTaskEntity = new ExaminationTaskEntity();
+
+    /***分页****************/
     const pageSize = ref(10);
     const current1 = ref(1);
     const totalCount = ref(0);
@@ -153,7 +213,7 @@ export default defineComponent({
     let loading = ref<boolean>(false);
     const onShowSizeChange = (current: number, pageSize: number) => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetExaminationTaskDatas({
         current: current,
         pageSize: pageSize,
         ...DataEntityState.QueryConditionInfo,
@@ -170,7 +230,7 @@ export default defineComponent({
     });
     watch(current1, () => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetExaminationTaskDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -184,7 +244,7 @@ export default defineComponent({
     });
     watch(refreshMark, () => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetExaminationTaskDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -204,12 +264,11 @@ export default defineComponent({
     onMounted(async () => {
       //获取表格列及处理表格列
       let columnList = await GetLoginRecordColumn({ pageName: "Examination" });
-      console.log("amountLoginRecordcolumnList",columnList)
-if(columnList==undefined||columnList.length==0)
-{
-  columnList=deepClone(ExaminationTaskColumns)
-}
-      console.log("amountLoginRecordcolumnList11111",columnList)
+      console.log("amountLoginRecordcolumnList", columnList);
+      if (columnList == undefined || columnList.length == 0) {
+        columnList = deepClone(ExaminationTaskColumns);
+      }
+      console.log("amountLoginRecordcolumnList11111", columnList);
 
       DataEntityState.ListColumns = deepClone(columnList);
 
@@ -225,15 +284,11 @@ if(columnList==undefined||columnList.length==0)
       DataEntityState.ListGridColumns = columnList;
 
       for (var i in DataEntityState.ListGridColumns) {
-
-    if(DataEntityState.ListGridColumns[i].title=="操作")
-        {
-          DataEntityState.ListGridColumns[i].fixed="right"
-         DataEntityState.ListGridColumns[i].width=190
-          DataEntityState.ListGridColumns[i].dataIndex="action"
+        if (DataEntityState.ListGridColumns[i].title == "操作") {
+          DataEntityState.ListGridColumns[i].fixed = "right";
+          DataEntityState.ListGridColumns[i].width = 210;
+          //DataEntityState.ListGridColumns[i].dataIndex = "action";
         }
- 
-
 
         if (DataEntityState.ListGridColumns[i]["slots"] == null) {
           delete DataEntityState.ListGridColumns[i]["slots"];
@@ -241,29 +296,20 @@ if(columnList==undefined||columnList.length==0)
       }
 
       for (var z in DataEntityState.ListColumns) {
-
-  if(DataEntityState.ListColumns[z].title=="操作")
-        {
-          DataEntityState.ListColumns[z].fixed="right"
-         DataEntityState.ListColumns[z].width=190
-          DataEntityState.ListColumns[z].dataIndex="action"
+        if (DataEntityState.ListColumns[z].title == "操作") {
+          DataEntityState.ListColumns[z].fixed = "right";
+          DataEntityState.ListColumns[z].width = 210;
+          //DataEntityState.ListColumns[z].dataIndex = "action";
         }
-
 
         if (DataEntityState.ListColumns[z]["slots"] == null) {
           delete DataEntityState.ListColumns[z]["slots"];
         }
       }
 
-
-
-
-
-
-
       //获用户数据
       loading.value = true;
-      let UserDatasList = await GetLoginRecordDatas({
+      let UserDatasList = await GetExaminationTaskDatas({
         current: 1,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -277,10 +323,9 @@ if(columnList==undefined||columnList.length==0)
         current1.value = 1;
       }
       //测试
-       DataEntityState.DataList = DataEntityState.ExaminationTaskDatas;
-        totalCount.value = DataEntityState.ExaminationTaskDatas.length;
-        current1.value = 1;
-
+      //DataEntityState.DataList = DataEntityState.ExaminationTaskDatas;
+      // totalCount.value = DataEntityState.ExaminationTaskDatas.length;
+      // current1.value = 1;
     });
     /***数据初始化****************/
 
@@ -296,7 +341,7 @@ if(columnList==undefined||columnList.length==0)
     };
     /***排序****************/
     /***勾选****************/
-    const onSelectChange = (selectedRowKeys: [], selectedRows: []) => { 
+    const onSelectChange = (selectedRowKeys: [], selectedRows: []) => {
       DataEntityState.selectedRowKeys = selectedRowKeys;
       DataEntityState.selectedRows = selectedRows;
     };
@@ -333,25 +378,24 @@ if(columnList==undefined||columnList.length==0)
               "delete"
           ) {
             const Id = record.loginRecordId;
-
-            
           }
         },
       };
     };
     /***rowActionClick****************/
 
-const DetailBth=(item:any)=>{
+    const DetailBth = (item: any) => {
 
-  router.push({path: '/Home/ExaminationFlowDetail', query: {Id: item}});
-}
+      router.push({ path: "/Home/ExaminationTaskDetail", query: { Id: item,Type:"ExaminationTask" } });
+    };
 
-const DeleteBth=(item:any)=>{
+
+const RemindBth=(item:any)=>{
 
   Modal.confirm({
-              title: "您确定要删除这条记录吗?",
+              title: "您确定要执行提醒功能吗?",
               icon: createVNode(ExclamationCircleOutlined),
-              content: `用户名：${item}`,
+              content: `邮件提醒`,
               okText: "Yes",
               okType: "danger",
               cancelText: "No",
@@ -361,12 +405,17 @@ const DeleteBth=(item:any)=>{
                 //     UserDataEntityState.UserDataList.splice(index, 1);
 
                 loading.value = true;
-                // DeleteUserById({ UserId: Id }).then((res: any) => {
-                //   if (res.isSuccess) {
-                //     refreshMark.value = new Date().getTime().toString();
-                //     message.success("删除成功.");
-                //   }
-                // });
+                EmailRemind({ Id: item }).then((res: any) => {
+                  if (res.isSuccess) {
+                    // refreshMark.value = new Date().getTime().toString();
+                    message.success("提醒成功.");
+                  }
+                  else
+                  {
+                     message.error(res.msg);
+                  }
+                  loading.value = false;
+                });
               },
               onCancel() {
                 message.error("已取消.");
@@ -382,12 +431,49 @@ const DeleteBth=(item:any)=>{
 
 
 
+    const DeleteBth = (item: any,examTaskNo:any) => {
 
-/********************************************* */
- const SearchBtn = async (payload: any) => {
+
+ console.log(
+           item
+          );
+
+
+      Modal.confirm({
+        title: "您确定要删除这条记录吗?",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: `审批任务编号：${examTaskNo}`,
+        okText: "Yes",
+        okType: "danger",
+        cancelText: "No",
+        onOk() {
+          // const index = UserDataEntityState.UserDataList.findIndex(
+          //     (i: IUserInfo) => i.sysUserId == Id);
+          //     UserDataEntityState.UserDataList.splice(index, 1);
+
+          loading.value = true;
+           DeleteExaminationTaskById({ Id: item }).then((res: any) => {
+                  if (res.isSuccess) {
+                    refreshMark.value = new Date().getTime().toString();
+                    message.success("删除成功.");
+                  }
+                  else{
+                     message.error(res.msg);
+                     refreshMark.value = new Date().getTime().toString();
+                  }
+                });
+        },
+        onCancel() {
+          message.error("已取消.");
+        },
+      });
+    };
+
+    /********************************************* */
+    const SearchBtn = async (payload: any) => {
       loading.value = true;
 
-      let UserDatasList1 = await GetLoginRecordDatas({
+      let UserDatasList1 = await GetExaminationTaskDatas({
         current: 1,
         pageSize: pageSize.value,
         ...payload,
@@ -402,13 +488,16 @@ const DeleteBth=(item:any)=>{
       DataEntityState.QueryConditionInfo = payload;
     };
 
-   
-
     const ClearQueryBtn = (payload: any) => {
       console.log("ClearQueryBtn");
     };
 
-    
+    const CreateBtn = (payload: any) => {
+      router.push({
+        path: "/Home/CreateExaminationPage",
+        query: { pageType: "add" },
+      });
+    };
 
     const batchDelete = (payload: any) => {
       let keys: string[] = [];
@@ -431,7 +520,7 @@ const DeleteBth=(item:any)=>{
           disabled: isDesibleOkBtn,
         },
         onOk() {
-          BatchDeleteLoginRecord({ keys: keys }).then((res: any) => {
+          BatchDeleteExaminationTask({ keys: keys }).then((res: any) => {
             if (res.isSuccess) {
               refreshMark.value = new Date().getTime().toString();
               DataEntityState.selectedRowKeys = [];
@@ -447,22 +536,19 @@ const DeleteBth=(item:any)=>{
     };
 
     const refreshBtn = async (payload: any) => {
-   
-
       loading.value = true;
       DataEntityState.QueryConditionInfo = {
-       examNo : "",
+        examTaskNo: "",
 
-                examName : "",
-                useStatus :"未选择",
-initiator : "",
-    flowNo : "",
-  noticeType : "未选择",
-      examStatus :"未选择",
- emergencyLevel : "未选择",
-
+        examName: "",
+        useStatus: "未选择",
+        initiator: "",
+        flowNo: "",
+        noticeType: "未选择",
+        examStatus: "未选择",
+        emergencyLevel: "未选择",
       };
-      GetLoginRecordDatas({
+      GetExaminationTaskDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -475,11 +561,12 @@ initiator : "",
         }
       });
     };
-  /********************************************* */
+    /********************************************* */
 
     return {
       ...toRefs(state),
       ...toRefs(DataEntityState),
+      NewExaminationTaskEntity,
       DataEntityState,
 
       rowActionClick,
@@ -490,24 +577,19 @@ initiator : "",
       totalCount,
       onShowSizeChange,
       handleTableChange,
-      
+
       loading,
       pageSizeOptions,
-DeleteBth,
-DetailBth,
+      DeleteBth,
+      DetailBth,
+      CreateBtn,RemindBth,
 
+      SearchBtn,
 
-
-
-SearchBtn,
-     
       ClearQueryBtn,
-     
+
       batchDelete,
       refreshBtn,
-    
-      
-
     };
   },
 });

@@ -87,7 +87,7 @@
 
  <template #name3="{ text: menuId }">
         <span>
-          <a-tag :color="menuId.indexOf('M')>-1 ? 'blue' : 'red'">
+          <a-tag :color="menuId.indexOf('-')>-1 ? 'red' : 'blue'">
             {{ menuId }}
           </a-tag>
         </span>

@@ -35,21 +35,29 @@
 
       </div>
     </div>
+ <div class="centerPad"></div>
     <div class="downPad">
-      <a-button type="primary" @click="CreateBtn"> <template #icon><plus-outlined  /></template>
+      <div>&nbsp;
+  <a-button type="primary" @click="CreateBtn"> <template #icon><plus-outlined  /></template>
         新增 </a-button>&nbsp;
-      <a-button danger type="primary"   @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
-      <a-button type="primary"   @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
+      <a-button    style="background-color: #dd4b39; border-color: #dd4b39" type="primary"   @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
+      </div>
+    
+      <div>
+<a-button type="primary"   @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
       <a-button  
         type="primary"
         @click="ClearQueryBtn"
-        style="background-color: goldenrod; border-color: goldenrod"
-        ><template #icon><clear-outlined /></template>清空筛选条件</a-button
+     
+        ><template #icon><clear-outlined /></template>清空筛选</a-button
       >&nbsp;
       <a-button type="primary"   @click="SearchBtn">
         <template #icon><SearchOutlined /></template>
         搜索 </a-button
       >&nbsp;&nbsp;
+      </div>
+      
+      
     </div>
   </div>
 </template>
@@ -150,7 +158,7 @@ const configGridBtn = () => {
 
 <style  scoped>
 #userListPad {
-  height: 130px;
+  height: 142px;
   box-sizing: border-box;
   border: 0px solid red;
   box-sizing: border-box;
@@ -159,7 +167,7 @@ const configGridBtn = () => {
   overflow: auto;
 }
 .upPad {
-  height: 88px;
+  height: 93px;
   border: 0px solid red;
   box-sizing: border-box;
   display: flex;
@@ -217,13 +225,18 @@ text-overflow:ellipsis;
   border: 0px solid red;
   width: 80%;
 }
-
+.centerPad{
+  height: 7px;
+   border: 0px solid red;
+   box-sizing: border-box;
+   background-color: #e5e6e9;
+}
 .downPad {
   height: 40px;
   border: 0px solid red;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content:space-between;
   min-width: 1000px;
 }
 </style>

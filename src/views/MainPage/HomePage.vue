@@ -8,29 +8,17 @@
      
  </div>
  <div class="HP-Up-Right">
-     <!-- <div :style="{ width: '700px', border: '1px solid #d9d9d9', borderRadius: '4px' }">
-     <a-calendar v-model:value="value" :fullscreen="true" :locale="locale"   @select="onSelect" @panelChange="onPanelChange"  >   
-    <template #dateCellRender="{ current }">
-      <ul class="events">
-        <li v-for="item in getListData(current)" :key="item.content">
-          <a-badge :status="item.type" :text="item.content"/>
-        </li>
-      </ul>
-    </template>
-    <template #monthCellRender="{ current }">
-      <div v-if="getMonthData(current)" class="notes-month">
-        <section>{{ getMonthData(current) }}</section>
-        <span>Backlog number</span>
-      </div>
-    </template>
-  </a-calendar>
-     </div> -->
-     <a-card title="本月工作计划" headStyle="font-size:21px;font-weight:600" style="width: 100%;height:100%">
+    
+     <a-card :hoverable="true" size="small" title="本月工作计划" headStyle="font-size:21px;font-weight:600;" style="width: 100%;height:100%;">
     <template #extra><a href="#" @click="ShowSchedule">更多</a></template>
-    <p>1.总部视频会议，主要讨论第三季生产部产能消耗问题.</p>
-    <p>2.拟定排产初步方案.</p>
-      <p>3.生产会议，针对第三产线生产设备优化等相关问题.</p>
-    <p>4.提交采购合同，并对相关附件信息进行审核，签字确认.</p>
+    <div style="width: 100%;height:100%;border:0px solid red;" v-if="ScheduleEmptyMark">
+<a-empty description="暂无计划"  /></div>
+    <div style="width: 100%;height:100%;border:0px solid red;"> 
+    
+    <p v-for="(item,index) in DataList" :key="index"   @click="gotoDetail(item.id)">{{index+1}}、{{item.workScheduleName}}.
+    </p></div>
+  
+   
     
   </a-card>
  </div>
@@ -59,11 +47,7 @@
     </div>
 
 
-    <ShowScheduleModal
-    :visible="visibleShowSchedule"
-    :modalTitle="modalTitleShowSchedule"
-  @CloseSetingMoadl="CloseSchedule"
-  />
+
 
   <New-Message-Tip />
 </template>
@@ -72,105 +56,84 @@
 
 import { reactive,ref,watch, toRefs,defineComponent,onMounted,computed } from 'vue'
 
-import ShowScheduleModal from "../../components/ShowScheduleModal.vue";
+
 import NewMessageTip from "../../components/NewMessageTip.vue";
 
 import { useStore } from "vuex";
 import{useRouter} from 'vue-router'
- import 'moment/locale/zh-cn';
+ import {
+  GetCurrentMonthWorkSchedule
+}
+ from "../../Request/WorkScheduleRequest";
+ import {
+  WorkScheduleEntity,
+  IWorkScheduleInfo,
+} from "../../TypeInterface/IWorkScheduleInterface";
 import * as echarts from 'echarts'
 export default defineComponent({
     components: {
-    ShowScheduleModal,
+ 
     NewMessageTip
     },
-    setup (props,context) {
+    setup () {
         const state = reactive({
             count: 0,
-               
+            ScheduleEmptyMark:false
         })
           const router=useRouter();
-let visibleShowSchedule = ref<boolean>(false);
-    let modalTitleShowSchedule = ref<string>("");
+    let DataEntityState = reactive(new WorkScheduleEntity());
  const store = useStore();
  const ShowSchedule = () => {
-    //   visibleShowSchedule.value = true;
-    //   modalTitleShowSchedule.value = "待办事项计划时间表";
-    //  console.log(visibleShowSchedule.value);
+   
  router.push({path: '/Home/MyCalendarPage', query: {Id: "1"}});
       
     };
-
- const CloseSchedule = () => {
-      visibleShowSchedule.value = false;
-         modalTitleShowSchedule.value= "";
+ const gotoDetail = (Id:any) => {
+       router.push({path: '/Home/WorkScheduleDetail', query: {Id: Id,Type:"HomePageCalendar"}});
     };
+
+
 
 
         //https://ant.design/components/calendar-cn/
 //https://blog.csdn.net/qq_41619796/article/details/104795405
-         const value = ref<any>();
- let listData:any[]|undefined=undefined;
-    const getListData = (value: any) => {
- listData=[];
-      switch (value.date()) {
-           case 3:
-          listData = [
-            { type: 'success', content: '总部视频会议.' },
-            //{ type: 'success', content: 'This is usual event.' },
-          ];
-          break;
-           case 19:
-          listData = [
-            { type: 'success', content: '拟定排产初步方案.' },
-            //{ type: 'success', content: 'This is usual event.' },
-          ];
-          break;
-        case 8:
-          listData = [
-            { type: 'success', content: '生产会议.' },
-            //{ type: 'success', content: 'This is usual event.' },
-          ];
-          break;
-        case 10:
-          listData = [
-            { type: 'warning', content: '提交采购合同.' },
-          //  { type: 'success', content: 'This is usual event.' },
-            //{ type: 'error', content: 'This is error event.' },
-          ];
-          break;
-        case 15:
-          listData = [
-            { type: 'warning', content: '预定酒店' },
-          //  { type: 'success', content: 'This is very long usual event。。....' },
-          //  { type: 'error', content: 'This is error event 1.' },
-           // { type: 'error', content: 'This is error event 2.' },
-           // { type: 'error', content: 'This is error event 3.' },
-           // { type: 'error', content: 'This is error event 4.' },
-          ];
-          break;
-        default:
-      }         
- return listData || [];
-    }
-
-const getMonthData = (value: any) => {
-      if (value.month() === 8) {
-        return "约见重要客人";
-      }
-    };
- const onSelect = (value: any) => {
-     console.log(value)
-    };
-    const onPanelChange = (value: any) => {
-     value
-    };
+        
   let ProductEfficiencyChart:any=undefined;
     let showPinAChart:any=undefined;
        let showPinBChart:any=undefined;
           let showPinCChart:any=undefined;
              let showPinDChart:any=undefined;
- onMounted(() => {
+ onMounted(async() => {
+
+DataEntityState.QueryConditionInfo.useStatus="启用";
+let res= await   GetCurrentMonthWorkSchedule({
+        current:1,
+        pageSize: 500,
+        ...DataEntityState.QueryConditionInfo,
+      })
+        if (res.isSuccess) {
+      
+          //DataEntityState.DataList = res.datas;
+           let date=new Date();
+                const month=date.getMonth()+1;
+          let datas:any=res.datas.filter((i:any)=>i.month==month)
+          DataEntityState.DataList=datas.slice(0,6);
+           console.log("DataEntityState.DataList",DataEntityState.DataList)
+               console.log("ScheduleEmptyMark",DataEntityState.DataList)
+            state.ScheduleEmptyMark=false;
+            if(DataEntityState.DataList&&DataEntityState.DataList.length<=0)
+            {
+               state.ScheduleEmptyMark=true;
+            }
+        }else{
+          state.ScheduleEmptyMark=true;
+        }
+
+
+
+
+
+
 setTimeout(()=>{
 store.state.NewMessageMark=true;
 },1000)
@@ -181,17 +144,17 @@ store.state.NewMessageMark=false;
 
  
 showEchart();
-showPinA();
-showPinB();
+ showPinA();
+ showPinB();
 showPinC();
 showPinD();
 
-setTimeout(()=>{ProductEfficiencyChart.resize();
+setTimeout(()=>{ProductEfficiencyChart?.resize();
 
-showPinAChart.resize();
-showPinBChart.resize();
-showPinCChart.resize();
-showPinDChart.resize();
+showPinAChart?.resize();
+showPinBChart?.resize();
+showPinCChart?.resize();
+showPinDChart?.resize();
 },200);
 
 
@@ -550,11 +513,11 @@ showPinBOption = {
                 colorStops: [
                   {
                     offset: 0,
-                    color: "#CE45E3", // 0% 处的颜色
+                    color: "#D6CDF7", // 0% 处的颜色
                   },
                   {
                     offset: 1,
-                    color: "#EFC0F6", // 100% 处的颜色1
+                    color: "#9279EB", // 100% 处的颜色1
                   },
                 ],
               },
@@ -735,10 +698,10 @@ let showEchart=()=>{
                     normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                             offset: 0,
-                            color: 'rgba(255, 204,1, .9)'
+                            color: 'rgba(223, 151,203, .9)'
                         }, {
                             offset: 0.8,
-                            color: 'rgba(255, 204,1,.1)'
+                            color: 'rgba(223, 151,203,.1)'
                         }], false),
                         shadowColor: 'rgba(0, 0, 0, 0.1)',
                         shadowBlur: 10
@@ -746,7 +709,7 @@ let showEchart=()=>{
                 },
                 itemStyle: {
                     normal: {
-                        color: '#ffcb00'
+                        color: '#DF97CB'
                     }
                 },
                 data: data1
@@ -765,7 +728,7 @@ let showEchart=()=>{
                 },
                 lineStyle: {
                     normal: {
-                        color: '#ffcb00',
+                        color: '#DF97CB',
                         width: 0,
                         opacity: 0,
                         curveness: 0,
@@ -839,16 +802,8 @@ let showEchart=()=>{
 }
 
         return {
-            ...toRefs(state),value,
-      getListData,
-      getMonthData,locale: {
-          lang: {
-            month: '月',
-            year: '年',
-          },
-        }, onSelect,
-      onPanelChange,
-visibleShowSchedule,modalTitleShowSchedule,ShowSchedule,CloseSchedule,
+            ...toRefs(state), ...toRefs(DataEntityState),
+     ShowSchedule,gotoDetail
         }
     }
 

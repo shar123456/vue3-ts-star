@@ -2,10 +2,10 @@
  
   <ExamFlowQueryHeader
     @SearchBtn="SearchBtn"
-
+@CreateBtn="CreateBtn"
     @batchDelete="batchDelete"
     @refreshBtn="refreshBtn"
-  
+   :StateEntity="NewExaminationFlowEntity"
   >
   </ExamFlowQueryHeader>
   <div id="DataList">
@@ -35,7 +35,7 @@
        <a  @click="DetailBth(action)"
           style="
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             border:1px solid #dedede;
              padding-top:1px;
@@ -52,7 +52,7 @@
         <a  @click="DeleteBth(action)"
           style="
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             border:1px solid #dedede;
              padding-top:1px;
@@ -126,7 +126,9 @@ import {
   DeleteLoginRecordById,
   BatchDeleteLoginRecord,
 } from "../../Request/userRequest";
-
+import {
+ GetExaminationFlowDatas,DeleteExaminationFlowById,BatchDeleteExaminationFlow
+} from "../../Request/ExaminationRequest";
 import { deepClone } from "../../utility/commonFunc";
 import{useRouter} from 'vue-router'
 export default defineComponent({
@@ -141,7 +143,7 @@ export default defineComponent({
     });
   const router=useRouter();
     const DataEntityState = reactive(new ExaminationFlowEntity());
- 
+ let  NewExaminationFlowEntity=new ExaminationFlowEntity();
 
   
    
@@ -154,7 +156,7 @@ export default defineComponent({
     let loading = ref<boolean>(false);
     const onShowSizeChange = (current: number, pageSize: number) => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetExaminationFlowDatas({
         current: current,
         pageSize: pageSize,
         ...DataEntityState.QueryConditionInfo,
@@ -171,7 +173,7 @@ export default defineComponent({
     });
     watch(current1, () => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetExaminationFlowDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -185,7 +187,7 @@ export default defineComponent({
     });
     watch(refreshMark, () => {
       loading.value = true;
-      GetLoginRecordDatas({
+      GetExaminationFlowDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -239,7 +241,7 @@ if(columnList==undefined||columnList.length==0)
 
       //获用户数据
       loading.value = true;
-      let UserDatasList = await GetLoginRecordDatas({
+      let UserDatasList = await GetExaminationFlowDatas({
         current: 1,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -253,9 +255,9 @@ if(columnList==undefined||columnList.length==0)
         current1.value = 1;
       }
       //测试
-       DataEntityState.DataList = DataEntityState.ExaminationFlowDatas;
-        totalCount.value = DataEntityState.ExaminationFlowDatas.length;
-        current1.value = 1;
+      //  DataEntityState.DataList = DataEntityState.ExaminationFlowDatas;
+      //   totalCount.value = DataEntityState.ExaminationFlowDatas.length;
+      //   current1.value = 1;
 
     });
     /***数据初始化****************/
@@ -337,12 +339,12 @@ const DeleteBth=(item:any)=>{
                 //     UserDataEntityState.UserDataList.splice(index, 1);
 
                 loading.value = true;
-                // DeleteUserById({ UserId: Id }).then((res: any) => {
-                //   if (res.isSuccess) {
-                //     refreshMark.value = new Date().getTime().toString();
-                //     message.success("删除成功.");
-                //   }
-                // });
+                DeleteExaminationFlowById({ Id: item }).then((res: any) => {
+                  if (res.isSuccess) {
+                    refreshMark.value = new Date().getTime().toString();
+                    message.success("删除成功.");
+                  }
+                });
               },
               onCancel() {
                 message.error("已取消.");
@@ -363,7 +365,7 @@ const DeleteBth=(item:any)=>{
  const SearchBtn = async (payload: any) => {
       loading.value = true;
 
-      let UserDatasList1 = await GetLoginRecordDatas({
+      let UserDatasList1 = await GetExaminationFlowDatas({
         current: 1,
         pageSize: pageSize.value,
         ...payload,
@@ -383,7 +385,9 @@ const DeleteBth=(item:any)=>{
     const ClearQueryBtn = (payload: any) => {
       console.log("ClearQueryBtn");
     };
-
+const CreateBtn = (payload: any) => {
+      router.push({ path: "/Home/ExaminationFlowPage", query: {pageType:"add"} });
+    };
     
 
     const batchDelete = (payload: any) => {
@@ -407,7 +411,7 @@ const DeleteBth=(item:any)=>{
           disabled: isDesibleOkBtn,
         },
         onOk() {
-          BatchDeleteLoginRecord({ keys: keys }).then((res: any) => {
+          BatchDeleteExaminationFlow({ keys: keys }).then((res: any) => {
             if (res.isSuccess) {
               refreshMark.value = new Date().getTime().toString();
               DataEntityState.selectedRowKeys = [];
@@ -431,7 +435,7 @@ const DeleteBth=(item:any)=>{
         flowNo: "",
         useStatus: "未选择",
       };
-      GetLoginRecordDatas({
+      GetExaminationFlowDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -448,7 +452,7 @@ const DeleteBth=(item:any)=>{
 
     return {
       ...toRefs(state),
-      ...toRefs(DataEntityState),
+      ...toRefs(DataEntityState),NewExaminationFlowEntity,
       DataEntityState,
 
       rowActionClick,
@@ -473,7 +477,7 @@ SearchBtn,
       ClearQueryBtn,
      
       batchDelete,
-      refreshBtn,
+      refreshBtn,CreateBtn
     
       
 

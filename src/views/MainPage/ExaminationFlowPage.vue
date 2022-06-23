@@ -1,40 +1,72 @@
 <template>
+<a-spin :spinning="spinning" >
   <div class="mainSpFlowContent">
     <div style="padding: 5px">
       <a-row>
         <a-col :span="24" class="title">创建审批流程</a-col>
       </a-row>
-      <a-row style="height: 25px"></a-row>
-
-
-
-      <a-row
-        type="flex"
-        justify="center"
-        align="middle"
-        style="
-          border: 1px dotted #71a6e7;
-          height: 150px;
-          background-color: #fdfdfd;
-        "
+      <a-row style="height: 23px"></a-row>
+  <a-form
+        ref="formRef"
+        :model="EditData"
+        :rules="rules"
+        @finish="handleFinish"
+        v-bind="layout"
       >
-        <div>
-          <a-button
+        <a-row type="flex" justify="center">
+          <a-col class="col" :span="11">
+            <a-form-item label="流程编号" name="flowNo">
+              <a-input disabled="true" v-model:value="EditData.flowNo" placeholder="请输入流程编号" />
+            </a-form-item>
+          </a-col>
+          <a-col class="col" :span="1"></a-col>
+          <a-col class="col" :span="11">
+            <a-form-item label="流程名称" name="flowName">
+              <a-input :disabled="IsDisabled" v-model:value="EditData.flowName" placeholder="请输入标题" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+
+
+
+ <a-row style="height: 1px"></a-row>
+   
+
+
+
+<a-row style="height: 1px"></a-row>
+      <a-row type="flex" justify="center">
+        <a-col class="col" :span="11">
+
+ <a-form-item label="状态" name="useStatus">
+              <a-select :disabled="IsDisabled" v-model:value="EditData.useStatus" style="width: 100%" placeholder="请选择状态">
+            <a-select-option value="未选择">未选择</a-select-option>
+            <a-select-option value="启用">启用</a-select-option>
+            <a-select-option value="禁用">禁用</a-select-option>
+          </a-select>
+            </a-form-item>
+        </a-col>
+        <a-col class="col" :span="1"></a-col>
+        <a-col class="col" :span="11">
+
+ <a-form-item label="审批成员" name="workScheduleStatus">
+ <a-button
             @click="addPersonBtn"
-            style="color: #639ee5; font-weight: 400; font-size: 16px"
-            type="dashed"
+           
+            type="primary"
             block
           >
             <template #icon><PlusCircleTwoTone /></template>
 
             添加审批成员</a-button
           >
-        </div>
-
-      
-
-       
+ 
+    </a-form-item>
+        </a-col>
       </a-row>
+ <a-row style="height: 1px"></a-row>
+
 
 
  <a-row style="height: 20px"></a-row>
@@ -61,7 +93,7 @@
           >
         </div> -->
 <div v-if="steps == undefined || steps.length <= 0">
-<a-empty description="暂无预览信息"  /></div>
+<a-empty description="暂无审批成员预览信息"  /></div>
         <a-steps  :direction="direction"  
           v-if="!(steps == undefined || steps.length <= 0)"
           :current="current"
@@ -109,38 +141,49 @@
 
       </a-row>
 
-     <a-row style="height: 15px"></a-row>
-<a-row>
-        <a-col :span="24" class="title">基本信息</a-col>
-      </a-row>
+
+
+
+
+
+
+
+
+
+
+        <a-row style="height: 75px"></a-row>
+        <a-row type="flex" justify="center">
+          <a-col class="col" :span="24" style="text-align: center">
+            <a-button v-show="IsShowSubmit" type="primary" html-type="submit">{{
+              submitDesc
+            }}</a-button
+            >&nbsp;
+             <a-button  style="background-color: #CAB872; border-color: #CAB872" type="primary"   v-show="IsShowContinueAdd" @click="continueAdd">继续创建</a-button>  
+              <a-button danger  type="primary" @click="clearPersonBtn">清空</a-button
+          >&nbsp;
+            <a-button  @click="goBackBtn">返回流程列表</a-button></a-col
+          >
+        </a-row>
+      </a-form>
+
+
      
 
-<a-row  style="height:5px"></a-row>
- <a-row type="flex" justify="space-between">
-    <a-col class="col" :span="7" ><span>流程编号</span><a-input  placeholder="请输入流程编号" /></a-col>
-    <a-col class="col" :span="7" ><span>流程名称</span><a-input  placeholder="请输入流程名称" /></a-col>
-      <a-col class="col" :span="7" ><span>状态</span>
-      <a-select   style="width:100%"  placeholder="请选状态">
-        <a-select-option value="启用">启用</a-select-option>
-        <a-select-option value="禁用">禁用</a-select-option>
-        
-      </a-select></a-col>
-  </a-row>
+
+
+   
 
 
 
 
-  <a-row style="height: 75px"></a-row>
-      <a-row>
-        <a-col :span="24" style="text-align:center">
-          <a-button type="primary">保存</a-button>&nbsp;
-          <a-button danger type="primary" @click="clearPersonBtn">清空</a-button
-          >&nbsp;</a-col
-        >
-      </a-row>
+
+
+
+
+     
     </div>
   </div>
-
+</a-spin>
 
  <!-- <SearchDataModal
     :visibleModelConfigGrid="visibleSearchModal"
@@ -158,6 +201,7 @@
     :modalTitleConfigGrid="modalTitleSearchModal"
   
     configType="SysUser"
+     configName="审批人"
     @CloseConfigGridMoadl="CloseConfigSearchModal"
     :ListColumns="UserColumns"
   :ListDatas="UserDatas"
@@ -212,17 +256,26 @@ import {
   GetUsers
 } from "../../Request/userRequest";
 
-
+import {
+ExaminationFlowEntity
+} from "../../TypeInterface/IExaminationInterface";
+import {
+ AddExaminationFlow
+} from "../../Request/ExaminationRequest";
 export default defineComponent({
   components: { PlusCircleTwoTone,SearchDataModal2 },
   setup() {
     const state = reactive({
-      count: 0,
+      count: 0,   IsDisabled:false,IsShowSubmit:true,
+    IsShowContinueAdd:false, submitDesc: "提交流程",    spinning :false,
     });
     const route = useRoute();
     const router = useRouter();
-
-
+ const layout = {
+      labelCol: { span: 3 },
+      wrapperCol: { span: 30 },
+    };
+    let DataEntityState = reactive(new ExaminationFlowEntity());
 let visibleSearchModal = ref<boolean>(false);
     let modalTitleSearchModal = ref<string>("");
 
@@ -318,15 +371,86 @@ direction.value="vertical"
       current.value = 0;
     };
 
+  const goBackBtn = () => {
+      router.push({ path: "/Home/ExaminationFlowListPage", query: {} });
+    };
 
 
-    
+    let validateUseStatus = async (rule: any, value: any) => {
+      if (value === "未选择") {
+        return Promise.reject("请选择状态");
+      } 
+
+        return Promise.resolve();
+      }
+
+
+   const rules = {
+     
+      flowName: [
+        {
+          required: true,
+          message: "流程名称",
+          trigger: "blur",
+        },
+        {
+          min: 2,
+          max: 50,
+          message: "长度在2至50之间",
+          trigger: "blur",
+        },
+      ],
+       useStatus: [
+        {
+          required: true,
+          validator: validateUseStatus, 
+        }
+      
+      ],
+    };
 
 
 
+ const handleFinish = async (values: any) => {
+ console.log(values)
+  state.spinning = !state.spinning;
+ let pageType = route.query.pageType;
+     console.log("pageType",pageType);
+let userList:any=[];
+
+steps.value.forEach((i:any)=>{
+
+  userList.push(i.id)
+})
+
+if(userList.length<=0)
+{
+   message.error("尚未选择审批成员，禁止提交.");
+}
 
 
+  let params={
+   flowName: values.flowName,
+   useStatus: values.useStatus,
+   ExaminationFlowDetails:userList
+  }
+       console.log(params);
+          AddExaminationFlow(params).then((res: any) => {
+                  if (res.isSuccess) {
+                 state.spinning=false;
+                    message.success(res.msg);
+                      router.push({ path: "/Home/ExaminationFlowListPage", query: {} });
+                  }
+                  else
+                  {
+                    message.error(res.msg);
+                     state.spinning=false;
+                  }
+                });
+ 
 
+
+    };
 
 
 
@@ -345,11 +469,11 @@ direction.value="vertical"
 
     return {
       ...toRefs(state),
-
+   ...toRefs(DataEntityState),layout,
       current,
       steps,
       addPersonBtn,
-      clearPersonBtn,direction,
+      clearPersonBtn,direction,goBackBtn,rules,handleFinish,
 
 
 visibleSearchModal ,
@@ -389,12 +513,7 @@ CloseConfigSearchModal
   color: rgba(51, 108, 161, 0.774);
 }
 
-.mainSpFlowContent .col span{
-    color:rgba(0, 0, 0, 0.5);
-    font-weight: 600;
-    font-size: 16px;
-    
-}
+
 .mainSpFlowContent .ant-steps-item-description {
     max-width: 200px!important;
 }

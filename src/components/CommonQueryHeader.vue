@@ -38,9 +38,9 @@
  <div class="centerPad"></div>
     <div class="downPad">
       <div>&nbsp;
-  <a-button type="primary" @click="CreateBtn"> <template #icon><plus-outlined  /></template>
+  <a-button type="primary" style="display:none" @click="CreateBtn"> <template #icon><plus-outlined  /></template>
         新增 </a-button>&nbsp;
-      <a-button    style="background-color: #dd4b39; border-color: #dd4b39" type="primary"   @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
+      <a-button    style="background-color: #dd4b39; border-color: #dd4b39;display:none" type="primary"   @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
       </div>
     
       <div>

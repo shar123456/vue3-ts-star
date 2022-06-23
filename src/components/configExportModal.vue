@@ -10,8 +10,10 @@
      :ok-button-props="{ style:{display:''} }"
     @Cancel="onCancel"
       @ok="handleOk"
+      :maskClosable="maskClosable"
+      :confirm-loading="confirmLoading"
   >
-
+ <a-spin :spinning="spinning" tip="Loading...">
 <a-row style="border:0px solid red;background-color:#f7f7f7;">
    <a-col :span="2" class="configCol">序号</a-col>
     <a-col :span="8" class="configCol">列初始名</a-col>
@@ -30,7 +32,7 @@
   </a-row>
 
     
-    
+    </a-spin>
   
   </a-modal>
     </div>
@@ -57,25 +59,32 @@ export default defineComponent({
   },
     setup (props,context) {
         const state = reactive({
-            count: 0,
+            count: 0,spinning :false,
+            confirmLoading:false,
+            maskClosable:false
         })
           let visibleConfigGrid = ref<boolean>(props.visibleModelConfigGrid);
           let titleConfigGrid = ref<string|undefined>(props.modalTitleConfigGrid);
            let LColumns=ref<any>(props.ListColumns);
-        
+       
  let configType = ref<string|undefined>(props.configType);
 const handleOk = (e: MouseEvent) => {
-
+state.spinning = !state.spinning;
+     state.confirmLoading = true;
 
  SetExpColumnsConfig({ListColumns:props.ListColumns,configType:configType.value}).then((res: any) => {
             console.log(res)
             if (res.isSuccess) {
               
-         
+          state.confirmLoading = false;
+            state.spinning== false;
 
             context.emit("CloseConfigGridMoadl");
             message.success("配置成功.");
+            
             }
+            state.confirmLoading = false;
+            state.spinning== false;
          });
   };
 
@@ -88,7 +97,8 @@ const handleOk = (e: MouseEvent) => {
       () => props.visibleModelConfigGrid,
       (newValue) => {
            
-        
+        state.spinning = false;
+        state.confirmLoading = false;
           
             visibleConfigGrid.value=newValue;
       }
@@ -97,15 +107,17 @@ const handleOk = (e: MouseEvent) => {
       () => props.modalTitleConfigGrid,
       (newValue) => {
            
-      
-          
+       
+          state.spinning = false;
+        state.confirmLoading = false;
             titleConfigGrid.value=newValue;
       }
     );
      watch(
       () => props.ListColumns,
       (newValue) => {
-           
+           state.spinning = false;
+        state.confirmLoading = false;
       
           console.log("newValue",newValue);
             LColumns.value=newValue;

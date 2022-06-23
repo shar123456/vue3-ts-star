@@ -1,12 +1,12 @@
 <template>
-   <Work-Schedule-Query-Header
+   <Common-Query-Header
     @SearchBtn="SearchBtn"
 @CreateBtn="CreateBtn"
-    @batchDelete="batchDelete"
+   
     @refreshBtn="refreshBtn"
-  :StateEntity="NewWorkScheduleEntity"
+  :StateEntity="NewRemindRecordEntity"
   >
-  </Work-Schedule-Query-Header>
+  </Common-Query-Header>
 
   <div id="DataList">
     <a-table
@@ -16,120 +16,16 @@
       :loading="loading"
       :columns="ListGridColumns"
       :data-source="DataList"
-      :scroll="{ x: 1000, y: 'calc(100vh - 320px)' }"
+      :scroll="{ x: 1000, y: 'calc(100vh - 310px)' }"
       :customRow="rowActionClick"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-      }"
+     
       :pagination="false"
     >
-     <template #useStatus="{ text: useStatus }">
+    
+      <template #operateType="{ text: operateType }">
         <span>
-          <a-tag :color="useStatus === '启用' ? 'blue' : 'red'">
-            {{ useStatus }}
-          </a-tag>
-        </span>
-      </template>
-
-
-
- <template #workScheduleStatus="{ text: workScheduleStatus }">
-        <span>
-          <a-tag v-if="workScheduleStatus === '即将开始'"  color='#C1CE28'>
-            {{ workScheduleStatus }}
-          </a-tag>
-           <a-tag v-else-if="workScheduleStatus === '已完成'"  color='green'>
-            {{ workScheduleStatus }}
-          </a-tag>
-            <a-tag v-else-if="workScheduleStatus === '已过期'"  color='#dd4b39'>
-            {{ workScheduleStatus }}
-          </a-tag>
-          <a-tag v-else-if="workScheduleStatus === '未开始'"  color='#A3A98D'>
-            {{ workScheduleStatus }}
-          </a-tag>
-           <a-tag v-else  color='pink'>
-            {{ workScheduleStatus }}
-          </a-tag>
-        </span>
-      </template>
-
-      <template #action="{ text: action }">
-       <a  @click="RemindBth(action)"
-          style="
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            border:1px solid #dedede;
-             padding-top:1px;
-               padding-bottom:3px;
-             padding-left:7px;
-               padding-right:7px;
-            background-color:#3c8dbc;
-            border-radius: 4px;
-          "
-         
-          title="提醒"
-          ><BellOutlined   mark="remind"
-        />&nbsp;提醒</a>
-       <a  @click="DetailBth(action)"
-          style="
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            border:1px solid #dedede;
-             padding-top:1px;
-               padding-bottom:3px;
-             padding-left:7px;
-               padding-right:7px;
-            background-color:#3c8dbc;
-            border-radius: 4px;
-          "
-         
-          title="查看"
-          ><SearchOutlined  mark="delete"
-        />&nbsp;查看</a>
-         <a  @click="EditBth(action)"
-          style="
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            border:1px solid #dedede;
-             padding-top:1px;
-               padding-bottom:3px;
-             padding-left:7px;
-               padding-right:7px;
-            background-color:#3c8dbc;
-            border-radius: 4px;
-          "
-         
-          title="编辑"
-          ><EditOutlined  mark="delete"
-        />&nbsp;编辑</a>
-        <a  @click="DeleteBth(action)"
-          style="
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            border:1px solid #dedede;
-             padding-top:1px;
-               padding-bottom:3px;
-             padding-left:7px;
-               padding-right:7px;
-            background-color:#dd4b39 ;
-            border-radius: 4px;
-          "
-         
-          title="删除"
-          ><CloseOutlined  mark="delete"
-        />&nbsp;删除</a>
-     
-      </template>
-
-      <template #loginType="{ text: loginType }">
-        <span>
-          <a-tag :color="loginType === '微信小程序' ? 'blue' : 'red'">
-            {{ loginType }}
+          <a-tag :color="operateType === '手动' ? 'blue' :'#AECF4B' ">
+            {{ operateType }}
           </a-tag>
         </span>
       </template>
@@ -173,10 +69,11 @@ import {
   ExclamationCircleOutlined,SearchOutlined,CloseOutlined,BellOutlined
   
 } from "@ant-design/icons-vue";
+
 import {
-  WorkScheduleEntity,WorkScheduleColumns
-} from "../../TypeInterface/IWorkScheduleInterface";
-import WorkScheduleQueryHeader from "../../components/WorkScheduleQueryHeader.vue";
+  RemindRecordEntity,RemindRecordColumns
+} from "../../TypeInterface/IRemindRecordInterface";
+import CommonQueryHeader from "../../components/CommonQueryHeader.vue";
 import {
   GetLoginRecordColumn,
   GetLoginRecordDatas,
@@ -187,16 +84,16 @@ import {
 
 
 import {
-  GetWorkScheduleDatas,DeleteById,BatchDelete,EmailRemind
+  GetRemindRecordDatas
 }
- from "../../Request/WorkScheduleRequest";
+ from "../../Request/RemindRecordRequest";
 
 import { deepClone } from "../../utility/commonFunc";
 import{useRouter} from 'vue-router'
 export default defineComponent({
   components: {
 
-    DeleteFilled,SearchOutlined,WorkScheduleQueryHeader,CloseOutlined,EditOutlined,BellOutlined
+    DeleteFilled,SearchOutlined,CommonQueryHeader,CloseOutlined,EditOutlined,BellOutlined
 
   },
   setup() {
@@ -204,10 +101,10 @@ export default defineComponent({
       count: 0,
     });
   const router=useRouter();
-    const DataEntityState = reactive(new WorkScheduleEntity());
- 
-    let  NewWorkScheduleEntity=new WorkScheduleEntity();
+
+     const DataEntityState = reactive(new RemindRecordEntity());
   
+      let  NewRemindRecordEntity=new RemindRecordEntity();
    
    /***分页****************/
     const pageSize = ref(10);
@@ -218,7 +115,7 @@ export default defineComponent({
     let loading = ref<boolean>(false);
     const onShowSizeChange = (current: number, pageSize: number) => {
       loading.value = true;
-      GetWorkScheduleDatas({
+      GetRemindRecordDatas({
         current: current,
         pageSize: pageSize,
         ...DataEntityState.QueryConditionInfo,
@@ -235,7 +132,7 @@ export default defineComponent({
     });
     watch(current1, () => {
       loading.value = true;
-      GetWorkScheduleDatas({
+      GetRemindRecordDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -249,7 +146,7 @@ export default defineComponent({
     });
     watch(refreshMark, () => {
       loading.value = true;
-      GetWorkScheduleDatas({
+      GetRemindRecordDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -268,11 +165,11 @@ export default defineComponent({
     /***数据初始化****************/
     onMounted(async () => {
       //获取表格列及处理表格列
-      let columnList = await GetLoginRecordColumn({ pageName: "ExaminationFlow" });
+      let columnList = await GetLoginRecordColumn({ pageName: "RemindRecord" });
       console.log("amountLoginRecordcolumnList",columnList)
 if(columnList==undefined||columnList.length==0)
 {
-  columnList=deepClone(WorkScheduleColumns)
+  columnList=deepClone(RemindRecordColumns)
 }
       console.log("amountLoginRecordcolumnList11111",columnList)
 
@@ -303,7 +200,7 @@ if(columnList==undefined||columnList.length==0)
 
       //获用户数据
       loading.value = true;
-      let UserDatasList = await GetWorkScheduleDatas({
+      let UserDatasList = await GetRemindRecordDatas({
         current: 1,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -317,9 +214,9 @@ if(columnList==undefined||columnList.length==0)
         current1.value = 1;
       }
       //测试
-      //  DataEntityState.DataList = DataEntityState.WorkScheduleDatas;
-      //   totalCount.value = DataEntityState.WorkScheduleDatas.length;
-      //   current1.value = 1;
+    //     DataEntityState.DataList = DataEntityState.RemindRecordDatas;
+    //      totalCount.value = DataEntityState.RemindRecordDatas.length;
+    //    current1.value = 1;
 
     });
     /***数据初始化****************/
@@ -389,68 +286,10 @@ const EditBth=(item:any)=>{
    router.push({ path: "/Home/CreateWorkSchedule", query: {pageType:"edit",id: item} });
   
 }
-const DeleteBth=(item:any)=>{
-
-  Modal.confirm({
-              title: "您确定要删除这条记录吗?",
-              icon: createVNode(ExclamationCircleOutlined),
-              content: `计划编号：${item}`,
-              okText: "Yes",
-              okType: "danger",
-              cancelText: "No",
-              onOk() {
-                // const index = UserDataEntityState.UserDataList.findIndex(
-                //     (i: IUserInfo) => i.sysUserId == Id);
-                //     UserDataEntityState.UserDataList.splice(index, 1);
-
-                loading.value = true;
-                DeleteById({ Id: item }).then((res: any) => {
-                  if (res.isSuccess) {
-                    refreshMark.value = new Date().getTime().toString();
-                    message.success("删除成功.");
-                  }
-                });
-              },
-              onCancel() {
-                message.error("已取消.");
-              },
-            });
-}
 
 
 
-const RemindBth=(item:any)=>{
 
-  Modal.confirm({
-              title: "您确定要执行提醒功能吗?",
-              icon: createVNode(ExclamationCircleOutlined),
-              content: `邮件提醒`,
-              okText: "Yes",
-              okType: "danger",
-              cancelText: "No",
-              onOk() {
-                // const index = UserDataEntityState.UserDataList.findIndex(
-                //     (i: IUserInfo) => i.sysUserId == Id);
-                //     UserDataEntityState.UserDataList.splice(index, 1);
-
-                loading.value = true;
-                EmailRemind({ Id: item }).then((res: any) => {
-                  if (res.isSuccess) {
-                    // refreshMark.value = new Date().getTime().toString();
-                    message.success("提醒成功.");
-                  }
-                  else
-                  {
-                     message.error(res.msg);
-                  }
-                  loading.value = false;
-                });
-              },
-              onCancel() {
-                message.error("已取消.");
-              },
-            });
-}
 
 
 
@@ -463,7 +302,7 @@ const RemindBth=(item:any)=>{
  const SearchBtn = async (payload: any) => {
       loading.value = true;
 
-      let UserDatasList1 = await GetWorkScheduleDatas({
+      let UserDatasList1 = await GetRemindRecordDatas({
         current: 1,
         pageSize: pageSize.value,
         ...payload,
@@ -489,43 +328,7 @@ const RemindBth=(item:any)=>{
 
     
 
-    const batchDelete = (payload: any) => {
-      let keys: string[] = [];
-      for (let i in DataEntityState.selectedRowKeys) {
-        keys[i] = DataEntityState.selectedRowKeys[i];
-      }
-      let isDesibleOkBtn = false;
-      if (keys.length == 0) {
-        isDesibleOkBtn = true;
-      }
-
-      Modal.confirm({
-        title: "您确定要执行批量删除操作吗?",
-        icon: createVNode(ExclamationCircleOutlined),
-        content: `共计：${keys.length} 条记录`,
-        okText: "Yes",
-        okType: "danger",
-        cancelText: "No",
-        okButtonProps: {
-          disabled: isDesibleOkBtn,
-        },
-        onOk() {
-          BatchDelete({ keys: keys }).then((res: any) => {
-            if (res.isSuccess) {
-              refreshMark.value = new Date().getTime().toString();
-              DataEntityState.selectedRowKeys = [];
-              DataEntityState.selectedRows = [];
-              message.success("批量删除成功.");
-            }
-          });
-         
-        },
-        onCancel() {
-          message.error("已取消.");
-        },
-      });
-    };
-
+   
     const refreshBtn = async (payload: any) => {
    
 
@@ -553,7 +356,7 @@ if(DataEntityState.QueryConditionInfoConfig[item].type=="text")
 
 
 
-      GetWorkScheduleDatas({
+      GetRemindRecordDatas({
         current: current1.value,
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
@@ -572,7 +375,7 @@ if(DataEntityState.QueryConditionInfoConfig[item].type=="text")
       ...toRefs(state),
       ...toRefs(DataEntityState),
       DataEntityState,
-NewWorkScheduleEntity,
+NewRemindRecordEntity,
       rowActionClick,
       onSelectChange,
 
@@ -584,8 +387,8 @@ NewWorkScheduleEntity,
       
       loading,
       pageSizeOptions,
-DeleteBth,
-DetailBth,EditBth,CreateBtn,RemindBth,
+
+DetailBth,EditBth,CreateBtn,
 
 
 
@@ -594,7 +397,7 @@ SearchBtn,
      
       ClearQueryBtn,
      
-      batchDelete,
+      
       refreshBtn,
     
       
@@ -606,7 +409,7 @@ SearchBtn,
 
 <style >
 #DataList {
-height: calc(100vh - 240px);
+  height: calc(100vh - 245px);
   border: 0px solid red;
   box-sizing: border-box;
 }

@@ -88,7 +88,7 @@ export default defineComponent({
     const spinning = ref<boolean>(false);
     const delayTime = 1;
     const formState: UnwrapRef<FormState> = reactive({
-      user: "admin",
+      user: "Admin",
       password: "123456",
     });
     const handleFinish = async () => {

@@ -9,7 +9,11 @@
     :title="modalTitle"
     @Cancel="onCancel"
       @ok="handleOk"
+        :maskClosable="maskClosable"
+      :confirm-loading="confirmLoading"
+      
   >
+   <a-spin :spinning="spinning" tip="Loading...">
     <div class="modalEditRow">
       <div class="modalEditCol">
         <label>角色Id：</label>
@@ -58,6 +62,7 @@
         </div>
       </div>
     </div> 
+    </a-spin>
   </a-modal>
     </div>
 </template>
@@ -70,7 +75,9 @@ export default defineComponent({
        visibleRoleEdit:Boolean,modalTitleRoleEdit: String,},
     setup (props,context) {
         const state = reactive({
-            count: 0,
+            count: 0, spinning :false,
+            confirmLoading:false,
+            maskClosable:false
         })
           let visible = ref<boolean>(props.visibleRoleEdit);
           let modalTitle = ref<string|undefined>(props.modalTitleRoleEdit);
@@ -78,7 +85,9 @@ export default defineComponent({
           
 
  const handleOk = (e: MouseEvent) => {
-      //console.log(e);
+      console.log(e);
+          state.spinning = !state.spinning;
+        state.confirmLoading = true;
       if(modalTitle.value=="新增【角色信息】")
       {
     context.emit("CreateRoleInfoBtn",{ ...EditData });
@@ -86,10 +95,14 @@ export default defineComponent({
       {
     context.emit("UpdateRoleInfoBtn",{ ...EditData });
       }
+    //
+    
+    onMounted(()=>{
+      console.log("onMounted");
+
+    })
+     console.log("111onMounted");
   
-    
-    
-    
     };
     const onCancel = (e: MouseEvent) => {
       //console.log(e);
@@ -100,9 +113,10 @@ export default defineComponent({
     watch(
       () => props.visibleRoleEdit,
       (newValue) => {
-           
+             console.log("111onMo22222unted");
          console.log(newValue)
-          
+             state.spinning =false;
+        state.confirmLoading = false;
             visible.value=newValue;
       }
     );

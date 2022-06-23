@@ -91,6 +91,13 @@ const routes: Array<any> = [
       }
       ,
       {
+        path: 'RemindRecordPage',
+        name: 'RemindRecordPage',
+        meta:{rName:"/系统设置/通知提醒记录",Sub:"sub1"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/RemindRecordPage.vue')
+      }
+      ,
+      {
         path: 'DevicePage',
         name: 'DevicePage',
         meta:{rName:"/设备管理/设备列表",Sub:"sub3"},
@@ -151,6 +158,16 @@ const routes: Array<any> = [
         meta:{rName:"/审批管理/审批流程详情",Sub:"sub5"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationFlowDetail.vue')
       },
+      
+      {
+        path: 'ExaminationTaskDetail',
+        name: 'ExaminationTaskDetail',
+        meta:{rName:"/审批管理/审批任务详情",Sub:"sub5"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationTaskDetail.vue')
+      },
+
+
+
       {
         path: 'SeeingPanelPage',
         name: 'SeeingPanelPage',
@@ -176,7 +193,16 @@ const routes: Array<any> = [
         name: 'MyCalendarPage',
         meta:{rName:"/工作计划管理/我的日历",Sub:"gzjh"},
         component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/MyCalendarPage.vue')
+      } ,
+      {
+        path: 'WorkScheduleDetail',
+        name: 'WorkScheduleDetail',
+        meta:{rName:"/工作计划管理/工作计划明细",Sub:"gzjh"},
+        component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/WorkScheduleDetail.vue')
       }
+      
+
+
       
 
     ]
@@ -209,8 +235,8 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to,from,next)=>{
-  console.log(to.path)
+router.beforeEach((to:any,from:any,next:any)=>{
+  //console.log(to.path)
   if(to.path==="/login"||to.path==="/register")
   {
     next();
@@ -218,7 +244,7 @@ router.beforeEach((to,from,next)=>{
   else
   {
     const token=localStorage.getItem("starToken");
-    console.log(token);
+    //console.log(token);
     
     if(!token){
       next("/login");

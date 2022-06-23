@@ -32,7 +32,7 @@
          
           title="选择"
           ><PlusSquareFilled mark="delete"
-        />&nbsp;设为审批人</a>
+        />&nbsp;设为{{configName}}</a>
       </template>
 
 
@@ -64,7 +64,7 @@ import { PlusSquareFilled } from '@ant-design/icons-vue';
 
 export default defineComponent({
       props: { ListColumns:Object,ListDatas:Object,
-       visibleModelConfigGrid:Boolean,modalTitleConfigGrid: String,configType:String},
+       visibleModelConfigGrid:Boolean,modalTitleConfigGrid: String,configType:String,configName:String},
        components: {
     PlusSquareFilled
   },
@@ -82,15 +82,15 @@ let selectedRows=ref<any>([])
 
 
  let configType = ref<string|undefined>(props.configType);
-
+ let configName = ref<string|undefined>(props.configName);
 
  const columns =ref<any>(props.ListColumns);
   const datas =ref<any>(props.ListDatas);
 const handleOk = (e: MouseEvent) => {
 //
 
-  console.log("selectedRowKeys.value",selectedRowKeys.value);
-   console.log("selectedRows.value",selectedRows.value);
+  console.log("selectedRowKeys.value222",selectedRowKeys.value);
+   console.log("selectedRows.value3333",selectedRows.value);
 
 context.emit("addStepsFunc",selectedRows.value);
  
@@ -112,13 +112,31 @@ context.emit("addStepsFunc",selectedRows.value);
 
 const selectRecord=(item:any)=>{
     selectedRows.value=[];
-      let Datas=  props.ListDatas?.filter((i:any)=>i.sysUserId==item);
+      
+      if(configType.value=="flow")
+      {
+let Datas=  props.ListDatas?.filter((i:any)=>i.flowId==item);
       if(Datas&&Datas.length>0)
       {
 selectedRows.value.push({
     ...Datas[0]
 })
       }
+
+      }
+ if(configType.value=="SysUser")
+      {
+        let Datas=  props.ListDatas?.filter((i:any)=>i.sysUserId==item);
+      if(Datas&&Datas.length>0)
+      {
+selectedRows.value.push({
+    ...Datas[0]
+})
+      }
+
+      }
+
+        console.log("addStepsFunc",selectedRows.value);
       context.emit("addStepsFunc",selectedRows.value);
 }
 
@@ -158,7 +176,7 @@ selectedRows.value.push({
     );
         return {
             ...toRefs(state),visibleConfigGrid,titleConfigGrid,onCancel,handleOk,datas,
-      columns,onSelectChange,selectedRowKeys,selectRecord
+      columns,onSelectChange,selectedRowKeys,selectRecord,configName
      
    
         }
