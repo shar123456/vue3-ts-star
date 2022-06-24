@@ -859,6 +859,9 @@ visibleSearchMenu,modalTitleSearchMenu,CloseSearchMenu,onOpenChange
   font-size: 17px;
 }
 #homeContent {
+box-sizing: border-box;
+  overflow: auto;border:0px solid blue;
+  height:calc(100vh - 91px);
 }
 .ant-menu.ant-menu-inline-collapsed > .ant-menu-item .ant-menu-item-icon,
 .ant-menu.ant-menu-inline-collapsed

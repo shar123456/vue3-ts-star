@@ -606,9 +606,10 @@ SearchBtn,
 
 <style >
 #DataList {
-height: calc(100vh - 240px);
+max-height: calc(100vh - 240px);
   border: 0px solid red;
   box-sizing: border-box;
+  overflow: auto;
 }
 .userPagination {
   border: 0px solid red;
