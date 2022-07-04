@@ -1,6 +1,6 @@
 <template>
   <a-layout id="Main">
-    <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible  :style="{ overflow: 'auto', height: '100vh', }">
+    <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible  :style="{ overflow: 'auto', height: '100vh',display:menuShow }">
       <div class="logo">
         <span :class="titleTxt1">{{ titleTxt }}</span>
       </div>
@@ -280,7 +280,7 @@
             />
           </a-col>
           <a-col :xs="0" :sm="0" :md="0" :lg="10" :xl="7">
-            <span
+            <span  ref="homeDesc"
               style="
                 font-size: 18px;
                 font-weight: 600;
@@ -453,6 +453,10 @@ export default defineComponent({
     const route = useRoute();
         const store = useStore();
          let UserTitle = ref("");
+         let menuShow= ref("");
+
+let homeDesc=ref(null);
+
     let collapsed = ref<boolean>(false);
     let titleTxt = ref("");
     let titleTxt1 = ref("");
@@ -717,17 +721,42 @@ order:3,
 
 
 
-
+function IsPC() {
+    var userAgentInfo = navigator.userAgent;
+    var Agents = ["Android", "iPhone",
+                "SymbianOS", "Windows Phone",
+                "iPad", "iPod"];
+    var flag = true;
+    for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
+}
 
 
     const Mycollapsed = (p: boolean) => {
+
+      console.log("homeDesc",IsPC())
+    
       if (collapsed.value) {
+        menuShow.value="";
         setTimeout(() => {
           titleTxt.value = "STAR 智能科技";
         }, 500);
 
         titleTxt1.value = "titleTxt12";
       } else {
+           if(IsPC())
+      {
+ menuShow.value="";
+      }
+      else
+      {
+ menuShow.value="none";
+      }
         titleTxt.value = "star";
         titleTxt1.value = "titleTxt11";
       }
@@ -762,7 +791,7 @@ order:3,
       SearchMenuBtn,NewMessageBtn,
 
 visibleSearchMenu,modalTitleSearchMenu,CloseSearchMenu,onOpenChange
-      ,
+      ,menuShow,homeDesc
     };
   },
 });
