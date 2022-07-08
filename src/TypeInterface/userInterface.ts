@@ -9,6 +9,7 @@
     seq: number;
     Id: string;
     Name: string;
+    nickName: string;
     password: string;
     sex: string;
     IsUse: string;
@@ -51,6 +52,8 @@
     seq: 0,
     Id: "",
     Name: "",
+    nickName: "",
+    
     password: "",
     sex: "未选择",
     IsUse: "未选择",

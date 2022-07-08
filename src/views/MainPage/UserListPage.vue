@@ -93,10 +93,7 @@
           ><CopyFilled mark="copy"
         /></a>
 
-
-
-
-<a
+        <a
           style="
             color: rgba(18, 96, 214, 0.733);
             font-size: 20px;
@@ -107,7 +104,7 @@
           ><ApiFilled mark="set"
         /></a>
 
-<a
+        <a
           style="
             color: rgba(18, 96, 214, 0.733);
             font-size: 20px;
@@ -117,9 +114,6 @@
           title="配置信息"
           ><TagTwoTone mark="set"
         /></a>
-
-
-
 
         <a
           style="
@@ -174,7 +168,7 @@
     @UpdateInfoBtn="UpdateInfoBtn"
     @CreateInfoBtn="CreateInfoBtn"
   />
-    <ExportExcelModal
+  <ExportExcelModal
     :visibleExportExcel="visibleExportExcel"
     :modalExportExcelTitles="modalExportExcelTitle"
     :UserData="UserDataEntityState"
@@ -183,30 +177,20 @@
     @CreateInfoBtn="CreateInfoBtn"
   />
 
-
-    <SettingModal
+  <SettingModal
     :visibleSetting="visibleSetting"
     :modalTitleSetting="modalTitleSetting"
     :CurrentUser="CurrentUser"
     @CloseSetingMoadl="CloseSetingMoadl"
-   
   />
 
-
-  
-
-
- <configExportModal
+  <configExportModal
     :visibleModelConfigGrid="visibleConfigExport"
     :modalTitleConfigGrid="modalTitleConfigExport"
     :ListColumns="UserDataEntityState.UserExportColumns"
     configType="SysUser"
     @CloseConfigGridMoadl="CloseConfigExportMoadl"
- 
   />
-
-
-
 </template>
 
 <script lang="ts">
@@ -226,7 +210,10 @@ import {
   BatchDeleteUser,
   UpdateUserDatas,
   AddUserDatas,
-  CopyUserDataById,BatchExportUser,ReSetUserPwd,GetExpColumnsConfig
+  CopyUserDataById,
+  BatchExportUser,
+  ReSetUserPwd,
+  GetExpColumnsConfig,
 } from "../../Request/userRequest";
 import { message, Modal } from "ant-design-vue";
 import UserListQueryHeader from "../../components/UserListQueryHeader.vue";
@@ -247,14 +234,20 @@ import {
   HighlightFilled,
   CopyOutlined,
   SettingOutlined,
-  SettingFilled,ApiFilled,TagTwoTone
+  SettingFilled,
+  ApiFilled,
+  TagTwoTone,
 } from "@ant-design/icons-vue";
 // import FileSaver from "file-saver";
 /*eslint-disabled*/
 // import * as XLSX from "xlsx";
 //import { UserDataEntity, IUserInfo } from "../../TypeInterface/userInterface";
-import { UserDataEntity, IUserInfo,UserExportColumns } from "../../TypeInterface/IUserInterface";
-import{useRouter} from 'vue-router'
+import {
+  UserDataEntity,
+  IUserInfo,
+  UserExportColumns,
+} from "../../TypeInterface/IUserInterface";
+import { useRouter } from "vue-router";
 export default defineComponent({
   components: {
     // SearchOutlined,
@@ -268,73 +261,56 @@ export default defineComponent({
     HighlightFilled,
     CopyOutlined,
     SettingOutlined,
-    SettingFilled,ExportExcelModal,SettingModal,ApiFilled,configExportModal,TagTwoTone
+    SettingFilled,
+    ExportExcelModal,
+    SettingModal,
+    ApiFilled,
+    configExportModal,
+    TagTwoTone,
   },
   setup() {
     const UserDataEntityState = reactive(new UserDataEntity());
 
     let visible = ref<boolean>(false);
-    let visibleExportExcel = ref<boolean>(false)
-       const router=useRouter();
+    let visibleExportExcel = ref<boolean>(false);
+    const router = useRouter();
     let loading = ref<boolean>(false);
     const pageSizeOptions = ref<string[]>(["5", "10", "20", "30", "40", "50"]);
     let modalTitle = ref<string>("");
-let modalExportExcelTitle = ref<string>("");
+    let modalExportExcelTitle = ref<string>("");
     let CurrentUser = ref<string>("");
 
-
-
-let visibleSetting = ref<boolean>(false);
+    let visibleSetting = ref<boolean>(false);
     let modalTitleSetting = ref<string>("");
 
- const CloseSetingMoadl = () => {
+    const CloseSetingMoadl = () => {
       visibleSetting.value = false;
-         CurrentUser.value= "";
+      CurrentUser.value = "";
     };
 
-
-
-
-  let visibleConfigExport = ref<boolean>(false);
+    let visibleConfigExport = ref<boolean>(false);
     let modalTitleConfigExport = ref<string>("");
-  
-  const showConfigExport = () => {
+
+    const showConfigExport = () => {
       visibleConfigExport.value = true;
       modalTitleConfigExport.value = "配置【导出信息】";
     };
 
-    const CloseConfigExportMoadl = async() => {
+    const CloseConfigExportMoadl = async () => {
       visibleConfigExport.value = false;
 
- let ExportColumnsList = await GetExpColumnsConfig({"pageName":"SysUser"});
+      let ExportColumnsList = await GetExpColumnsConfig({
+        pageName: "SysUser",
+      });
 
-   console.log("ExportColumnsList",ExportColumnsList)
+      console.log("ExportColumnsList", ExportColumnsList);
 
-if(ExportColumnsList!=undefined&&ExportColumnsList.length>0)
-{
-UserDataEntityState.UserExportColumns=ExportColumnsList;
-}
-else
-{
-  UserDataEntityState.UserExportColumns=UserExportColumns;
-}
-
-
+      if (ExportColumnsList != undefined && ExportColumnsList.length > 0) {
+        UserDataEntityState.UserExportColumns = ExportColumnsList;
+      } else {
+        UserDataEntityState.UserExportColumns = UserExportColumns;
+      }
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     const deleteMark = ref<string>("");
     let refreshMark = ref<string>("");
@@ -362,7 +338,7 @@ else
       modalTitle.value = "新增【用户信息】";
       UserDataEntityState.EditData.sysUserId = "";
       UserDataEntityState.EditData.name = "";
-
+ UserDataEntityState.EditData.nickName = "";
       UserDataEntityState.EditData.pwd = "";
       UserDataEntityState.EditData.gender = "未选择";
 
@@ -373,9 +349,9 @@ else
       UserDataEntityState.EditData.level = "未选择";
       UserDataEntityState.EditData.userDesc = "";
       UserDataEntityState.EditData.useStatus = "未选择";
-       UserDataEntityState.EditData.pcLoginStatus = "未选择";
-        UserDataEntityState.EditData.weChatLoginStatus = "未选择";
-         UserDataEntityState.EditData.appLoginStatus = "未选择";
+      UserDataEntityState.EditData.pcLoginStatus = "未选择";
+      UserDataEntityState.EditData.weChatLoginStatus = "未选择";
+      UserDataEntityState.EditData.appLoginStatus = "未选择";
     };
 
     const closeMoadl = () => {
@@ -409,50 +385,49 @@ else
 
     const UpdateInfoBtn = (payload: any) => {
       console.log(payload);
-
-      UpdateUserDatas(payload).then((res: any) => {
-        console.log(res);
-        if (res.isSuccessful) {
-          visible.value = false;
+ visible.value = false;
           refreshMark.value = new Date().getTime().toString();
-          message.success(res.message);
-        } else {
-          message.error("更新失败.");
-        }
-      });
+      // UpdateUserDatas(payload).then((res: any) => {
+      //   console.log(res);
+      //   if (res.isSuccessful) {
+      //     visible.value = false;
+      //     refreshMark.value = new Date().getTime().toString();
+      //     message.success(res.message);
+      //   } else {
+      //     message.error("更新失败.");
+      //   }
+      // });
     };
 
     const CreateInfoBtn = (payload: any) => {
       console.log(payload);
-
-      AddUserDatas(payload).then((res: any) => {
-        console.log(res);
-        if (res.isSuccessful) {
-          visible.value = false;
-          refreshMark.value = new Date().getTime().toString();
-          message.success(res.message);
-        } else {
-          message.error("添加失败.");
-        }
-      });
+  refreshMark.value = new Date().getTime().toString();
+   visible.value = false;
+      // AddUserDatas(payload).then((res: any) => {
+      //   console.log(res);
+      //   if (res.isSuccessful) {
+      //     visible.value = false;
+      //     refreshMark.value = new Date().getTime().toString();
+      //     message.success(res.message);
+      //   } else {
+      //     message.error("添加失败.");
+      //   }
+      // });
     };
 
- const importExcel=()=>{
-   console.log("visibleExportExcel");
-   visibleExportExcel.value = true;
-    modalExportExcelTitle.value = "文件导入";
- }
+    const importExcel = () => {
+      console.log("visibleExportExcel");
+      visibleExportExcel.value = true;
+      modalExportExcelTitle.value = "文件导入";
+    };
 
- const closeExportExcelMoadl = () => {
+    const closeExportExcelMoadl = () => {
       visibleExportExcel.value = false;
       refreshMark.value = new Date().getTime().toString();
     };
 
-
-
-
-const exportExcel=()=>{
-  let keys: string[] = [];
+    const exportExcel = () => {
+      let keys: string[] = [];
       for (let i in UserDataEntityState.selectedRowKeys) {
         keys[i] = UserDataEntityState.selectedRowKeys[i];
       }
@@ -472,8 +447,6 @@ const exportExcel=()=>{
           disabled: isDesibleOkBtn,
         },
         onOk() {
-          
-
           //console.log(ids);
           BatchExportUser({ keys: keys }).then((res: any) => {
             // if (res.isSuccess) {
@@ -481,71 +454,74 @@ const exportExcel=()=>{
             //   UserDataEntityState.selectedRowKeys = [];
             //   UserDataEntityState.selectedRows = [];
             //   message.success("导出成功.");
-            console.log(res)
-console.log(typeof res)
+            console.log(res);
+            console.log(typeof res);
 
-  var ress = [  //示例数组
-    {
-      'name': 'bob',
-      'age': '13',
-      'career': 'student'
-    },
-    {
-      'name': 'clare',
-      'age': '20',
-      'career': 'engineer'
-    }
-  ];
-  var dataType = "\uFEFF"; //解决乱码问题
-  dataType += (["" + "姓名", "年龄", "职业"].join(','));  //添加表格的头
-  dataType += '\n';
- 
-  ress.forEach(function (item) { //遍历数组，用字符串拼接
-    dataType += (['' + item.name, item.age, item.career].join(','));
-    dataType += '\n';
-  });
+            var ress = [
+              //示例数组
+              {
+                name: "bob",
+                age: "13",
+                career: "student",
+              },
+              {
+                name: "clare",
+                age: "20",
+                career: "engineer",
+              },
+            ];
+            var dataType = "\uFEFF"; //解决乱码问题
+            dataType += ["" + "姓名", "年龄", "职业"].join(","); //添加表格的头
+            dataType += "\n";
 
+            ress.forEach(function (item) {
+              //遍历数组，用字符串拼接
+              dataType += ["" + item.name, item.age, item.career].join(",");
+              dataType += "\n";
+            });
 
-// let blob1 = new Blob([res], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-//    let url = window.URL.createObjectURL(blob1);
-//    window.location.href = url;
+            // let blob1 = new Blob([res], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+            //    let url = window.URL.createObjectURL(blob1);
+            //    window.location.href = url;
 
+            //注释：有没有引入mock生成的数据文件,文件里引用了mockjs,mock会对返回的数据做处理,导致文件下载 乱码 文件损坏 打开undefind等
+            console.log("headers", res.headers);
+            const blob = new Blob([res.data], {
+              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
+            const f = "统计.xlsx";
+            const contentDisposition =
+              res.headers["content-disposition"] ||
+              res.headers["Content-Disposition"];
+            const fileName =
+              (contentDisposition && contentDisposition.split(";")[1]).split(
+                "="
+              )[1] ||
+              f ||
+              "";
 
-//注释：有没有引入mock生成的数据文件,文件里引用了mockjs,mock会对返回的数据做处理,导致文件下载 乱码 文件损坏 打开undefind等
-console.log("headers",res.headers)
- const blob = new Blob([res.data] , {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
- const f = '统计.xlsx';
-  const contentDisposition =
-    res.headers['content-disposition'] ||
-    res.headers['Content-Disposition']
-  const fileName =
-    (contentDisposition && contentDisposition.split(';')[1]).split('=')[1] || f || '';
+            //const fileName = '统计.xlsx';
+            const elink = document.createElement("a");
+            elink.download = fileName;
+            elink.style.display = "none";
+            elink.href = URL.createObjectURL(blob);
+            document.body.appendChild(elink);
+            elink.click();
+            URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
 
-
-    //const fileName = '统计.xlsx';
-    const elink = document.createElement('a');
-    elink.download = fileName;
-    elink.style.display = 'none';
-    elink.href = URL.createObjectURL(blob);
-    document.body.appendChild(elink);
-    elink.click();
-    URL.revokeObjectURL(elink.href); // 释放URL 对象
-    document.body.removeChild(elink);
-
-           // }
+            // }
           });
         },
         onCancel() {
           message.error("已取消.");
         },
       });
-
-}
-
+    };
 
     const batchDelete = () => {
       console.log(UserDataEntityState.selectedRows);
-     let keys: string[] = [];
+      let keys: string[] = [];
       for (let i in UserDataEntityState.selectedRowKeys) {
         keys[i] = UserDataEntityState.selectedRowKeys[i];
       }
@@ -553,7 +529,6 @@ console.log("headers",res.headers)
       if (keys.length == 0) {
         isDesibleOkBtn = true;
       }
-
 
       Modal.confirm({
         title: "您确定要执行批量删除操作吗?",
@@ -584,8 +559,6 @@ console.log("headers",res.headers)
           message.error("已取消.");
         },
       });
-
-
     };
 
     /***功能按钮****************/
@@ -666,52 +639,37 @@ console.log("headers",res.headers)
     /***数据初始化****************/
     onMounted(async () => {
       //获取表格列及处理表格列
-      let columnList = await GetUserColumn({"pageName":"SysUser"});
-       console.log("amount",columnList)
+      let columnList = await GetUserColumn({ pageName: "SysUser" });
+      console.log("amount", columnList);
       for (var i in columnList) {
-        if(columnList[i].title=="操作")
-        {
-          columnList[i].fixed="right"
-         columnList[i].width=190
-          columnList[i].dataIndex="action"
+        if (columnList[i].title == "操作") {
+          columnList[i].fixed = "right";
+          columnList[i].width = 190;
+          columnList[i].dataIndex = "action";
         }
- if(columnList[i].title=="密码")
-        {
-         
-         columnList[i].width=280
-         
+        if (columnList[i].title == "密码") {
+          columnList[i].width = 280;
         }
 
-         
         console.log(columnList[i]["slots"]);
         if (columnList[i]["slots"] == null) {
           delete columnList[i]["slots"];
         }
       }
-   
+
       UserDataEntityState.UserListColumns = columnList;
 
+      let ExportColumnsList = await GetExpColumnsConfig({
+        pageName: "SysUser",
+      });
 
+      console.log("ExportColumnsList", ExportColumnsList);
 
-
- let ExportColumnsList = await GetExpColumnsConfig({"pageName":"SysUser"});
-
-   console.log("ExportColumnsList",ExportColumnsList)
-
-if(ExportColumnsList!=undefined&&ExportColumnsList.length>0)
-{
-UserDataEntityState.UserExportColumns=ExportColumnsList;
-}
-else
-{
-  UserDataEntityState.UserExportColumns=UserExportColumns;
-}
-
-
-
-
-
-
+      if (ExportColumnsList != undefined && ExportColumnsList.length > 0) {
+        UserDataEntityState.UserExportColumns = ExportColumnsList;
+      } else {
+        UserDataEntityState.UserExportColumns = UserExportColumns;
+      }
 
       //获用户数据
       loading.value = true;
@@ -721,7 +679,7 @@ else
       });
       loading.value = false;
 
-      console.log("amount",UserDatasList)
+      console.log("amount", UserDatasList);
       if (UserDatasList.isSuccess) {
         UserDataEntityState.UserDataList = UserDatasList.datas;
         totalCount.value = UserDatasList.totalCount;
@@ -744,7 +702,7 @@ else
     /***勾选****************/
     const onSelectChange = (selectedRowKeys: [], selectedRows: []) => {
       console.log("selectedRows changed: ", selectedRows);
-       console.log("selectedRowKeys changed: ", selectedRowKeys);
+      console.log("selectedRowKeys changed: ", selectedRowKeys);
       UserDataEntityState.selectedRowKeys = selectedRowKeys;
       UserDataEntityState.selectedRows = selectedRows;
     };
@@ -777,7 +735,7 @@ else
               }
             });
           }
- if (
+          if (
             event.target.parentNode.getAttribute("data-icon") == "api" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "api"
@@ -807,6 +765,7 @@ else
             console.log(res[0]);
             UserDataEntityState.EditData.sysUserId = res[0].sysUserId;
             UserDataEntityState.EditData.name = res[0].name;
+             UserDataEntityState.EditData.nickName = res[0].nickName;
             UserDataEntityState.EditData.pwd = res[0].pwd;
             UserDataEntityState.EditData.address = res[0].address;
             UserDataEntityState.EditData.phone = res[0].phone;
@@ -815,9 +774,10 @@ else
             UserDataEntityState.EditData.userDesc = res[0].userDesc;
             UserDataEntityState.EditData.useStatus = res[0].useStatus;
             UserDataEntityState.EditData.gender = res[0].gender;
-             UserDataEntityState.EditData.pcLoginStatus = res[0].pcLoginStatus;
-              UserDataEntityState.EditData.weChatLoginStatus = res[0].weChatLoginStatus;
-               UserDataEntityState.EditData.appLoginStatus = res[0].appLoginStatus;
+            UserDataEntityState.EditData.pcLoginStatus = res[0].pcLoginStatus;
+            UserDataEntityState.EditData.weChatLoginStatus =
+              res[0].weChatLoginStatus;
+            UserDataEntityState.EditData.appLoginStatus = res[0].appLoginStatus;
             visible.value = true;
             modalTitle.value = "编辑【用户信息】";
           }
@@ -854,29 +814,25 @@ else
             });
           }
 
-
- if (
+          if (
             event.target.parentNode.getAttribute("data-icon") == "setting" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "setting"
           ) {
             const Id = record.sysUserId;
-          CurrentUser.value= record.sysUserId;
-           visibleSetting.value = true;
-      modalTitleSetting.value = "【配置角色】";
+            CurrentUser.value = record.sysUserId;
+            visibleSetting.value = true;
+            modalTitleSetting.value = "【配置角色】";
           }
 
-
- if (
+          if (
             event.target.parentNode.getAttribute("data-icon") == "tag" ||
             event.target.parentNode.parentNode.getAttribute("aria-label") ==
               "tag"
           ) {
             const Id = record.sysUserId;
-                  router.push({path: '/Home/ConfigDetailInfo', query: {Id: Id}});
-}
-
-
+            router.push({ path: "/Home/ConfigDetailInfo", query: { Id: Id } });
+          }
         },
       };
     };
@@ -907,16 +863,21 @@ else
       pageSizeOptions,
       UpdateInfoBtn,
       CreateInfoBtn,
-      exportExcel,importExcel,visibleExportExcel,modalExportExcelTitle,closeExportExcelMoadl
+      exportExcel,
+      importExcel,
+      visibleExportExcel,
+      modalExportExcelTitle,
+      closeExportExcelMoadl,
 
+      visibleSetting,
+      modalTitleSetting,
+      CloseSetingMoadl,
+      CurrentUser,
 
-      ,visibleSetting,
-      modalTitleSetting,CloseSetingMoadl,CurrentUser,
-
-
-
-      visibleConfigExport,modalTitleConfigExport,showConfigExport,CloseConfigExportMoadl
-
+      visibleConfigExport,
+      modalTitleConfigExport,
+      showConfigExport,
+      CloseConfigExportMoadl,
     };
   },
 });

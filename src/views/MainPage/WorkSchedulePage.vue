@@ -4,6 +4,9 @@
 @CreateBtn="CreateBtn"
     @batchDelete="batchDelete"
     @refreshBtn="refreshBtn"
+       @showConfigGrid="showConfigGrid"
+         @exportExcel="exportExcel"
+             @configExport="showConfigExport"
   :StateEntity="NewWorkScheduleEntity"
   >
   </Work-Schedule-Query-Header>
@@ -153,7 +156,22 @@
     </div>
   </div>
 
- 
+   <configGridModal
+    :visibleModelConfigGrid="visibleModelConfigGrid"
+    :modalTitleConfigGrid="modalTitleConfigGrid"
+    :ListColumns="DataEntityState.ListColumns"
+    configType="WorkSchedule"
+    @CloseConfigGridMoadl="CloseConfigGridMoadl"
+    @refreshBtn="refreshBtn"
+  />
+
+    <configExportModal
+    :visibleModelConfigGrid="visibleConfigExport"
+    :modalTitleConfigGrid="modalTitleConfigExport"
+    :ListColumns="DataEntityState.ExportColumns"
+    configType="WorkSchedule"
+    @CloseConfigGridMoadl="CloseConfigExportMoadl"
+  />
 </template>
 
 <script lang="ts">
@@ -174,7 +192,7 @@ import {
   
 } from "@ant-design/icons-vue";
 import {
-  WorkScheduleEntity,WorkScheduleColumns
+  WorkScheduleEntity,WorkScheduleColumns,ExportColumns
 } from "../../TypeInterface/IWorkScheduleInterface";
 import WorkScheduleQueryHeader from "../../components/WorkScheduleQueryHeader.vue";
 import {
@@ -182,20 +200,23 @@ import {
   GetLoginRecordDatas,
   DeleteLoginRecordById,
   BatchDeleteLoginRecord,
+    GetExpColumnsConfig,
 } from "../../Request/userRequest";
 
 
 
 import {
-  GetWorkScheduleDatas,DeleteById,BatchDelete,EmailRemind
+  GetWorkScheduleDatas,DeleteById,BatchDelete,EmailRemind,BatchExport
 }
  from "../../Request/WorkScheduleRequest";
 
 import { deepClone } from "../../utility/commonFunc";
 import{useRouter} from 'vue-router'
+import configGridModal from "../../components/configGridModal.vue";
+import configExportModal from "../../components/configExportModal.vue";
 export default defineComponent({
   components: {
-
+configGridModal,configExportModal,
     DeleteFilled,SearchOutlined,WorkScheduleQueryHeader,CloseOutlined,EditOutlined,BellOutlined
 
   },
@@ -208,6 +229,204 @@ export default defineComponent({
  
     let  NewWorkScheduleEntity=new WorkScheduleEntity();
   
+
+/***配置列表 start************** */
+let visibleModelConfigGrid = ref<boolean>(false);
+    let modalTitleConfigGrid = ref<string>("");
+  
+  const showConfigGrid = () => {
+      visibleModelConfigGrid.value = true;
+      modalTitleConfigGrid.value = "配置【列表显示】";
+    };
+
+    const CloseConfigGridMoadl = () => {
+      visibleModelConfigGrid.value = false;
+    };
+
+ const UpdateConfigGrid = async () => {
+      //获取表格列及处理表格列
+      let columnList = await GetLoginRecordColumn({ pageName: "WorkSchedule" });
+    
+      if(columnList==undefined)
+{
+  columnList=deepClone(WorkScheduleColumns)
+}
+
+      DataEntityState.ListColumns = deepClone(columnList);
+
+      var len = columnList.length - 1;
+      //start from the top
+      for (var j = len; j >= 0; j--) {
+        console.log(j + "=" + columnList[j]);
+        if (columnList[j]["isUse"] == false) {
+          columnList.splice(j, 1);
+        }
+      }
+
+      DataEntityState.ListGridColumns = columnList;
+
+      for (var i in DataEntityState.ListGridColumns) {
+        if (DataEntityState.ListGridColumns[i]["slots"] == null) {
+          delete DataEntityState.ListGridColumns[i]["slots"];
+        }
+      }
+
+      for (var z in DataEntityState.ListColumns) {
+        if (DataEntityState.ListColumns[z]["slots"] == null) {
+          delete DataEntityState.ListColumns[z]["slots"];
+        }
+      }
+    };
+
+
+
+/***配置列表 end************** */
+
+
+/***导出 start************** */
+
+  const exportExcel = () => {
+      let keys: string[] = [];
+      for (let i in DataEntityState.selectedRowKeys) {
+        keys[i] = DataEntityState.selectedRowKeys[i];
+      }
+      let isDesibleOkBtn = false;
+      if (keys.length == 0) {
+        isDesibleOkBtn = true;
+      }
+
+      Modal.confirm({
+        title: "您确定要执行批量导出操作吗?",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: `共计：${keys.length} 条记录`,
+        okText: "Yes",
+        okType: "danger",
+        cancelText: "No",
+        okButtonProps: {
+          disabled: isDesibleOkBtn,
+        },
+        onOk() {
+          //console.log(ids);
+          BatchExport({ keys: keys }).then((res: any) => {
+            // if (res.isSuccess) {
+            //   refreshMark.value = new Date().getTime().toString();
+            //   UserDataEntityState.selectedRowKeys = [];
+            //   UserDataEntityState.selectedRows = [];
+            //   message.success("导出成功.");
+            console.log(res);
+            console.log(typeof res);
+
+            var ress = [
+              //示例数组
+              {
+                name: "bob",
+                age: "13",
+                career: "student",
+              },
+              {
+                name: "clare",
+                age: "20",
+                career: "engineer",
+              },
+            ];
+            var dataType = "\uFEFF"; //解决乱码问题
+            dataType += ["" + "姓名", "年龄", "职业"].join(","); //添加表格的头
+            dataType += "\n";
+
+            ress.forEach(function (item) {
+              //遍历数组，用字符串拼接
+              dataType += ["" + item.name, item.age, item.career].join(",");
+              dataType += "\n";
+            });
+
+            // let blob1 = new Blob([res], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+            //    let url = window.URL.createObjectURL(blob1);
+            //    window.location.href = url;
+
+            //注释：有没有引入mock生成的数据文件,文件里引用了mockjs,mock会对返回的数据做处理,导致文件下载 乱码 文件损坏 打开undefind等
+            console.log("headers", res.headers);
+            const blob = new Blob([res.data], {
+              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            });
+            const f = "统计.xlsx";
+            const contentDisposition =
+              res.headers["content-disposition"] ||
+              res.headers["Content-Disposition"];
+            const fileName =
+              (contentDisposition && contentDisposition.split(";")[1]).split(
+                "="
+              )[1] ||
+              f ||
+              "";
+
+            //const fileName = '统计.xlsx';
+            const elink = document.createElement("a");
+            elink.download = fileName;
+            elink.style.display = "none";
+            elink.href = URL.createObjectURL(blob);
+            document.body.appendChild(elink);
+            elink.click();
+            URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+
+            // }
+          });
+        },
+        onCancel() {
+          message.error("已取消.");
+        },
+      });
+    };
+
+
+
+/***导出 end************** */
+
+
+
+/***导出配置 start************** */
+
+let visibleConfigExport = ref<boolean>(false);
+    let modalTitleConfigExport = ref<string>("");
+
+    const showConfigExport = () => {
+
+      console.log(1111)
+      visibleConfigExport.value = true;
+      modalTitleConfigExport.value = "配置【导出信息】";
+    };
+
+    const CloseConfigExportMoadl = async () => {
+      visibleConfigExport.value = false;
+
+      let ExportColumnsList = await GetExpColumnsConfig({
+        pageName: "WorkSchedule",
+      });
+
+  
+
+      if (ExportColumnsList != undefined && ExportColumnsList.length > 0) {
+        DataEntityState.ExportColumns = ExportColumnsList;
+      } else {
+        DataEntityState.ExportColumns = ExportColumns;
+      }
+    };
+
+/***导出配置 end************** */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    
    /***分页****************/
     const pageSize = ref(10);
@@ -268,13 +487,13 @@ export default defineComponent({
     /***数据初始化****************/
     onMounted(async () => {
       //获取表格列及处理表格列
-      let columnList = await GetLoginRecordColumn({ pageName: "ExaminationFlow" });
-      console.log("amountLoginRecordcolumnList",columnList)
+      let columnList = await GetLoginRecordColumn({ pageName: "WorkSchedule" });
+    
 if(columnList==undefined||columnList.length==0)
 {
   columnList=deepClone(WorkScheduleColumns)
 }
-      console.log("amountLoginRecordcolumnList11111",columnList)
+     
 
       DataEntityState.ListColumns = deepClone(columnList);
 
@@ -300,6 +519,27 @@ if(columnList==undefined||columnList.length==0)
           delete DataEntityState.ListColumns[z]["slots"];
         }
       }
+
+
+
+
+let ExportColumnsList = await GetExpColumnsConfig({
+        pageName: "WorkSchedule",
+      });
+
+      console.log("ExportColumnsList", ExportColumnsList);
+
+      if (ExportColumnsList != undefined && ExportColumnsList.length > 0) {
+        DataEntityState.ExportColumns = ExportColumnsList;
+      } else {
+        DataEntityState.ExportColumns = ExportColumns;
+      }
+
+
+
+
+
+
 
       //获用户数据
       loading.value = true;
@@ -528,7 +768,7 @@ const RemindBth=(item:any)=>{
 
     const refreshBtn = async (payload: any) => {
    
-
+ UpdateConfigGrid();
       loading.value = true;
     //   DataEntityState.QueryConditionInfo = {
     //     workScheduleNo: "",
@@ -596,8 +836,19 @@ SearchBtn,
      
       batchDelete,
       refreshBtn,
-    
-      
+    visibleModelConfigGrid,
+      modalTitleConfigGrid,
+      CloseConfigGridMoadl,
+      showConfigGrid,
+      exportExcel,
+
+visibleConfigExport,
+      modalTitleConfigExport,
+      showConfigExport,
+      CloseConfigExportMoadl,
+
+
+
 
     };
   },

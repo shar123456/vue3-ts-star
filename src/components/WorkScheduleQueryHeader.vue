@@ -52,7 +52,11 @@
       </div>
     </a-col>
     <a-col  style="line-height:40px;" class="col" :xs="{ span: 23 }" :lg="{ span: 14 }">
-      <div style="border:0px solid red;display:flex;width:100%;justify-content:flex-end;align-items: center;">&nbsp;
+      <div style="border:0px solid red;display:flex;width:100%;justify-content:flex-end;align-items: center;flex-wrap: wrap;">
+          <a-button type="primary" @click="configExport"> <template #icon><LayoutOutlined /></template>导出配置</a-button>&nbsp;
+         <a-button type="primary" @click="exportExcel"> <template #icon><download-outlined /></template>导出</a-button>&nbsp;
+       <a-button  type="primary" @click="configGridBtn">   <template #icon><ToolOutlined /></template>配置列表</a-button>&nbsp;
+   
 <a-button type="primary"   @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
       <a-button  
         type="primary"
@@ -77,11 +81,13 @@
 <script lang="ts">
 import { reactive, toRefs, defineComponent } from "vue";
 
-import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined,CloudUploadOutlined} from "@ant-design/icons-vue";
+import { SearchOutlined,PlusOutlined, DeleteOutlined,BarChartOutlined,RedoOutlined,
+ClearOutlined,AppstoreAddOutlined,ToolOutlined,CloudUploadOutlined,DownloadOutlined} from "@ant-design/icons-vue";
 import {dateFormat} from '../utility/commonFunc'
 export default defineComponent({
   components: {
-    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,AppstoreAddOutlined,ToolOutlined,CloudUploadOutlined
+    SearchOutlined,PlusOutlined,DeleteOutlined,BarChartOutlined,RedoOutlined,ClearOutlined,
+    AppstoreAddOutlined,ToolOutlined,CloudUploadOutlined,DownloadOutlined
   },
   props: { StateEntity:Object, },
   setup(props, context) {
@@ -155,6 +161,10 @@ const configGridBtn = () => {
  context.emit("importExcel");
     }
 
+ const configExport = () => {
+
+ context.emit("configExport");
+    }
 
     return {
       //...toRefs(state),
@@ -162,7 +172,7 @@ const configGridBtn = () => {
       SearchBtn,
     CreateBtn,
       ClearQueryBtn,
-      exportExcel,batchDeleteBtn,refreshBtn,importExcel,configGridBtn,fileUploadBtn
+      exportExcel,batchDeleteBtn,refreshBtn,importExcel,configGridBtn,fileUploadBtn,configExport
     };
   },
 });

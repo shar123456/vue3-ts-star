@@ -9,7 +9,7 @@ interface IDataItem {
    sysUserId: string;
     pwd: string;
     key: string;
-
+    nickName: string;
     userDesc: string;
     phone: string;
     address: string;
@@ -63,7 +63,7 @@ interface IDataItem {
         name: "",
         sysUserId: "",
         pwd: "",
-    
+        nickName: "",
     
         userDesc: "",
         phone: "",

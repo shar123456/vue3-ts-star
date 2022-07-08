@@ -138,9 +138,20 @@ const WorkScheduleDatas=[
         WorkScheduleDatas:any=WorkScheduleDatas;
 
 
-      
+        ExportColumns:any=[];
 
 
       }
-      export {IWorkScheduleInfo,WorkScheduleColumns,WorkScheduleEntity,
+      const ExportColumns = [
+        { name:"WorkScheduleType",oldTitle: '类型', currentTitle: '类型', isUse: false,configOrder: 1 },
+        { name:"WorkScheduleNo",oldTitle: '计划编号', currentTitle: '计划编号', isUse: false,configOrder: 2 },
+        { name:"WorkScheduleName",oldTitle: '标题', currentTitle: '标题', isUse: false,configOrder: 3 },
+        {name:"WorkScheduleStatus", oldTitle: '计划状态', currentTitle: '计划状态', isUse: false,configOrder: 4 },
+        { name:"NoticeType",oldTitle: '通知类型', currentTitle: '通知类型', isUse: false,configOrder: 5 },
+        {name:"Initiator", oldTitle: '发布人', currentTitle: '发布人', isUse: false,configOrder: 6},
+        { name:"WorkScheduleDesc",oldTitle: '工作内容', currentTitle: '工作内容', isUse: false,configOrder: 8 },
+        { name:"CreateTimeStr",oldTitle: '创建时间', currentTitle: '创建时间', isUse: false,configOrder: 7 },
+      
+      ];
+      export {IWorkScheduleInfo,WorkScheduleColumns,WorkScheduleEntity,ExportColumns
     }

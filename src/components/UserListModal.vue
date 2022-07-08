@@ -9,7 +9,12 @@
     :title="modalTitlee"
     @Cancel="onCancel"
       @ok="handleOk"
+       :maskClosable="maskClosable"
+      :confirm-loading="confirmLoading"
   >
+
+   <a-spin :spinning="spinning" tip="Loading...">
+
     <div class="modalEditRow">
       <div class="modalEditCol">
         <label>用户Id：</label>
@@ -168,11 +173,12 @@
         </div>
       </div>
       <div class="modalEditCol">
-       
+          <label>昵称：</label>
+        <div><a-input v-model:value="EditData.nickName" placeholder="昵称" /></div>
       </div>
     </div>
 
-
+</a-spin>
 
 
 
@@ -189,12 +195,28 @@
 <script lang="ts">
 import {defineComponent, reactive, toRefs,ref,onMounted,watch } from 'vue'
 import { UserDataEntity,IUserInfo } from "../TypeInterface/IUserInterface";
+import {
+  GetUserColumn,
+  GetUserDatas,
+  DeleteUserById,
+  BatchDeleteUser,
+  UpdateUserDatas,
+  AddUserDatas,
+  CopyUserDataById,
+  BatchExportUser,
+  ReSetUserPwd,
+  GetExpColumnsConfig,
+} from "../Request/userRequest";
+import { message, Modal } from "ant-design-vue";
 export default defineComponent({
       props: { UserData: UserDataEntity,
        visiblea:Boolean,modalTitles: String,},
     setup (props,context) {
         const state = reactive({
             count: 0,
+            spinning :false,
+            confirmLoading:false,
+            maskClosable:false
         })
           let visible = ref<boolean>(props.visiblea);
           let modalTitlee = ref<string|undefined>(props.modalTitles);
@@ -203,14 +225,47 @@ export default defineComponent({
 
  const handleOk = (e: MouseEvent) => {
       //console.log(e);
+       state.spinning = !state.spinning;
+        state.confirmLoading = true;
       if(modalTitlee.value=="新增【用户信息】")
       {
-    context.emit("CreateInfoBtn",{ ...EditData });
+
+ AddUserDatas({ ...EditData }).then((res: any) => {
+        console.log(res);
+        if (res.isSuccessful) {
+          //visible.value = false;
+         console.log(context.emit("CreateInfoBtn",{ ...EditData }));
+          message.success(res.message);
+        } else {
+           state.spinning = !state.spinning;
+        state.confirmLoading = false;
+          message.error("添加失败.");
+        }
+      });
+
+
+   
       }else
       {
-    context.emit("UpdateInfoBtn",{ ...EditData });
+
+UpdateUserDatas({ ...EditData }).then((res: any) => {
+        console.log(res);
+        if (res.isSuccessful) {
+          //visible.value = false;
+        context.emit("UpdateInfoBtn",{ ...EditData });
+          message.success(res.message);
+        } else {
+          message.error("更新失败.");
+            state.spinning = !state.spinning;
+        state.confirmLoading = false;
+        }
+      });
+
+
+
+    
       }
-  
+    
     
     
     
@@ -224,7 +279,8 @@ export default defineComponent({
     watch(
       () => props.visiblea,
       (newValue) => {
-           
+             state.spinning =false;
+        state.confirmLoading = false;
          console.log(newValue)
           
             visible.value=newValue;

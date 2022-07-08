@@ -1,5 +1,7 @@
 <template>
+
     <div>
+     
  <a-modal
     cancelText="关闭"
      okText="确认"
@@ -10,8 +12,10 @@
      :ok-button-props="{ style:{display:''} }"
     @Cancel="onCancel"
       @ok="handleOk"
+       :maskClosable="maskClosable"
+      :confirm-loading="confirmLoading"
   >
-
+    <a-spin :spinning="spinning" tip="Loading...">
 <a-row style="border:0px solid red;background-color:#f7f7f7;">
    <a-col :span="2" class="configCol">序号</a-col>
    <a-col :span="6" class="configCol">列初始名</a-col>
@@ -31,9 +35,11 @@
 
     
     
-  
+  </a-spin>
   </a-modal>
+
     </div>
+      
 </template>
 
 <script lang="ts">
@@ -62,6 +68,9 @@ export default defineComponent({
     setup (props,context) {
         const state = reactive({
             count: 0,
+             spinning :false,
+            confirmLoading:false,
+            maskClosable:false
         })
           let visibleConfigGrid = ref<boolean>(props.visibleModelConfigGrid);
           let titleConfigGrid = ref<string|undefined>(props.modalTitleConfigGrid);
@@ -70,15 +79,23 @@ export default defineComponent({
  let configType = ref<string|undefined>(props.configType);
 const handleOk = (e: MouseEvent) => {
 
-
+   state.spinning = !state.spinning;
+        state.confirmLoading = true;
  SetLoginRecordGrid({ListColumns:props.ListColumns,configType:configType.value}).then((res: any) => {
+
             if (res.isSuccess) {
-              
+                state.spinning = !state.spinning;
+         state.confirmLoading = false;
             context.emit("refreshBtn");
 
             context.emit("CloseConfigGridMoadl");
             message.success("配置成功.");
+            }else
+            {
+                state.spinning = !state.spinning;
+         state.confirmLoading = false;
             }
+          
          });
   };
 
