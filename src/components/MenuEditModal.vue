@@ -9,7 +9,10 @@
     :title="modalTitlee"
     @Cancel="onCancel"
       @ok="handleOk"
+        :maskClosable="maskClosable"
+      :confirm-loading="confirmLoading"
   >
+    <a-spin :spinning="spinning" tip="Loading...">
     <div class="modalEditRow">
       <div class="modalEditCol">
         <label>菜单Id：</label>
@@ -84,7 +87,7 @@
           <a-select
             ref="select"
             v-model:value="EditData.hasSub"
-            style="width: 150px"   disabled="true"
+            style="width: 150px"    :disabled="EditData.menuLevel==3"
           >
             <a-select-option value="未选择">未选择</a-select-option>
             <a-select-option value="是">是</a-select-option>
@@ -101,7 +104,7 @@
       </div>
     </div>
 
-   
+   </a-spin>
   </a-modal>
     </div>
 </template>
@@ -124,6 +127,13 @@ import {
   SettingOutlined,
   TrademarkCircleOutlined,SnippetsOutlined,TrademarkOutlined,FileWordOutlined,FileMarkdownOutlined
 } from "@ant-design/icons-vue";
+import {
+  GetMenuColumn,
+  GetMenuDatas,
+  DeleteMenuById,
+  UpdateMenuDatas,AddMenuDatas
+} from "../Request/menuRequest";
+import { message, Modal } from "ant-design-vue";
 export default defineComponent({
       props: { MenuData: MenuDataEntity,
        visibleMenu:Boolean,modalTitlesMenu: String,},
@@ -144,6 +154,9 @@ export default defineComponent({
     setup (props,context) {
         const state = reactive({
             count: 0,
+              spinning :false,
+            confirmLoading:false,
+            maskClosable:false
         })
           let visible = ref<boolean>(props.visibleMenu);
           let modalTitlee = ref<string|undefined>(props.modalTitlesMenu);
@@ -151,10 +164,43 @@ export default defineComponent({
           
 
  const handleOk = (e: MouseEvent) => {
-     
-    context.emit("UpdateMenuInfoBtn",{ ...EditData });
-      
-  
+    
+ if((modalTitlee.value)!=undefined&&(modalTitlee.value)?.indexOf("添加")>=0)
+      {  state.spinning = !state.spinning;
+        state.confirmLoading = true;
+         AddMenuDatas({ ...EditData }).then((res: any) => {
+        console.log(res);
+        if (res.data) {
+           state.spinning = !state.spinning;
+         state.confirmLoading = false;
+           context.emit("UpdateMenuInfoBtn",{ ...EditData });
+          message.success(res.message);
+        } else {
+           state.spinning = !state.spinning;
+         state.confirmLoading = false;
+          message.error("添加失败.");
+        }
+      });
+
+      }
+      if((modalTitlee.value)!=undefined&&(modalTitlee.value)?.indexOf("编辑")>=0)
+      {  state.spinning = !state.spinning;
+        state.confirmLoading = true;
+ UpdateMenuDatas({ ...EditData }).then((res: any) => {
+        console.log(res);
+        if (res.data) {
+           state.spinning = !state.spinning;
+         state.confirmLoading = false;
+           context.emit("UpdateMenuInfoBtn",{ ...EditData });
+          message.success(res.message);
+        } else {
+           state.spinning = !state.spinning;
+         state.confirmLoading = false;
+          message.error("更新失败.");
+        }
+      });
+      }
+ 
    
     
     

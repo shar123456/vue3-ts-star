@@ -27,7 +27,8 @@
       </div>
     </div>
     <div class="downPad">
-    
+     <a-button type="primary" @click="showCreateModal"> <template #icon><plus-outlined  /></template>
+        新增 </a-button>&nbsp;
       <a-button type="primary" @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
       <a-button
         type="primary"
@@ -78,7 +79,9 @@ const configGridBtn = () => {
     };
 
 
-
+ const showCreateModal = () => {
+      context.emit("showCreateModal");
+    };
 
 
     const refreshBtn = () => {
@@ -107,7 +110,7 @@ const configGridBtn = () => {
       SearchBtn,
     
       ClearQueryBtn,
-      exportExcel,batchDeleteBtn,refreshBtn,importExcel,configGridBtn
+      exportExcel,batchDeleteBtn,refreshBtn,importExcel,configGridBtn,showCreateModal
     };
   },
 });

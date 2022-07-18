@@ -8,8 +8,14 @@ export default createStore({
     USERNAME:(localStorage.getItem("UserName")==""||localStorage.getItem("UserName")==undefined||localStorage.getItem("UserName")==null)?"***" :localStorage.getItem("UserName"),
     CollapseMark:true,
     NewMessageMark:false,
+    allRoutes:[]
   },
   mutations: {
+    set_allRoutes(state, payLoad){
+      //console.log("payLoadallRoutes",payLoad)
+      state.allRoutes=payLoad
+    }
+    ,
     SetToken(state, payLoad) {
       state.TOKEN = payLoad;
     },

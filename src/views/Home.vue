@@ -80,7 +80,7 @@
 
 
 <template    v-for="item3 in item2.children"    :key="item3.key">
- <a-menu-item  v-if="!item3.hasSub&&item3.menuLevel==3" :key="item3.menuKey">
+ <a-menu-item  v-if="item3.hasSub=='否'&&item3.menuLevel==3" :key="item3.menuKey">
           <iconFont  :IconStr="item3.menuIcon"  />
           <span
             ><router-link
@@ -477,9 +477,14 @@ const onOpenChange = (openKeyss: string[]) => {
 
              if(openKeyss!=undefined&&openKeyss!=[]&&openKeyss.length>0)
 {
+  console.log('openKeyss',openKeyss)
     let lastItem= openKeyss[openKeyss.length-1];
-    openKeys.value=[`${lastItem}`] 
-}
+    console.log('lastItem',lastItem)
+    if(!(lastItem.indexOf('sub11')>=0)){
+  openKeys.value=[`${lastItem}`] 
+    }
+  
+ }
 
       
     };
@@ -641,13 +646,13 @@ order:3,
           
       }
 
-
+    console.log('menuList.value ',menuList.value );
 
 
    
       UserTitle.value=store.state.USERNAME;
       if (routeDescMeta.value && routeDescMeta.value.rName) {
-        console.log(1);
+    
 
         routeDescArr.value = routeDescMeta.value.rName.split("/");
         routeDescArr.value.splice(0, 1);
@@ -689,16 +694,16 @@ order:3,
           routeDescArr.value = routeDesc.value.split("/");
           routeDescArr.value.splice(0, 1);
         }
-           console.log("watchroute",route)
+          
        if(route.meta && route.meta.Sub&&route.meta.Sub!="")
-         {
+         { 
            openKeys.value=[];
          let openKeyStr=  route.meta.Sub;
  openKeys.value=[`${openKeyStr}`]
    selectedKeys.value=[];
  let selectedKeyStr=  route.path;
   selectedKeys.value =[`${selectedKeyStr}`] 
-
+console.log("watchroute",openKeyStr)
 
         }
 
