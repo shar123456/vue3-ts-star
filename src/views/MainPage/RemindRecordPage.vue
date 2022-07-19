@@ -8,7 +8,7 @@
   >
   </Common-Query-Header>
 
-  <div id="DataList">
+  <div id="RemindRecordDataList">
     <a-table
       bordered
       :rowClassName="(index:number) => (index % 2 == 1 ? 'table-striped' : null)"
@@ -16,7 +16,7 @@
       :loading="loading"
       :columns="ListGridColumns"
       :data-source="DataList"
-      :scroll="{ x: 1000, y: 'calc(100vh - 310px)' }"
+      :scroll="{ x: 1000,  }"
       :customRow="rowActionClick"
      
       :pagination="false"
@@ -408,10 +408,11 @@ SearchBtn,
 </script>
 
 <style >
-#DataList {
-  height: calc(100vh - 245px);
+#RemindRecordDataList {
+  /* height: calc(100vh - 240px); */
   border: 0px solid red;
   box-sizing: border-box;
+   overflow: auto;
 }
 .userPagination {
   border: 0px solid red;
@@ -422,8 +423,8 @@ SearchBtn,
   align-items: center;
 }
 
-#DataList .ant-table-thead > tr > th,
-#DataList .ant-table-tbody > tr > td {
+#RemindRecordDataList .ant-table-thead > tr > th,
+#RemindRecordDataList .ant-table-tbody > tr > td {
   padding: 9px 9px;
 }
 .table-striped td {

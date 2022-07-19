@@ -31,7 +31,7 @@
           尊敬的用户：<text>admin</text>
         </div>
         <div style="color: white; font-weight: 500; font-size: 17px">
-          您当前有【<text>3</text>】个审批任务尚未处理.
+          您当前有【<text>{{Total}}</text>】个审批任务尚未处理.
         </div>
       </div>
     </div>
@@ -39,19 +39,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch ,onMounted} from "vue";
 import { useStore } from "vuex";
 export default defineComponent({
-  setup() {
+   props:{ExaminationTotals:Number},
+  setup(props) {
     const store = useStore();
     let NMTClass = ref<string>("NMTClass_hide");
     let closeNewMsgTipBtn = () => {
       store.state.NewMessageMark = false;
     };
+ let Total = ref<number|undefined>(props.ExaminationTotals);
 
+ onMounted(()=>{
+  Total.value=props.ExaminationTotals;
+ })
     watch(
       () => store.state.NewMessageMark,
       (newValue) => {
+ Total.value=props.ExaminationTotals;
+        console.log("Total",Total.value)
         if (newValue) {
           NMTClass.value = "NMTClass_show";
         } else {
@@ -60,7 +67,7 @@ export default defineComponent({
       }
     );
 
-    return { NMTClass, closeNewMsgTipBtn };
+    return { NMTClass, closeNewMsgTipBtn ,Total};
   },
 });
 </script>

@@ -54,7 +54,7 @@ instance.interceptors.response.use(
         {
             // const result=  res.data ? res.data : res;
             // const code:number=result.code;
-            console.log("interceptors.response",res)
+            //console.log("interceptors.response",res)
               if(res.status==401)
               {
               

@@ -17,7 +17,27 @@ const MenuArr:any=[
             name: 'HomePage',
             meta:{rName:"/主页"},
             component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/HomePage.vue')
-          }
+          },
+          
+  {
+            path: 'ExaminationFlowDetail',
+            name: 'ExaminationFlowDetail',
+            meta:{rName:"/审批管理/审批流程详情",Sub:"sub5"},
+            component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationFlowDetail.vue')
+          },
+          
+          {
+            path: 'ExaminationTaskDetail',
+            name: 'ExaminationTaskDetail',
+            meta:{rName:"/审批管理/审批任务详情",Sub:"sub5"},
+            component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/ExaminationTaskDetail.vue')
+          },
+          {
+                    path: 'WorkScheduleDetail',
+                    name: 'WorkScheduleDetail',
+                    meta:{rName:"/工作计划管理/工作计划明细",Sub:"gzjh"},
+                    component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/WorkScheduleDetail.vue')
+                  },
 ];
 
 
@@ -315,7 +335,8 @@ export function resetRouter():void{
 router.beforeEach((to:any,from:any,next:any)=>{
   //console.log(to.path)
   if(to.path==="/login"||to.path==="/register")
-  {console.log("/login",to.path);
+  {
+   // console.log("/login",to.path);
     resetRouter();
     next();
   }
@@ -367,7 +388,7 @@ router.beforeEach((to:any,from:any,next:any)=>{
                       element?.children?.forEach((elementSub2:any) => {
                         const menuPageTemp= elementSub2.menuUrl.split('/');
                         const menuPage=menuPageTemp[menuPageTemp.length-1]
-                        console.log("menuPage",menuPage);
+                       // console.log("menuPage",menuPage);
                         // MenuArr.push(
                         //   {
                         //     path: menuPage,

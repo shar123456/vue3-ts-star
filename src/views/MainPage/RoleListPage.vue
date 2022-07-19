@@ -8,7 +8,7 @@
     
   >
   </RoleListQueryHeader>
-<div id="DataList">
+<div id="RoleDataList">
     <a-table
       bordered
       :rowClassName="(index:number) => (index % 2 == 1 ? 'table-striped' : null)"
@@ -689,7 +689,7 @@ CreateRoleInfoBtn,
 </script>
 
 <style >
-#DataList {
+#RoleDataList {
   height: calc(100vh - 245px);
   border: 0px solid red;
   box-sizing: border-box;
@@ -703,8 +703,8 @@ CreateRoleInfoBtn,
   align-items: center;
 }
 
-#DataList .ant-table-thead > tr > th,
-#DataList .ant-table-tbody > tr > td {
+#RoleDataList .ant-table-thead > tr > th,
+#RoleDataList .ant-table-tbody > tr > td {
   padding: 9px 9px;
 }
 .table-striped td {

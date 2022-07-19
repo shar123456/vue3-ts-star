@@ -3,11 +3,9 @@
     <div class="upPad">
       <div class="upPad-up">
        
-         <a-row   >
-         <a-col style="border:0px solid red;margin-left:5px;line-height:40px;"  v-for="(index,item) in QueryConditionInfo" :key="item" class="col" :xs="{ span: 23 }" :lg="{ span: 5 }">
-         <a-row  >
-         <a-col  span="7"  style="border:0px solid red;width: 100%;display:flex;align-items: center;" > <label>{{QueryConditionInfoConfig[item].name}}：</label></a-col>
-          <a-col  v-if="QueryConditionInfoConfig[item].type=='text'" span="17">    <div>
+        <div v-for="(index,item) in QueryConditionInfo" :key="item">
+          <label>{{QueryConditionInfoConfig[item].name}}：</label>
+          <div v-if="QueryConditionInfoConfig[item].type=='text'">
 
             <a-input
               v-model:value="QueryConditionInfo[item]"
@@ -16,24 +14,21 @@
 
 
           </div> 
-          </a-col>
-            <a-col  v-if="QueryConditionInfoConfig[item].type=='select'" span="17">
-          <div  style="border:0px solid red"  >
+          
+          <div v-if="QueryConditionInfoConfig[item].type=='select'">
             <a-select
               ref="select"
               v-model:value="QueryConditionInfo[item]"
-                style="width: 100%;"
+              style="width: 100%"
             >
              
              <a-select-option v-for="ioption in QueryConditionInfoConfig[item].optionValueArray" :key="ioption" :value="ioption">{{ioption}}</a-select-option>
               
             </a-select>
           </div> 
-</a-col>
-</a-row>
-        
-        </a-col>
-      </a-row> 
+
+
+        </div>
        
          
   
@@ -42,16 +37,14 @@
     </div>
  <div class="centerPad"></div>
     <div class="downPad">
-
-<a-row   >
-   <a-col style="border:0px solid red;line-height:0px;"  class="col" :xs="{ span: 23 }" :lg="{ span: 10 }">
       <div>&nbsp;
-  
+  <a-button type="primary" style="display:none" @click="CreateBtn"> <template #icon><plus-outlined  /></template>
+        新增 </a-button>&nbsp;
+      <a-button    style="background-color: #dd4b39; border-color: #dd4b39;display:none" type="primary"   @click="batchDeleteBtn">   <template #icon><delete-outlined /></template>批量删除</a-button>&nbsp;
       </div>
-    </a-col>
-    <a-col  style="line-height:40px;" class="col" :xs="{ span: 23 }" :lg="{ span: 14 }">
-      <div style="border:0px solid red;display:flex;width:100%;justify-content:flex-end;align-items: center;flex-wrap: wrap;">
-       <a-button type="primary"   @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
+    
+      <div>
+<a-button type="primary"   @click="refreshBtn"> <template #icon><redo-outlined /></template>刷新</a-button>&nbsp;
       <a-button  
         type="primary"
         @click="ClearQueryBtn"
@@ -61,26 +54,8 @@
       <a-button type="primary"   @click="SearchBtn">
         <template #icon><SearchOutlined /></template>
         搜索 </a-button
-      >&nbsp;
+      >&nbsp;&nbsp;
       </div>
-</a-col>
-
-      
-      </a-row>
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
       
       
     </div>
@@ -183,7 +158,7 @@ const configGridBtn = () => {
 
 <style  scoped>
 #userListPad {
- 
+  height: 142px;
   box-sizing: border-box;
   border: 0px solid red;
   box-sizing: border-box;
@@ -192,29 +167,76 @@ const configGridBtn = () => {
   overflow: auto;
 }
 .upPad {
-  
+  height: 93px;
   border: 0px solid red;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
- width: 100%;
+  min-width: 1000px;
   padding-top:5px;overflow: auto;
 }
 .upPad-up {
   border: 0px solid red;
    width: 100%;
-
+flex-wrap:wrap;
+  display: flex;
 }
-
-.downPad {
-  min-height: 40px;
+.upPad-up div {
+  display: flex;
+  align-items: center;
   border: 0px solid red;
-  
+  width: 360px;
+  display: flex;
+  justify-content: flex-start;
+  line-height: 40px;
+}
+.upPad-up div label {
+  width: 120px;
+  border: 0px solid red;
+  margin-left: 10px;
+  white-space:nowrap;/* 不换行 */
+overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+text-overflow:ellipsis;
+}
+.upPad-up div div {
+   width: 240px;
+  border: 0px solid red;
+}
+.upPad-down {
+  border: 0px solid red;
+  height: 50%;
+  display: flex;
+  width: 100%;
+}
+.upPad-down div {
+  display: flex;
+  align-items: center;
+
+  width: 23%;
+  display: flex;
+  justify-content: flex-start;
+}
+.upPad-down div label {
+  border: 0px solid red;
+  width: 20%;
+  margin-left: 10px;
+}
+.upPad-down div div {
+  border: 0px solid red;
+  width: 80%;
 }
 .centerPad{
   height: 7px;
    border: 0px solid red;
    box-sizing: border-box;
    background-color: #e5e6e9;
+}
+.downPad {
+  height: 40px;
+  border: 0px solid red;
+  display: flex;
+  align-items: center;
+  justify-content:space-between;
+  min-width: 1000px;
 }
 </style>

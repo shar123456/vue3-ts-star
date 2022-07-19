@@ -477,9 +477,9 @@ const onOpenChange = (openKeyss: string[]) => {
 
              if(openKeyss!=undefined&&openKeyss!=[]&&openKeyss.length>0)
 {
-  console.log('openKeyss',openKeyss)
+  //console.log('openKeyss',openKeyss)
     let lastItem= openKeyss[openKeyss.length-1];
-    console.log('lastItem',lastItem)
+    //console.log('lastItem',lastItem)
     if(!(lastItem.indexOf('sub11')>=0)){
   openKeys.value=[`${lastItem}`] 
     }
@@ -703,7 +703,7 @@ order:3,
    selectedKeys.value=[];
  let selectedKeyStr=  route.path;
   selectedKeys.value =[`${selectedKeyStr}`] 
-console.log("watchroute",openKeyStr)
+//console.log("watchroute",openKeyStr)
 
         }
 
@@ -744,7 +744,7 @@ function IsPC() {
 
     const Mycollapsed = (p: boolean) => {
 
-      console.log("homeDesc",IsPC())
+      //console.log("homeDesc",IsPC())
     
       if (collapsed.value) {
         menuShow.value="";
