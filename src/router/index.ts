@@ -38,6 +38,12 @@ const MenuArr:any=[
                     meta:{rName:"/工作计划管理/工作计划明细",Sub:"gzjh"},
                     component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/WorkScheduleDetail.vue')
                   },
+                  // {
+                  //   path: 'GlobleParameterConfig',
+                  //   name: 'GlobleParameterConfig',
+                  //   meta:{rName:"/系统设置/全局参数配置",Sub:"sub1"},
+                  //   component: () => import(/* webpackChunkName: "about" */ '../views/MainPage/GlobleParameterConfig.vue')
+                  // },
 ];
 
 

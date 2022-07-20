@@ -286,7 +286,7 @@
                 font-weight: 600;
                 color: rgb(33, 124, 160);
               "
-              >您好，欢迎使用企业级后台管理系统</span
+              >{{bigTopic}}</span
             >
           </a-col>
 
@@ -433,6 +433,9 @@ import {
 } from "../TypeInterface/IMenuInterface";
 import iconFont from "../components/iconFont.vue";
 import SearchMenuModal from "../components/SearchMenuModal.vue";
+import {
+ UpdateGlobleParameter,GetGlobleParameter
+} from "../Request/GlobleParameterRequest";
 export default defineComponent({
   components: {
     UserOutlined,
@@ -456,7 +459,7 @@ export default defineComponent({
          let menuShow= ref("");
 
 let homeDesc=ref(null);
-
+ let bigTopic = ref("");
     let collapsed = ref<boolean>(false);
     let titleTxt = ref("");
     let titleTxt1 = ref("");
@@ -631,7 +634,27 @@ order:3,
 
 
     onMounted(async () => {
+        const GlobleParameter=localStorage.getItem("UserGlobleParameter");
+        const GlobleParameterObj = JSON.parse(GlobleParameter==null?"[]":GlobleParameter)
        
+         if(GlobleParameterObj!=null&&GlobleParameterObj!=undefined&&GlobleParameterObj.length!=0)
+         {
+        console.log("GlobleParameterObj",GlobleParameterObj);
+        bigTopic.value=GlobleParameterObj.bigTopic
+         }else
+         {
+          let GlobleParameter = await GetGlobleParameter();
+  if(GlobleParameter.isSuccess&&GlobleParameter.datas!=undefined&&GlobleParameter.datas.length>0)
+  {
+      localStorage.setItem("UserGlobleParameter",JSON.stringify(GlobleParameter.datas[0]));
+       console.log("GlobleParameterObjnew",GlobleParameter.datas[0].bigTopic);
+        bigTopic.value=GlobleParameter.datas[0].bigTopic
+  }
+         }
+
+
+
+
 
  let UserDatasList = await GetMenuDatasById({
         current: 1,
@@ -796,7 +819,7 @@ function IsPC() {
       SearchMenuBtn,NewMessageBtn,
 
 visibleSearchMenu,modalTitleSearchMenu,CloseSearchMenu,onOpenChange
-      ,menuShow,homeDesc
+      ,menuShow,homeDesc,bigTopic
     };
   },
 });
