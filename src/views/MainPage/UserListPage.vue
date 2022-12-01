@@ -490,16 +490,16 @@ export default defineComponent({
               type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             });
             const f = "统计.xlsx";
-            const contentDisposition =
-              res.headers["content-disposition"] ||
-              res.headers["Content-Disposition"];
-            const fileName =
-              (contentDisposition && contentDisposition.split(";")[1]).split(
-                "="
-              )[1] ||
-              f ||
-              "";
-
+            // const contentDisposition =
+            //   res.headers["content-disposition"] ||
+            //   res.headers["Content-Disposition"];
+            // const fileName =
+            //   (contentDisposition && contentDisposition.split(";")[1]).split(
+            //     "="
+            //   )[1] ||
+            //   f ||
+            //   "";
+ const fileName ="用户-"+new Date().getTime();
             //const fileName = '统计.xlsx';
             const elink = document.createElement("a");
             elink.download = fileName;

@@ -149,7 +149,7 @@ uploading.value = true;
                 transformRequest: [function(){
                     return formData;
                 }],
-                url: '/api/ManagerFile/UpLoadFile',
+                url: 'http://120.40.187.174:8702/Api/ManagerFile/UpLoadFile',
             })
             .then(res => {
                 res = res.data;

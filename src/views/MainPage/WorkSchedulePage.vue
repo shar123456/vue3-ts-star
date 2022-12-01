@@ -344,21 +344,17 @@ let visibleModelConfigGrid = ref<boolean>(false);
             //    window.location.href = url;
 
             //注释：有没有引入mock生成的数据文件,文件里引用了mockjs,mock会对返回的数据做处理,导致文件下载 乱码 文件损坏 打开undefind等
-            console.log("headers", res.headers);
+           // console.log("headers", res.headers);
             const blob = new Blob([res.data], {
               type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             });
             const f = "统计.xlsx";
-            const contentDisposition =
-              res.headers["content-disposition"] ||
-              res.headers["Content-Disposition"];
-            const fileName =
-              (contentDisposition && contentDisposition.split(";")[1]).split(
-                "="
-              )[1] ||
-              f ||
-              "";
-
+            // const contentDisposition =
+            //   res.headers["content-disposition"] ||
+            //   res.headers["Content-Disposition"];
+            //   console.log("contentDisposition",contentDisposition)
+            //const fileName =(contentDisposition && contentDisposition.split(";")[1]).split("=")[1] ||f ||"";
+         const fileName ="工作计划-"+new Date().getTime();
             //const fileName = '统计.xlsx';
             const elink = document.createElement("a");
             elink.download = fileName;

@@ -293,7 +293,7 @@ const CreateRoleInfoBtn = (payload: any) => {
         pageSize: pageSize.value,
         ...DataEntityState.QueryConditionInfo,
       }).then((res: any) => {
-        //console.log(res);
+        console.log("222222222",res);
         loading.value = false;
         if (res.isSuccess) {
           DataEntityState.DataList = res.datas;

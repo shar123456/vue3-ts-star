@@ -322,7 +322,7 @@ export default defineComponent({
                   return ret;
                 },
               ],
-              url: "/api/ManagerFile/DownLoadFile",
+              url: "http://120.40.187.174:8702/Api/ManagerFile/DownLoadFile",
             });
 
             console.log(res);

@@ -121,7 +121,12 @@ const isfile = file.type === 'application/vnd.openxmlformats-officedocument.spre
                     return formData;
                 }],
                headers:{'Authorization':token},
-                url: '/api/SysAccount/UpLoadFile',
+                //url: '/api/SysAccount/UpLoadFile',
+                //url: 'http://120.40.187.174:8702/Api/SysAccount/UpLoadFile',
+ url: 'http://localhost:3165/Api/SysAccount/UpLoadFile',
+
+               
+               
             })
             .then(res => {
                 res = res.data;

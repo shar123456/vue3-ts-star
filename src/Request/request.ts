@@ -16,13 +16,15 @@ enum messageEnum{
 
 }
 const instance = axios.create({
-    baseURL: '/api/',
+   // baseURL: '/api/',
     //baseURL:process.env.VUE_APP_BASE_URL,
     //baseURL:'/mock/',
     //baseURL:'http://localhost:3165/api/',
     //baseURL:'http://192.168.8.11:8086/Api/',
-    //baseURL:'http://172.16.170.67:8055/Api/',
-    
+    //baseURL:'http://http://localhost:8701/Api/',
+    //
+    //baseURL:'http://120.40.187.174:8702/Api/',
+    baseURL:'/DevApi',
     timeout: 15000
 })
 

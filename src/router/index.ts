@@ -298,6 +298,11 @@ let routes: Array<RouteRecordRaw> =[
     meta:{rName:"/首页/"},
     component: Home,
     children:MenuArr
+  },
+    {
+    path: '/register',
+    name: 'register',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Login/register.vue')
   }
 ]
 
